@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
 import time
 
-def scrape(url, time_to_scrape, name):
+def scrape(url, time_to_scrape, name, check_every_interval):
 
     driver = webdriver.Chrome()
     
@@ -23,15 +23,27 @@ def scrape(url, time_to_scrape, name):
     scrollable_div
     period = timedelta(minutes=time_to_scrape)
     next_time = datetime.now() + period
+    next_interval_to_check = datetime.now() + timedelta(minutes=check_every_interval)
 
     while datetime.now() < next_time:
-            driver.execute_script('arguments[0].scrollTop = arguments[0].scrollHeight', 
-                    scrollable_div)
-            
+        driver.execute_script('arguments[0].scrollTop = arguments[0].scrollHeight', 
+                scrollable_div)
+        
+        if datetime.now() > next_interval_to_check:
+            print('check')
+            response = BeautifulSoup(driver.page_source, 'html.parser')
+            reviews = response.find_all('div', class_='DU9Pgb')
+            to_quit = False
+            for r in reviews:
+                if r.find('span', class_ = 'rsqaWe').getText() == ('4 years ago'):
+                    to_quit = True
+                    break
+            next_interval_to_check = datetime.now() + timedelta(minutes=check_every_interval)
+            if to_quit == True:
+                break
 
 
     response = BeautifulSoup(driver.page_source, 'html.parser')
-    reviews = response.find_all('span', class_='kvMYJc')
 
     driver.quit()
     reviews = response.find_all('div', class_='DU9Pgb')

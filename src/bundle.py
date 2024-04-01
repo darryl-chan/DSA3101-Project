@@ -48,10 +48,10 @@ class Bundle:
         
         percentage_change_in_price = (initial_price - price) / initial_price
         popularity_percentage_after_dampen = popularity_percentage * Bundle.PERCENTAGE_POPULARITY_DAMPEN
-        print(f"popularity percentage {popularity_percentage_after_dampen}, initial_customers  = {initial_customers}")
+        #print(f"popularity percentage {popularity_percentage_after_dampen}, initial_customers  = {initial_customers}")
         return price * (initial_customers * percentage_change_in_price * popularity_percentage_after_dampen + 1)
     
-    def get_best_revenue(self):
+    def get_best_price(self):
         
         best_price = scipy.optimize.fmin(lambda x: -self.revenue_for_price(x), 0)
         return best_price[0]
@@ -72,7 +72,7 @@ class Bundle:
     def bundle_info(self):
         dic = {
             "name" : self.get_name(),
-            "price" : self.get_best_revenue()
+            "price" : self.get_best_price()
         }
         
         return dic

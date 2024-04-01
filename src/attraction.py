@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 class Attraction:
-    # Class attributes (optional)
+    # Class attributes
     REVIEW_TO_CUSTOMER_MULTIPLIER = 455
     MIN_REVIEW_SCORE = 4
     MAX_REVIEW_SCORE = 4.8

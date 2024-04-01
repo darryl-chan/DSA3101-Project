@@ -3,23 +3,19 @@ import pandas as pd
 import os
 
 from attraction import Attraction
+from bundle import Bundle
 
 cwd = os.getcwd()
 
 data_dir = os.path.join(cwd, 'data')
 
 def get_popularity():
-    dic = {
-        "name" : ["Singapore cable car", "Sea aquarium"],
-        "csv_name" : ["cablecar.csv", "sea_aquarium.csv"],
-        "cost" : [28, 30]
-    }
     
-    df = pd.DataFrame(dic)
+    df = pd.read_csv(data_dir + f"/attractions.csv")
     
-    names = np.array(df['name'])
-    csv_names = np.array(df['csv_name'])
-    costs = np.array(df['cost'])
+    names = np.array(df['Name'])
+    csv_names = np.array(df['CSV name'])
+    costs = np.array(df['Price'])
     
     lst_to_store_json = []
     
@@ -28,6 +24,7 @@ def get_popularity():
         csv = csv_names[i]
         cost = costs[i]
         
+                
         df_of_attraction = pd.read_csv(data_dir + f"/{csv}")
         
         curr_attraction = Attraction(name, cost, df_of_attraction)
@@ -36,5 +33,76 @@ def get_popularity():
     
     return lst_to_store_json
 
+def get_bundle_2():
+    
+    df = pd.read_csv(data_dir + f"/attractions.csv")
+    
+    names = np.array(df['Name'])
+    csv_names = np.array(df['CSV name'])
+    costs = np.array(df['Price'])
+    
+    lst_to_store_json = []
+    
+    for i in range(len(names)):
+        
+        for j in range(i+1, len(names)):
+            lst_of_attraction = []
+            lst_to_iterate = [i, j]
+            
+            for index in lst_to_iterate:
+                
+                name = names[index]
+                csv = csv_names[index]
+                cost = costs[index]
+                
+                df_of_attraction = pd.read_csv(data_dir + f"/{csv}")
+                curr_attraction = Attraction(name, cost, df_of_attraction)
+                lst_of_attraction.append(curr_attraction)
 
-print(get_popularity())
+            
+            bundle = Bundle(lst_of_attraction)
+
+            lst_to_store_json.append(bundle.bundle_info())
+    
+    return lst_to_store_json
+
+def get_bundle_3():
+    
+    df = pd.read_csv(data_dir + f"/attractions.csv")
+    
+    names = np.array(df['Name'])
+    csv_names = np.array(df['CSV name'])
+    costs = np.array(df['Price'])
+    
+    lst_to_store_json = []
+    
+    for i in range(len(names)):
+        
+        for j in range(i+1, len(names)):
+            
+            for k in range(j+1, len(names)):
+                lst_of_attraction = []
+                lst_to_iterate = [i, j, k]
+                
+                for index in lst_to_iterate:
+                    
+                    name = names[index]
+                    csv = csv_names[index]
+                    cost = costs[index]
+                    
+                    df_of_attraction = pd.read_csv(data_dir + f"/{csv}")
+                    curr_attraction = Attraction(name, cost, df_of_attraction)
+                    lst_of_attraction.append(curr_attraction)
+
+                
+                bundle = Bundle(lst_of_attraction)
+
+                lst_to_store_json.append(bundle.bundle_info())
+    
+    return lst_to_store_json
+            
+
+print(get_bundle_3())
+            
+            
+            

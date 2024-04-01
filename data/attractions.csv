@@ -1,7 +1,7 @@
 Name,CSV name,Under MFLG?,Price
 Singapore cable car,cablecar.csv,Yes,33
 Sky Helix Sentosa,sky_helix_sentosa.csv,Yes,20
-Wings of Time,wing_of_time.csv,Yes,19
+Wings of Time,wings_of_time.csv,Yes,19
 Sea Aquarium,sea_aquarium.csv,No,33
 Adventure Cove,adv_cove.csv,No,32
 Singapore Flyer,singapore_flyer.csv,No,40

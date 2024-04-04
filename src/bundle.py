@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 
 class Bundle:
     
-    PERCENTAGE_OF_PEOPLE_BUYING_BUNDLE = 0.1
-    PERCENTAGE_POPULARITY_DAMPEN = 1
+    PERCENTAGE_OF_PEOPLE_BUYING_BUNDLE = 0.3
+    PERCENTAGE_POPULARITY_DAMPEN = 2.5
     
     def __init__(self, list_of_attractions):
         self.list_of_attractions = list_of_attractions
@@ -49,7 +49,7 @@ class Bundle:
         percentage_change_in_price = (initial_price - price) / initial_price
         popularity_percentage_after_dampen = popularity_percentage * Bundle.PERCENTAGE_POPULARITY_DAMPEN
         #print(f"popularity percentage {popularity_percentage_after_dampen}, initial_customers  = {initial_customers}")
-        return price * (initial_customers * percentage_change_in_price * popularity_percentage_after_dampen + 1)
+        return (price) * (initial_customers * (percentage_change_in_price * popularity_percentage_after_dampen + 1))
     
     def get_best_price(self):
         

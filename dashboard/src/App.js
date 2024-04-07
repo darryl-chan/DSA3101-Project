@@ -5,6 +5,7 @@ import Sidebar from "./scenes/global/Sidebar";
 import Overview from "./scenes/overview";
 import EBP from "./scenes/ebp";
 import GBB from "./scenes/gbb";
+import Popularity from "./scenes/popularity";
 import Team from "./scenes/team";
 import Invoices from "./scenes/invoices";
 import Contacts from "./scenes/contacts";
@@ -37,6 +38,7 @@ function App() {
               <Route path="/team" element={<Team />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/invoices" element={<Invoices />} />
+              <Route path="/popularity" element={<Popularity />} />
               {/* <Route path="/form" element={<Form />} /> */}
               <Route path="/bar" element={<Bar />} />
               <Route path="/pie" element={<Pie />} />

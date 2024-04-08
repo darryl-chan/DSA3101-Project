@@ -5,11 +5,11 @@ import LineChart from "../../components/LineChart";
 const EBP = () => {
   return (
     <Box m="20px">
-      <Header title="Line Chart" subtitle="Simple Line Chart" />
+      <Header title="Explore Bundle Prices" subtitle="Graph of Revenue against Price />
       <Box height="75vh">
         <LineChart />
       </Box>
-    </Box>
+    </Box>n
   );
 };
 

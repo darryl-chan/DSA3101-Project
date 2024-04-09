@@ -9,10 +9,20 @@ import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
 import LineChart from "../../components/LineChart";
 import StatBox from "../../components/StatBox";
+import * as React from 'react';
+import Multiselect from 'multiselect-react-dropdown';
 
 const EBP = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const options = [
+    { label: 'Fruit', value: 'fruit' },
+    { label: 'Vegetable', value: 'vegetable' },
+    { label: 'Meat', value: 'meat' }];
+    const [value, setValue] = React.useState('fruit');
+    const handleChange = (event) => {
+        setValue(event.target.value);
+    };
 
   return (
     <Box m="20px">
@@ -23,13 +33,37 @@ const EBP = () => {
       </Box>
 
       <div>
-        <select>
-            <option value="scc">Singapore Cable Car</option>
-            <option value="wot">Wings Of Time</option>
-            <option value="shs">SkyHelix Sentosa</option>
-            <option value="cbb">Central Beach Bazaar</option>
-        </select>
-      </div>
+        <label>
+            What do we eat?
+            <Multiselect
+                displayValue="key"
+                onKeyPressFn={function noRefCheck() {}}
+                onRemove={function noRefCheck() {}}
+                onSearch={function noRefCheck() {}}
+                onSelect={function noRefCheck() {}}
+                options={ [
+                    {
+                        cat: 'Group 1'
+                        key: 'Option 1'
+                    },
+                    {
+                        cat: 'Group 1'
+                        key: 'Option 2'
+                    },
+                    {
+                        cat: 'Group 2'
+                        key: 'Option 3'
+                    },
+                    {
+                        cat: 'Group 2'
+                        key: 'Option 4'
+                    }
+                    
+                    
+                ]}
+            />
+        </label>
+    </div>
 
       {/* GRID & CHARTS */}
       <Box

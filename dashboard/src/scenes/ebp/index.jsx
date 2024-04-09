@@ -1,6 +1,5 @@
 import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
@@ -15,14 +14,6 @@ import Multiselect from 'multiselect-react-dropdown';
 const EBP = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const options = [
-    { label: 'Fruit', value: 'fruit' },
-    { label: 'Vegetable', value: 'vegetable' },
-    { label: 'Meat', value: 'meat' }];
-    const [value, setValue] = React.useState('fruit');
-    const handleChange = (event) => {
-        setValue(event.target.value);
-    };
 
   return (
     <Box m="20px">
@@ -34,7 +25,7 @@ const EBP = () => {
 
       <div>
         <label>
-            What do we eat?
+            Customize Bundle
             <Multiselect
                 displayValue="key"
                 onKeyPressFn={function noRefCheck() {}}
@@ -43,23 +34,42 @@ const EBP = () => {
                 onSelect={function noRefCheck() {}}
                 options={ [
                     {
-                        cat: 'Group 1'
-                        key: 'Option 1'
+                        cat: 'MFLG',
+                        key: 'Singapore Cable Car'
                     },
                     {
-                        cat: 'Group 1'
-                        key: 'Option 2'
+                        cat: 'MFLG',
+                        key: 'SkyHelix Sentosa'
                     },
                     {
-                        cat: 'Group 2'
-                        key: 'Option 3'
+                        cat: 'MFLG',
+                        key: 'Central Beach Bazaar'
                     },
                     {
-                        cat: 'Group 2'
-                        key: 'Option 4'
+                        cat: 'MFLG',
+                        key: 'Wings Of Time'
+                    },     
+                    {
+                        cat: 'Competitor',
+                        key: 'Sea Aquarium'
+                    },
+                    {
+                        cat: 'Competitor',
+                        key: 'Adventure Cove'
+                    },
+                    {
+                        cat: 'Competitor',
+                        key: 'Singapore Flyer'
+                    },
+                    {
+                        cat: 'Competitor',
+                        key: 'Art Science Museum'
+                    },
+                    {
+                        cat: 'Competitor',
+                        key: 'iFly'
                     }
-                    
-                    
+
                 ]}
             />
         </label>

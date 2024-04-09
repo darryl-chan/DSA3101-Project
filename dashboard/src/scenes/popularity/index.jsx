@@ -1,7 +1,9 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataInvoices } from "../../data/mockData";
+// import { mockDataInvoices } from "../../data/mockData";
+import { mockDataPopularity } from "../../data/mockData";
+
 import Header from "../../components/Header";
 
 const Popularity = () => {
@@ -11,40 +13,52 @@ const Popularity = () => {
     { field: "id", headerName: "ID" },
     {
       field: "name",
-      headerName: "Name",
+      headerName: "Name of Attraction",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
-      field: "phone",
-      headerName: "Phone Number",
+      field: "category",
+      headerName: "Category",
       flex: 1,
     },
     {
-      field: "email",
-      headerName: "Email",
+      field: "rating",
+      headerName: "Popularity Rating",
       flex: 1,
     },
     {
-      field: "cost",
-      headerName: "Cost",
+      field: "status",
+      headerName: "Degree of Popularity",
+      flex: 1,
+      
+    },
+    {
+      field: "customers",
+      headerName: "Estimated Number of Customers",
       flex: 1,
       renderCell: (params) => (
         <Typography color={colors.greenAccent[500]}>
-          ${params.row.cost}
+          {params.row.customers}/yr
         </Typography>
       ),
+      
     },
     {
-      field: "date",
-      headerName: "Date",
+      field: "revenue",
+      headerName: "Estimated Revenue",
       flex: 1,
+      renderCell: (params) => (
+        <Typography color={colors.greenAccent[500]}>
+          ${params.row.revenue}/yr
+        </Typography>
+      ),
     },
   ];
 
   return (
     <Box m="20px">
-      <Header title="INVOICES" subtitle="List of Invoice Balances" />
+      <Header title="POPULARITY ANALYSIS" subtitle="List of popularity rankings" />
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -74,7 +88,7 @@ const Popularity = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={mockDataInvoices} columns={columns} />
+        <DataGrid checkboxSelection rows={mockDataPopularity} columns={columns} />
       </Box>
     </Box>
   );

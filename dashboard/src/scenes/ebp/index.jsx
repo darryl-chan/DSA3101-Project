@@ -1,16 +1,26 @@
-import { Box } from "@mui/material";
-import Header from "../../components/Header";
+import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+import { tokens } from "../../theme";
 import LineChart from "../../components/LineChart";
 
-const EBP = () => {
-  return (
-    <Box m="20px">
-      <Header title="Explore Bundle Prices" subtitle="Graph of Revenue against Price" />
-      <Box height="75vh">
-        <LineChart />
-      </Box>
-    </Box>
-  );
-};
+const ebp = () => {
+    const theme = useTheme()
+    const colors = tokens(theme.palette.mode);
 
-export default EBP;
+    return(
+        <Box m="20px">
+            {/* HEADER */}
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Header title="Explore Bundle Prices" subtitle="Bundle Pricing" />
+            </Box>
+        </Box>
+
+        {/* ROW 1 */}
+        <Box> 
+            gridColumn="span 3"
+            backgroundColor
+        </Box>
+        
+
+
+    )
+}

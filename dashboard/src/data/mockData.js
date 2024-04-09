@@ -266,6 +266,81 @@ export const mockDataInvoices = [
   },
 ];
 
+export const mockDataPopularity = [
+  {
+    id: 1,
+    name: "Wings of Time",
+    category: "MFLG",
+    rating: "6.0",
+    status: "Moderate",
+    customers: "50,000",
+    revenue: "200,000",
+  },
+  {
+    id: 2,
+    name: "Singapore Cable Car",
+    category: "MFLG",
+    rating: "8.0",
+    status: "High",
+    customers: "500,000",
+    revenue: "3,000,000",
+  },
+  {
+    id: 3,
+    name: "Sky Helix Sentosa",
+    category: "MFLG",
+    rating: "7.1",
+    status: "High",
+    customers: "300,000",
+    revenue: "2,000,000",
+  },
+  {
+    id: 4,
+    name: "Central Beach Bazaar",
+    category: "MFLG",
+    rating: "7.7",
+    status: "High",
+    customers: "500,000",
+    revenue: "1,000,000",
+  },
+  {
+    id: 5,
+    name: "Sea Aquarium",
+    category: "Competitor",
+    rating: "8.7",
+    status: "High",
+    customers: "1,000,000",
+    revenue: "2,000,000",
+  },
+  {
+    id: 6,
+    name: "Adventure Cove",
+    category: "Competitor",
+    rating: "8.0",
+    status: "High",
+    customers: "900,000",
+    revenue: "2,000,000",
+  },
+  {
+    id: 7,
+    name: "Art Science Museum",
+    category: "Competitor",
+    rating: "6.5",
+    status: "Moderate",
+    customers: "200,000",
+    revenue: "600,000",
+  },
+  {
+    id: 8,
+    name: "iFly",
+    category: "Competitor",
+    rating: "6.7",
+    status: "Moderate",
+    customers: "100,000",
+    revenue: "1,500,000",
+  },
+];
+
 export const mockTransactions = [
   {
     txId: "01e4dsa",
@@ -316,6 +391,7 @@ export const mockTransactions = [
     cost: "133.45",
   },
 ];
+
 
 export const mockBarData = [
   {

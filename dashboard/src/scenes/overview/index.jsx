@@ -12,6 +12,8 @@ import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
+// import { Link } from 'react-router-dom';
+
 
 const Overview = () => {
   const theme = useTheme();
@@ -47,6 +49,7 @@ const Overview = () => {
         gap="20px"
       >
         {/* ROW 1 */}
+        
         <Box
           gridColumn="span 3"
           backgroundColor={colors.primary[400]}
@@ -54,6 +57,7 @@ const Overview = () => {
           alignItems="center"
           justifyContent="center"
         >
+          {/* <Link to="/popularity" style={{ textDecoration: 'none' }}> */}
           <StatBox
             title="12,361"
             subtitle="Emails Sent"
@@ -65,6 +69,7 @@ const Overview = () => {
               />
             }
           />
+           {/* </Link> */}
         </Box>
         <Box
           gridColumn="span 3"

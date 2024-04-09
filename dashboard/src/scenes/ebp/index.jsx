@@ -148,6 +148,8 @@ const EBP = () => {
             <LineChart isDashboard={true} />
           </Box>
         </Box>
+    </Box>
+    </Box>
   );
 };
 

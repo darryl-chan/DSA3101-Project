@@ -22,6 +22,15 @@ const EBP = () => {
 
       </Box>
 
+      <div>
+        <select>
+            <option value="scc">Singapore Cable Car</option>
+            <option value="wot">Wings Of Time</option>
+            <option value="shs">SkyHelix Sentosa</option>
+            <option value="cbb">Central Beach Bazaar</option>
+        </select>
+      </div>
+
       {/* GRID & CHARTS */}
       <Box
         display="grid"
@@ -39,7 +48,7 @@ const EBP = () => {
         >
           <StatBox
             title="12,361"
-            subtitle="Emails Sent"
+            subtitle="Total Revenue of Bundle"
             progress="0.75"
             increase="+14%"
             icon={
@@ -58,7 +67,7 @@ const EBP = () => {
         >
           <StatBox
             title="431,225"
-            subtitle="Sales Obtained"
+            subtitle="MFLG's Share of Revenue"
             progress="0.50"
             increase="+21%"
             icon={
@@ -77,7 +86,7 @@ const EBP = () => {
         >
           <StatBox
             title="32,441"
-            subtitle="New Clients"
+            subtitle="Percentage Change in MFLG's Revenue"
             progress="0.30"
             increase="+5%"
             icon={
@@ -126,7 +135,7 @@ const EBP = () => {
                 fontWeight="600"
                 color={colors.grey[100]}
               >
-                Revenue Generated
+                Revenue of Bundle
               </Typography>
               <Typography
                 variant="h3"

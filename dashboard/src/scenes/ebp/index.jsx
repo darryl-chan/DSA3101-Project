@@ -1,19 +1,123 @@
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Button, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
-import LineChart from "../../components/LineChart";
 import StatBox from "../../components/StatBox";
-import * as React from 'react';
-import Multiselect from 'multiselect-react-dropdown';
+import Multiselect from 'multiselect-react-dropdown'; // may need to npm install multiselect-react-dropdown
+import { useState } from "react";
+import EmptyChart from "../../components/EmptyChart";
+import { useNavigate } from 'react-router-dom';
 
 const EBP = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
+
+  const [selectedValues, setSelectedValues] = useState([]);
+  const options = [
+    { cat: 'MFLG', key: 'Singapore Cable Car'},
+    { cat: 'MFLG', key: 'SkyHelix Sentosa'},
+    { cat: 'MFLG', key: 'Central Beach Bazaar'},
+    { cat: 'MFLG', key: 'Wings Of Time'},
+    { cat: 'Competitor', key: 'Sea Aquarium'},
+    { cat: 'Competitor', key: 'Adventure Cove'},
+    { cat: 'Competitor', key: 'Singapore Flyer'},
+    { cat: 'Competitor', key: 'iFly'}
+  ];
+  const onSelect = (selectedList, selectedItem) => {
+    if (1 < selectedValues.length <= 3) {
+        setSelectedValues(selectedList);
+    }
+  };
+  const onRemove = (selectedList, removedItem) => {
+    setSelectedValues(selectedList);
+  };
+  const handleSubmit = () => {
+    console.log('Selected values:', selectedValues);
+    const selectedKeys = selectedValues.map(item => item.key);
+    if selectedKeys.includes('Singapore Cable Car') {
+      if selectedKeys.includes('SkyHelix Sentosa') {
+        navigate("/bundle1"); // Use the string path, not the component
+      }
+      else if selectedKeys.includes('Central Beach Bazaar') {
+        navigate("/bundle2");
+      }
+      else if selectedKeys.includes('Wings Of Time') {
+        navigate("/bundle3");
+      }
+      else if selectedKeys.includes("Sea Aquarium") {
+        navigate("/bundle4");
+      }     
+      else if selectedKeys.includes("Adventure Cove") {
+        navigate("/bundle5");
+      }
+      else if selectedKeys.includes("Singapore Flyer") {
+        navigate("/bundle6");
+      }
+      else if selectedKeys.includes("iFly") {
+        navigate("/bundle7");
+      }
+    }
+    else if selectedKeys.includes('SkyHelix Sentosa') {
+      if selectedKeys.includes("Central Beach Bazaar") {
+        navigate("/bundle8");
+      }
+      else if selectedKeys.includes("Wings Of Time") {
+        navigate("/bundle9");
+      }
+      else if selectedKeys.includes("Sea Aquarium") {
+        navigate("/bundle10");
+      }
+      else if selectedKeys.includes("Adventure Cove") {
+        navigate("/bundle11");
+      }
+      else if selectedKeys.includes("Singapore Flyer") {
+        navigate("/bundle12");
+      }
+      else if selectedKeys.includes("iFly") {
+        navigate("/bundle13");
+      }
+    }
+    else if selectedKeys.includes("Central Beach Bazaar") {
+      if selectedKeys.includes("Wings Of Time") {
+        navigate("/bundle14");
+      }
+      else if selectedKeys.includes("Sea Aquarium") {
+        navigate("/bundle15");
+      }
+      else if selectedKeys.includes("Adventure Cove") {
+        navigate("/bundle16");
+      }
+      else if selectedKeys.includes("Singapore Flyer") {
+        navigate("/bundle17");
+      }
+      else if selectedKeys.includes("iFly") {
+        navigate("/bundle18");
+      }
+    }
+    else if selectedKeys.includes("Wings Of Time") {
+      if selectedKeys.includes("Sea Aquarium") {
+        navigate("/bundle19");
+      }
+      else if selectedKeys.includes("Adventure Cove") {
+        navigate("/bundle20");
+      }
+      else if selectedKeys.includes("Singapore Flyer") {
+        navigate("/bundle21");
+      }
+      else if selectedKeys.includes("iFly") {
+        navigate("/bundle22");
+      }
+    }
+    else {
+      console.log("Bundle must be with MFLG's attraction.")
+    }
+
+  };
+
 
   return (
     <Box m="20px">
@@ -23,57 +127,34 @@ const EBP = () => {
 
       </Box>
 
+      {/* Multiselect Component*/}
       <div>
-        <label>
-            Customize Bundle
+      <Typography variant="h5">
+            Customize Bundle</Typography>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
             <Multiselect
                 displayValue="key"
-                onKeyPressFn={function noRefCheck() {}}
-                onRemove={function noRefCheck() {}}
-                onSearch={function noRefCheck() {}}
-                onSelect={function noRefCheck() {}}
-                options={ [
-                    {
-                        cat: 'MFLG',
-                        key: 'Singapore Cable Car'
-                    },
-                    {
-                        cat: 'MFLG',
-                        key: 'SkyHelix Sentosa'
-                    },
-                    {
-                        cat: 'MFLG',
-                        key: 'Central Beach Bazaar'
-                    },
-                    {
-                        cat: 'MFLG',
-                        key: 'Wings Of Time'
-                    },     
-                    {
-                        cat: 'Competitor',
-                        key: 'Sea Aquarium'
-                    },
-                    {
-                        cat: 'Competitor',
-                        key: 'Adventure Cove'
-                    },
-                    {
-                        cat: 'Competitor',
-                        key: 'Singapore Flyer'
-                    },
-                    {
-                        cat: 'Competitor',
-                        key: 'Art Science Museum'
-                    },
-                    {
-                        cat: 'Competitor',
-                        key: 'iFly'
+                onSelect={onSelect}
+                onRemove={onRemove}                
+                options={selectedValues.length === 3 ? [] : options}
+                selectedValues={selectedValues}
+                isObject={true}                
+                style={ {
+                    option: {
+                        color: colors.blueAccent[700]
                     }
+                }}
 
-                ]}
             />
-        </label>
-    </div>
+            <Button 
+              variant="contained" 
+              color="primary"
+              style={ {backgroundColor: colors.blueAccent[700]} } 
+              onClick={handleSubmit}>
+              Bundle!
+            </Button>
+          </div>
+      </div>
 
       {/* GRID & CHARTS */}
       <Box
@@ -91,10 +172,10 @@ const EBP = () => {
           justifyContent="center"
         >
           <StatBox
-            title="12,361"
+            title="--"
             subtitle="Total Revenue of Bundle"
-            progress="0.75"
-            increase="+14%"
+            progress="0"
+            increase="--%"
             icon={
               <EmailIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -110,10 +191,10 @@ const EBP = () => {
           justifyContent="center"
         >
           <StatBox
-            title="431,225"
+            title="--"
             subtitle="MFLG's Share of Revenue"
-            progress="0.50"
-            increase="+21%"
+            progress="0"
+            increase="--%"
             icon={
               <PointOfSaleIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -129,10 +210,10 @@ const EBP = () => {
           justifyContent="center"
         >
           <StatBox
-            title="32,441"
+            title="--"
             subtitle="Percentage Change in MFLG's Revenue"
-            progress="0.30"
-            increase="+5%"
+            progress="0"
+            increase="--%"
             icon={
               <PersonAddIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -148,10 +229,10 @@ const EBP = () => {
           justifyContent="center"
         >
           <StatBox
-            title="1,325,134"
+            title="--"
             subtitle="Traffic Received"
-            progress="0.80"
-            increase="+43%"
+            progress="0"
+            increase="--%"
             icon={
               <TrafficIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -186,19 +267,12 @@ const EBP = () => {
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
               >
-                $59,342.32
+                $--
               </Typography>
-            </Box>
-            <Box>
-              <IconButton>
-                <DownloadOutlinedIcon
-                  sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
-                />
-              </IconButton>
             </Box>
           </Box>
           <Box height="250px" m="-20px 0 0 0">
-            <LineChart isDashboard={true} />
+            <EmptyChart isDashboard={true} />
           </Box>
         </Box>
     </Box>

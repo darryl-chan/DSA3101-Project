@@ -46,7 +46,7 @@ const Sidebar = () => {
 
   return (
     <Box
-      sx={{
+      sx={{        
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
         },
@@ -110,10 +110,10 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  YH
+                  User
                 </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
-                  VP Fancy Admin
+                <Typography variant="h5" color={colors.blueAccent[500]}>
+                  MFLG Admin
                 </Typography>
               </Box>
             </Box>
@@ -158,7 +158,7 @@ const Sidebar = () => {
               Data
             </Typography>
             <Item
-              title="Popularity ranking"
+              title="Popularity Ratings"
               to="/popularity"
               icon={<ThumbUpOffAltIcon />}
               selected={selected}
@@ -220,7 +220,7 @@ const Sidebar = () => {
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              Charts
+              To remove later
             </Typography>
             <Item
               title="Bar Chart"

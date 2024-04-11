@@ -1,16 +1,14 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-// import { mockDataInvoices } from "../../data/mockData";
 import { mockDataPopularity } from "../../data/mockData";
-
 import Header from "../../components/Header";
 
 const Popularity = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const columns = [
-    { field: "id", headerName: "ID" },
+  
+  const columns = [    
     {
       field: "name",
       headerName: "Name of Attraction",
@@ -20,37 +18,35 @@ const Popularity = () => {
     {
       field: "category",
       headerName: "Category",
-      flex: 1,
+      flex: 0.8,
+    },
+        {
+      field: "revenue",
+      headerName: "Monthly Revenue Estimate ($/month)",
+      flex: 1.2,
+    },
+    {
+      field: "customers",
+      headerName: "Monthly Customer Estimate",
+      flex: 1,      
     },
     {
       field: "rating",
       headerName: "Popularity Rating",
       flex: 1,
+      renderCell: (params) => (
+        <Typography color={colors.greenAccent[300]}>
+          {params.row.rating}
+        </Typography>
+      ),
     },
     {
       field: "status",
       headerName: "Degree of Popularity",
       flex: 1,
-      
-    },
-    {
-      field: "customers",
-      headerName: "Estimated Number of Customers",
-      flex: 1,
       renderCell: (params) => (
-        <Typography color={colors.greenAccent[500]}>
-          {params.row.customers}/yr
-        </Typography>
-      ),
-      
-    },
-    {
-      field: "revenue",
-      headerName: "Estimated Revenue",
-      flex: 1,
-      renderCell: (params) => (
-        <Typography color={colors.greenAccent[500]}>
-          ${params.row.revenue}/yr
+        <Typography color={colors.greenAccent[300]}>
+          {params.row.status}
         </Typography>
       ),
     },
@@ -58,7 +54,7 @@ const Popularity = () => {
 
   return (
     <Box m="20px">
-      <Header title="POPULARITY ANALYSIS" subtitle="List of popularity rankings" />
+      <Header title="POPULARITY ANALYSIS" subtitle={<Typography color={colors.greenAccent[100]}>Table of attractions</Typography>} />
       <Box
         m="40px 0 0 0"
         height="75vh"

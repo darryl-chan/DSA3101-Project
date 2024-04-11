@@ -39,7 +39,7 @@ class Attraction:
 ##################################### Monthly peak functions #####################################
     
     def get_peak_customer_per_month(self):
-        self.get_customer_per_year() * Attraction.PEAK_MONTH_MULTIPLER
+        return self.get_customer_per_year() * Attraction.PEAK_MONTH_MULTIPLER
         
     def get_peak_revenue_per_month(self):
         return self.get_peak_customer_per_month() * self.cost
@@ -47,7 +47,7 @@ class Attraction:
 ##################################### Monthly non peak functions #####################################
     
     def get_non_peak_customer_per_month(self):
-        self.get_customer_per_year() * Attraction.NON_PEAK_MONTH_MULTIPLIER
+        return self.get_customer_per_year() * Attraction.NON_PEAK_MONTH_MULTIPLIER
         
     def get_non_peak_revenue_per_month(self):
         return self.get_non_peak_customer_per_month() * self.cost

@@ -181,6 +181,9 @@ const Overview = () => {
           />
           </Box> */}
 
+        
+        
+
         {/* ROW 2 */}
         {/*}
         <Box
@@ -300,7 +303,7 @@ const Overview = () => {
           backgroundColor={colors.primary[400]}
           p="40px"
         >
-          <Header title={<Typography fontSize={25} fontWeight={"bold"} >Top Attractions by Popularity Ranking</Typography>} />
+          <Header title={<Typography fontSize={25} fontWeight={"bold"} >Top Attractions by Popularity Rating</Typography>} />
           
           
           <DataGrid rows={top3Rows} columns={columns} 

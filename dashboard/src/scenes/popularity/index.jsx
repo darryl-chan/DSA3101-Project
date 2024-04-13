@@ -1,13 +1,61 @@
+import { useState, useEffect } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataPopularity } from "../../data/mockData";
+// import { mockDataPopularity } from "../../data/mockData";
 import Header from "../../components/Header";
+import axios from "axios"; // Import Axios library
+
 
 const Popularity = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  
+
+
+  // // Define state to store fetched data
+  // const [popularityData, setPopularityData] = useState([]);
+
+  // // Function to fetch data from Flask backend
+  // const fetchPopularityData = async () => {
+  //   try {
+  //     const response = await axios.get("http://127.0.0.1:5000/popularity"); // Make GET request to Flask route
+  //     setPopularityData(response.data); // Update state with fetched data
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+  // // Fetch data when component mounts
+  // useEffect(() => {
+  //   fetchPopularityData();
+  // }, []);
+
+  // Define state to store fetched data
+  const [popularityData, setPopularityData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Function to fetch data from Flask backend
+  const fetchPopularityData = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/popularity"); // Make GET request to Flask route
+      const formattedData = response.data.map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }));
+      setPopularityData(formattedData); // Update state with fetched data
+      setLoading(false); // Set loading to false after data is fetched
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false); // Set loading to false in case of error
+    }
+  };
+
+  // Fetch data when component mounts
+  useEffect(() => {
+    fetchPopularityData();
+  }, []);
+
+
   const columns = [    
     {
       field: "name",
@@ -15,12 +63,12 @@ const Popularity = () => {
       flex: 1,
       cellClassName: "name-column--cell",
     },
+    // {
+    //   field: "category",
+    //   headerName: "Category",
+    //   flex: 0.8,
+    // },
     {
-      field: "category",
-      headerName: "Category",
-      flex: 0.8,
-    },
-        {
       field: "revenue",
       headerName: "Monthly Revenue Estimate ($/month)",
       flex: 1.2,
@@ -41,7 +89,7 @@ const Popularity = () => {
       ),
     },
     {
-      field: "status",
+      field: "pop",
       headerName: "Degree of Popularity",
       flex: 1,
       renderCell: (params) => (
@@ -51,6 +99,11 @@ const Popularity = () => {
       ),
     },
   ];
+
+  // Render loading state if data is still loading
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Box m="20px">
@@ -84,7 +137,8 @@ const Popularity = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={mockDataPopularity} columns={columns} />
+        {/* <DataGrid checkboxSelection rows={mockDataPopularity} columns={columns} /> */}
+        <DataGrid checkboxSelection rows={popularityData} columns={columns} />
       </Box>
     </Box>
   );

@@ -11,17 +11,17 @@ def index():
 
 @app.route("/popularity", methods=["GET", "POST"])
 def go_popularity():
-    data = request.json()
-    print(data)
-    return jsonify({2:data})
-    # popularity_data = get_popularity()
-    # return jsonify(popularity_data)
+
+
+    popularity_data = get_popularity()
+    return jsonify(popularity_data)
 
 @app.route("/bundle", methods=["GET", "POST"])
 def go_bundle():
-    data = request
+    data = request.json
+    
     print(data)
-    return jsonify({2:data})
+    return jsonify({2:1})
     # bundle = get_bundle_2()
 
     # return jsonify(bundle)

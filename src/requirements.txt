@@ -1,1 +1,5 @@
-pymongo
+numpy
+pandas
+scipy
+matplotlib
+flask

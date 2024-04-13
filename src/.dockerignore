@@ -1,6 +1,6 @@
-./node_modules
 Dockerfile
 .dockerignore
 docker-compose.yaml
 ./dashboard
-requirements.txt
+./documentation
+./webscrape

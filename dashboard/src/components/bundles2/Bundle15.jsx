@@ -25,7 +25,7 @@ const Bundle15 = () => {
       <BundleBar />
 
     <Box m="20px">
-      <Header title="Bundle: Cenrtal Beach Bazaar & Sea Aquarium" subtitle="Revenue of Bundle" />
+      <Header title="Bundle: Central Beach Bazaar & Sea Aquarium" subtitle="Revenue of Bundle" />
 
           {/* GRID & CHARTS */}
     <Box

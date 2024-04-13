@@ -296,13 +296,16 @@ const Overview = () => {
         
         <Box
           gridColumn="span 12"
-          gridRow="span 2"
+          gridRow="span 3"
           backgroundColor={colors.primary[400]}
           p="40px"
         >
-          <Header title="Top Attractions by Popularity Ranking"/>
+          <Header title={<Typography fontSize={25} fontWeight={"bold"} >Top Attractions by Popularity Ranking</Typography>} />
+          
           
           <DataGrid rows={top3Rows} columns={columns} 
+          autoHeight={true}
+          hideFooter={true}
           sx={{
             "& .MuiDataGrid-root": {
               border: "none",

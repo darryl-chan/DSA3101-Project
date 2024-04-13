@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from controller import get_popularity, get_bundle_2, get_bundle_3
+from controller import get_popularity, get_bundle_2, get_bundle_3, bundle_2_attraction
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -18,13 +18,14 @@ def go_popularity():
 
 @app.route("/bundle", methods=["GET", "POST"])
 def go_bundle():
-    data = request.json
+    data = request.json ## [Attraction A, Attraction B, Attraction C]
     
-    print(data)
-    return jsonify({2:1})
-    # bundle = get_bundle_2()
+    if len(data) == 2:
+        bundle = bundle_2_attraction(data)
+    elif len(data) == 3:
+        bundle = bundle_3_attraction(data)
 
-    # return jsonify(bundle)
+    return jsonify(bundle)
 
 if __name__ == '__main__':
     app.run(debug=True)

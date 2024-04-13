@@ -43,6 +43,7 @@ import Bundle22 from "./components/bundles2/Bundle22";
 
 
 
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -92,6 +93,7 @@ function App() {
               <Route path="/bundle20" element={<Bundle20 />} />
               <Route path="/bundle21" element={<Bundle21 />} />
               <Route path="/bundle22" element={<Bundle22 />} />
+              <Route path="/bundle23" element={<Bundle23 />} />
 
             </Routes>
           </main>

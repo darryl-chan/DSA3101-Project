@@ -131,8 +131,18 @@ const BundleBar = () => {
               }
         } else if (selectedKeys.length === 3) {
             // bundles of 3
+            if (selectedKeys.includes("Singapore Cable Car")) {
+              if (selectedKeys.includes("SkyHelix Sentosa")) {
+                if (selectedKeys.includes("Central Beach Bazaar")) {
+                  navigate("/bundle23");
+                }
+              }
+        } else {
+          setSnackbarMessage("Bundle must have at least 1 MFLG attraction.");
+          setOpenSnackbar(true);
         }
-      };
+      }
+    };
 
     return (
       <Box>

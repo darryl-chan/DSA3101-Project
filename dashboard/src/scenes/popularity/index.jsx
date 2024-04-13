@@ -12,24 +12,6 @@ const Popularity = () => {
   const colors = tokens(theme.palette.mode);
 
 
-  // // Define state to store fetched data
-  // const [popularityData, setPopularityData] = useState([]);
-
-  // // Function to fetch data from Flask backend
-  // const fetchPopularityData = async () => {
-  //   try {
-  //     const response = await axios.get("http://127.0.0.1:5000/popularity"); // Make GET request to Flask route
-  //     setPopularityData(response.data); // Update state with fetched data
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-
-  // // Fetch data when component mounts
-  // useEffect(() => {
-  //   fetchPopularityData();
-  // }, []);
-
   // Define state to store fetched data
   const [popularityData, setPopularityData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -55,6 +37,22 @@ const Popularity = () => {
     fetchPopularityData();
   }, []);
 
+  // Function to round down a number
+  const roundDown = (num) => {
+    return Math.floor(num); // Use Math.floor() to round down
+  };
+
+  // Function to round to one decimal place
+  const roundToOneDecimalPlace = (num) => {
+    return Math.floor(num * 10) / 10; // Round to one decimal place
+  };
+
+  // Function to round to two decimal places
+  const roundToTwoDecimalPlaces = (num) => {
+    return num.toFixed(2); // Use toFixed(2) to round to two decimal places
+  };
+
+  
 
   const columns = [    
     {
@@ -72,11 +70,21 @@ const Popularity = () => {
       field: "revenue",
       headerName: "Monthly Revenue Estimate ($/month)",
       flex: 1.2,
+      renderCell: (params) => (
+        <Typography>
+          {roundToTwoDecimalPlaces(params.row.revenue)}
+        </Typography>
+      ),
     },
     {
       field: "customers",
       headerName: "Monthly Customer Estimate",
-      flex: 1,      
+      flex: 1,
+      renderCell: (params) => (
+        <Typography>
+          {roundDown(params.row.customers)}
+        </Typography>
+      ),      
     },
     {
       field: "rating",
@@ -84,7 +92,7 @@ const Popularity = () => {
       flex: 1,
       renderCell: (params) => (
         <Typography color={colors.greenAccent[300]}>
-          {params.row.rating}
+          {roundToOneDecimalPlace(params.row.rating)}
         </Typography>
       ),
     },
@@ -94,7 +102,7 @@ const Popularity = () => {
       flex: 1,
       renderCell: (params) => (
         <Typography color={colors.greenAccent[300]}>
-          {params.row.status}
+          {params.row.pop}
         </Typography>
       ),
     },

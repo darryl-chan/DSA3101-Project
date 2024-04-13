@@ -1,13 +1,59 @@
+import { useState, useEffect } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataPopularity } from "../../data/mockData";
+// import { mockDataPopularity } from "../../data/mockData";
 import Header from "../../components/Header";
+import axios from "axios"; // Import Axios library
+
 
 const Popularity = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+
+  // Define state to store fetched data
+  const [popularityData, setPopularityData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Function to fetch data from Flask backend
+  const fetchPopularityData = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/popularity"); // Make GET request to Flask route
+      const formattedData = response.data.map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }));
+      setPopularityData(formattedData); // Update state with fetched data
+      setLoading(false); // Set loading to false after data is fetched
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false); // Set loading to false in case of error
+    }
+  };
+
+  // Fetch data when component mounts
+  useEffect(() => {
+    fetchPopularityData();
+  }, []);
+
+  // Function to round down a number
+  const roundDown = (num) => {
+    return Math.floor(num); // Use Math.floor() to round down
+  };
+
+  // Function to round to one decimal place
+  const roundToOneDecimalPlace = (num) => {
+    return Math.floor(num * 10) / 10; // Round to one decimal place
+  };
+
+  // Function to round to two decimal places
+  const roundToTwoDecimalPlaces = (num) => {
+    return num.toFixed(2); // Use toFixed(2) to round to two decimal places
+  };
+
   
+
   const columns = [    
     {
       field: "name",
@@ -15,20 +61,30 @@ const Popularity = () => {
       flex: 1,
       cellClassName: "name-column--cell",
     },
+    // {
+    //   field: "category",
+    //   headerName: "Category",
+    //   flex: 0.8,
+    // },
     {
-      field: "category",
-      headerName: "Category",
-      flex: 0.8,
-    },
-        {
       field: "revenue",
       headerName: "Monthly Revenue Estimate ($/month)",
       flex: 1.2,
+      renderCell: (params) => (
+        <Typography>
+          {roundToTwoDecimalPlaces(params.row.revenue)}
+        </Typography>
+      ),
     },
     {
       field: "customers",
       headerName: "Monthly Customer Estimate",
-      flex: 1,      
+      flex: 1,
+      renderCell: (params) => (
+        <Typography>
+          {roundDown(params.row.customers)}
+        </Typography>
+      ),      
     },
     {
       field: "rating",
@@ -36,21 +92,26 @@ const Popularity = () => {
       flex: 1,
       renderCell: (params) => (
         <Typography color={colors.greenAccent[300]}>
-          {params.row.rating}
+          {roundToOneDecimalPlace(params.row.rating)}
         </Typography>
       ),
     },
     {
-      field: "status",
+      field: "pop",
       headerName: "Degree of Popularity",
       flex: 1,
       renderCell: (params) => (
         <Typography color={colors.greenAccent[300]}>
-          {params.row.status}
+          {params.row.pop}
         </Typography>
       ),
     },
   ];
+
+  // Render loading state if data is still loading
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Box m="20px">
@@ -84,7 +145,8 @@ const Popularity = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={mockDataPopularity} columns={columns} />
+        {/* <DataGrid checkboxSelection rows={mockDataPopularity} columns={columns} /> */}
+        <DataGrid checkboxSelection rows={popularityData} columns={columns} />
       </Box>
     </Box>
   );

@@ -40,6 +40,7 @@ import Bundle19 from "./components/bundles2/Bundle19";
 import Bundle20 from "./components/bundles2/Bundle20";
 import Bundle21 from "./components/bundles2/Bundle21";
 import Bundle22 from "./components/bundles2/Bundle22";
+import Bundle23 from "./components/bundles3/Bundle23";
 
 
 
@@ -92,6 +93,7 @@ function App() {
               <Route path="/bundle20" element={<Bundle20 />} />
               <Route path="/bundle21" element={<Bundle21 />} />
               <Route path="/bundle22" element={<Bundle22 />} />
+              <Route path="/bundle23" element={<Bundle23 />} />
 
             </Routes>
           </main>

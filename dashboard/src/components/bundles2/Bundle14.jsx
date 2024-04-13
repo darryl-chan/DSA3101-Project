@@ -25,7 +25,7 @@ const Bundle14 = () => {
       <BundleBar />
 
     <Box m="20px">
-      <Header title="Bundle: Cenrtal Beach Bazaar & Wings Of Time" subtitle="Revenue of Bundle" />
+      <Header title="Bundle: Central Beach Bazaar & Wings Of Time" subtitle="Revenue of Bundle" />
 
           {/* GRID & CHARTS */}
     <Box

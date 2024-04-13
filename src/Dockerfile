@@ -1,14 +1,13 @@
-FROM mongo
-
-#ENV MONGO_DB_USERNAME = admin \
-    #MONGODB_PWD = password
+FROM python:alpine
 
 WORKDIR /home/app
 
-COPY . /home/app
+COPY src/requirements.txt /home/app
 
-EXPOSE 27017
+RUN pip install --no-cache-dir -r requirements.txt
 
-VOLUME /data/db
+COPY data/. /home/app/data
 
-CMD ["mongod"]
+COPY src/. /home/app
+
+CMD ["python", "main.py"]

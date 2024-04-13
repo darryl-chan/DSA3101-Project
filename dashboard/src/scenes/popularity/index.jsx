@@ -1,33 +1,33 @@
-// import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataPopularity } from "../../data/mockData";
 import Header from "../../components/Header";
-// import axios from "axios"; // Import Axios library
+import axios from "axios"; // Import Axios library
 
 
 const Popularity = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // // Define state to store fetched data
-  // const [popularityData, setPopularityData] = useState([]);
+  // Define state to store fetched data
+  const [popularityData, setPopularityData] = useState([]);
 
-  // // Function to fetch data from Flask backend
-  // const fetchPopularityData = async () => {
-  //   try {
-  //     const response = await axios.get("/popularity"); // Make GET request to Flask route
-  //     setPopularityData(response.data); // Update state with fetched data
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
+  // Function to fetch data from Flask backend
+  const fetchPopularityData = async () => {
+    try {
+      const response = await axios.get("/popularity"); // Make GET request to Flask route
+      setPopularityData(response.data); // Update state with fetched data
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-  // // Fetch data when component mounts
-  // useEffect(() => {
-  //   fetchPopularityData();
-  // }, []);
+  // Fetch data when component mounts
+  useEffect(() => {
+    fetchPopularityData();
+  }, []);
   
   const columns = [    
     {
@@ -105,8 +105,8 @@ const Popularity = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={mockDataPopularity} columns={columns} />
-        {/* <DataGrid checkboxSelection rows={popularityData} columns={columns} /> */}
+        {/* <DataGrid checkboxSelection rows={mockDataPopularity} columns={columns} /> */}
+        <DataGrid checkboxSelection rows={popularityData} columns={columns} />
       </Box>
     </Box>
   );

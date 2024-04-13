@@ -20,8 +20,9 @@ import { DataGrid } from "@mui/x-data-grid";
 const Overview = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const columns = [
-    { field: "rank", headerName: "Rank", flex: 1 },
+
+  const columns = [ 
+    { field: "rank", headerName: "Ranking", flex: 1 },
     {
       field: "name",
       headerName: "Name of Attraction",
@@ -31,37 +32,35 @@ const Overview = () => {
     {
       field: "category",
       headerName: "Category",
-      flex: 1,
+      flex: 0.8,
+    },
+        {
+      field: "revenue",
+      headerName: "Monthly Revenue Estimate ($/month)",
+      flex: 1.2,
+    },
+    {
+      field: "customers",
+      headerName: "Monthly Customer Estimate",
+      flex: 1,      
     },
     {
       field: "rating",
       headerName: "Popularity Rating",
       flex: 1,
+      renderCell: (params) => (
+        <Typography color={colors.greenAccent[300]}>
+          {params.row.rating}
+        </Typography>
+      ),
     },
     {
       field: "status",
       headerName: "Degree of Popularity",
       flex: 1,
-      
-    },
-    {
-      field: "customers",
-      headerName: "Estimated Number of Customers",
-      flex: 1,
       renderCell: (params) => (
-        <Typography color={colors.greenAccent[500]}>
-          {params.row.customers}/yr
-        </Typography>
-      ),
-      
-    },
-    {
-      field: "revenue",
-      headerName: "Estimated Revenue",
-      flex: 1,
-      renderCell: (params) => (
-        <Typography color={colors.greenAccent[500]}>
-          ${params.row.revenue}/yr
+        <Typography color={colors.greenAccent[300]}>
+          {params.row.status}
         </Typography>
       ),
     },
@@ -186,7 +185,7 @@ const Overview = () => {
         {/*}
         <Box
           gridColumn="span 12"
-          gridRow="span 2"
+          gridRow="span 1"
           backgroundColor={colors.primary[400]}
           padding="30px"
         >
@@ -296,15 +295,42 @@ const Overview = () => {
         {/* ROW 3 */}
         
         <Box
-          gridColumn="span 4"
+          gridColumn="span 12"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
-          p="60px"
+          p="40px"
         >
+          <Header title="Top Attractions by Popularity Ranking"/>
+          
+          <DataGrid rows={top3Rows} columns={columns} 
+          sx={{
+            "& .MuiDataGrid-root": {
+              border: "none",
+            },
+            "& .MuiDataGrid-cell": {
+              borderBottom: "none",
+            },
+            "& .name-column--cell": {
+              color: colors.greenAccent[300],
+            },
+            "& .MuiDataGrid-columnHeaders": {
+              backgroundColor: colors.blueAccent[700],
+              borderBottom: "none",
+            },
+            "& .MuiDataGrid-virtualScroller": {
+              backgroundColor: colors.primary[400],
+            },
+            "& .MuiDataGrid-footerContainer": {
+              borderTop: "none",
+              backgroundColor: colors.blueAccent[700],
+            },
+            "& .MuiCheckbox-root": {
+              color: `${colors.greenAccent[200]} !important`,
+            },
+          }}
+          />
   
-          <Typography variant="h5" fontWeight="600">
-            Popularity Ranking
-          </Typography>
+          
           <Box
             display="flex"
             flexDirection="column"
@@ -316,43 +342,6 @@ const Overview = () => {
            
           </Box>
         </Box>
-          
-        
-        
-        <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ padding: "30px 30px 0 30px" }}
-          >
-            Sales Quantity
-          </Typography>
-          <Box height="250px" mt="-20px">
-            <BarChart isDashboard={true} />
-          </Box>
-        </Box>
-        
-        <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Geography Based Traffic
-          </Typography>
-          <Box height="200px">
-            <GeographyChart isDashboard={true} />
-          </Box>
-        </Box> 
         
 
       </Box>

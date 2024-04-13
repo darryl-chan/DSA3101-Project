@@ -62,7 +62,7 @@ def get_bundle_2():
             
             bundle = Bundle(lst_of_attraction)
 
-            lst_to_store_json.append(bundle.bundle_info())
+            lst_to_store_json.append(bundle.return_peak_bundle_overall_revenue_info())
     
     return lst_to_store_json
 
@@ -97,12 +97,9 @@ def get_bundle_3():
                 
                 bundle = Bundle(lst_of_attraction)
 
-                lst_to_store_json.append(bundle.bundle_info())
+                lst_to_store_json.append(bundle.return_peak_bundle_overall_revenue_info())
     
     return lst_to_store_json
-            
-
-print(get_bundle_3())
             
             
             

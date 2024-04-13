@@ -12,18 +12,71 @@ import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
+import { mockDataPopularity } from "../../data/mockData";
+import { DataGrid } from "@mui/x-data-grid";
 // import { Link } from 'react-router-dom';
 
 
 const Overview = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const columns = [
+    { field: "rank", headerName: "Rank", flex: 1 },
+    {
+      field: "name",
+      headerName: "Name of Attraction",
+      flex: 1,
+      cellClassName: "name-column--cell",
+    },
+    {
+      field: "category",
+      headerName: "Category",
+      flex: 1,
+    },
+    {
+      field: "rating",
+      headerName: "Popularity Rating",
+      flex: 1,
+    },
+    {
+      field: "status",
+      headerName: "Degree of Popularity",
+      flex: 1,
+      
+    },
+    {
+      field: "customers",
+      headerName: "Estimated Number of Customers",
+      flex: 1,
+      renderCell: (params) => (
+        <Typography color={colors.greenAccent[500]}>
+          {params.row.customers}/yr
+        </Typography>
+      ),
+      
+    },
+    {
+      field: "revenue",
+      headerName: "Estimated Revenue",
+      flex: 1,
+      renderCell: (params) => (
+        <Typography color={colors.greenAccent[500]}>
+          ${params.row.revenue}/yr
+        </Typography>
+      ),
+    },
+  ];
+  
+
+  const top3Rowsx = mockDataPopularity.slice().sort((a, b) => b.rating - a.rating).slice(0, 3);
+  const top3Rows = top3Rowsx.map((row, rank) => ({ ...row, rank: rank + 1 }))
+
 
   return (
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="MFLR DASHBOARD" subtitle="Welcome to your dashboard" />
+        <Header title="MFLG DASHBOARD" subtitle="Welcome to your dashboard" />
 
         <Box>
           <Button
@@ -51,7 +104,7 @@ const Overview = () => {
         {/* ROW 1 */}
         
         <Box
-          gridColumn="span 3"
+          gridColumn="span 6"
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
@@ -59,8 +112,8 @@ const Overview = () => {
         >
           {/* <Link to="/popularity" style={{ textDecoration: 'none' }}> */}
           <StatBox
-            title="12,361"
-            subtitle="Emails Sent"
+            title="Wings of Time"
+            subtitle="MFLG's Top Rated Attraction"
             progress="0.75"
             increase="+14%"
             icon={
@@ -72,15 +125,15 @@ const Overview = () => {
            {/* </Link> */}
         </Box>
         <Box
-          gridColumn="span 3"
+          gridColumn="span 6"
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
           justifyContent="center"
         >
           <StatBox
-            title="431,225"
-            subtitle="Sales Obtained"
+            title="S.E.A. Aquarium"
+            subtitle="Competitor's Top Rated Attraction"
             progress="0.50"
             increase="+21%"
             icon={
@@ -90,7 +143,7 @@ const Overview = () => {
             }
           />
         </Box>
-        <Box
+        {/*<Box
           gridColumn="span 3"
           backgroundColor={colors.primary[400]}
           display="flex"
@@ -127,11 +180,30 @@ const Overview = () => {
               />
             }
           />
-        </Box>
+          </Box> */}
 
         {/* ROW 2 */}
+        {/*}
         <Box
-          gridColumn="span 8"
+          gridColumn="span 12"
+          gridRow="span 2"
+          backgroundColor={colors.primary[400]}
+          padding="30px"
+        >
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            sx={{ marginBottom: "15px" }}
+          >
+            Geography Based Traffic
+          </Typography>
+          <Box height="200px">
+            <GeographyChart isDashboard={true} />
+          </Box>
+        </Box> 
+        */}
+        <Box
+          gridColumn="span 6"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
         >
@@ -147,15 +219,14 @@ const Overview = () => {
                 variant="h5"
                 fontWeight="600"
                 color={colors.grey[100]}
-              >
-                Revenue Generated
+              >Average Weekly Visitation by Attraction
               </Typography>
               <Typography
                 variant="h3"
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
               >
-                $59,342.32
+                Weekly Average: 59,342 visitors
               </Typography>
             </Box>
             <Box>
@@ -171,7 +242,7 @@ const Overview = () => {
           </Box>
         </Box>
         <Box
-          gridColumn="span 4"
+          gridColumn="span 6"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
           overflow="auto"
@@ -185,7 +256,7 @@ const Overview = () => {
             p="15px"
           >
             <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Recent Transactions
+              Increase in Revenue during Peak vs Non-Peak Hours
             </Typography>
           </Box>
           {mockTransactions.map((transaction, i) => (
@@ -220,34 +291,34 @@ const Overview = () => {
             </Box>
           ))}
         </Box>
+        
 
         {/* ROW 3 */}
+        
         <Box
           gridColumn="span 4"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
-          p="30px"
+          p="60px"
         >
+  
           <Typography variant="h5" fontWeight="600">
-            Campaign
+            Popularity Ranking
           </Typography>
           <Box
             display="flex"
             flexDirection="column"
             alignItems="center"
             mt="25px"
+            
           >
-            <ProgressCircle size="125" />
-            <Typography
-              variant="h5"
-              color={colors.greenAccent[500]}
-              sx={{ mt: "15px" }}
-            >
-              $48,352 revenue generated
-            </Typography>
-            <Typography>Includes extra misc expenditures and costs</Typography>
+        
+           
           </Box>
         </Box>
+          
+        
+        
         <Box
           gridColumn="span 4"
           gridRow="span 2"
@@ -264,6 +335,7 @@ const Overview = () => {
             <BarChart isDashboard={true} />
           </Box>
         </Box>
+        
         <Box
           gridColumn="span 4"
           gridRow="span 2"
@@ -280,9 +352,12 @@ const Overview = () => {
           <Box height="200px">
             <GeographyChart isDashboard={true} />
           </Box>
-        </Box>
+        </Box> 
+        
+
       </Box>
     </Box>
+
   );
 };
 

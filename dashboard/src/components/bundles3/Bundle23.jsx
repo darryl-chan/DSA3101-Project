@@ -7,14 +7,24 @@ import StatBoxGbb from "../../components/StatBoxGbb";
 import BarChartGbb from "../../components/BarChartGbb";
 import PieChartGbb from "../../components/PieChartGbb";
 import TableBundle from "../../components/TableBundle";
+import BundleBar from "../../scenes/ebp/BundleBar";
 
-const GBB = () => {
+
+const Bundle23 = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   return (
+    <Box m="20px">
+    {/* HEADER */}
+    <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Header title="Explore Bundle Prices" subtitle="Bundle Prices" />
+
+    </Box>
+
+    <BundleBar />
+
     <Box m="15px">
-      <Header title="Generate Best Bundle" />
       <Box
         display="grid"
         gridTemplateColumns="repeat(12, 1fr)"
@@ -171,7 +181,8 @@ const GBB = () => {
         </Grid>
       </Box>
     </Box>
+    </Box>
   );
 };
 
-export default GBB;
+export default Bundle23;

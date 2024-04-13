@@ -12,70 +12,16 @@ import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
-import { mockDataPopularity } from "../../data/mockData";
-import { DataGrid } from "@mui/x-data-grid";
-// import { Link } from 'react-router-dom';
 
-
-const Overview = () => {
+const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  const columns = [ 
-    { field: "rank", headerName: "Ranking", flex: 1 },
-    {
-      field: "name",
-      headerName: "Name of Attraction",
-      flex: 1,
-      cellClassName: "name-column--cell",
-    },
-    {
-      field: "category",
-      headerName: "Category",
-      flex: 0.8,
-    },
-        {
-      field: "revenue",
-      headerName: "Monthly Revenue Estimate ($/month)",
-      flex: 1.2,
-    },
-    {
-      field: "customers",
-      headerName: "Monthly Customer Estimate",
-      flex: 1,      
-    },
-    {
-      field: "rating",
-      headerName: "Popularity Rating",
-      flex: 1,
-      renderCell: (params) => (
-        <Typography color={colors.greenAccent[300]}>
-          {params.row.rating}
-        </Typography>
-      ),
-    },
-    {
-      field: "status",
-      headerName: "Degree of Popularity",
-      flex: 1,
-      renderCell: (params) => (
-        <Typography color={colors.greenAccent[300]}>
-          {params.row.status}
-        </Typography>
-      ),
-    },
-  ];
-  
-
-  const top3Rowsx = mockDataPopularity.slice().sort((a, b) => b.rating - a.rating).slice(0, 3);
-  const top3Rows = top3Rowsx.map((row, rank) => ({ ...row, rank: rank + 1 }))
-
 
   return (
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="MFLG DASHBOARD" subtitle="Welcome to your dashboard" />
+        <Header title="MFLR DASHBOARD" subtitle="Welcome to your dashboard" />
 
         <Box>
           <Button
@@ -101,18 +47,16 @@ const Overview = () => {
         gap="20px"
       >
         {/* ROW 1 */}
-        
         <Box
-          gridColumn="span 6"
+          gridColumn="span 3"
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
           justifyContent="center"
         >
-          {/* <Link to="/popularity" style={{ textDecoration: 'none' }}> */}
           <StatBox
-            title="Wings of Time"
-            subtitle="MFLG's Top Rated Attraction"
+            title="12,361"
+            subtitle="Emails Sent"
             progress="0.75"
             increase="+14%"
             icon={
@@ -121,18 +65,17 @@ const Overview = () => {
               />
             }
           />
-           {/* </Link> */}
         </Box>
         <Box
-          gridColumn="span 6"
+          gridColumn="span 3"
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
           justifyContent="center"
         >
           <StatBox
-            title="S.E.A. Aquarium"
-            subtitle="Competitor's Top Rated Attraction"
+            title="431,225"
+            subtitle="Sales Obtained"
             progress="0.50"
             increase="+21%"
             icon={
@@ -142,7 +85,7 @@ const Overview = () => {
             }
           />
         </Box>
-        {/*<Box
+        <Box
           gridColumn="span 3"
           backgroundColor={colors.primary[400]}
           display="flex"
@@ -179,33 +122,11 @@ const Overview = () => {
               />
             }
           />
-          </Box> */}
-
-        
-        
+        </Box>
 
         {/* ROW 2 */}
-        {/*}
         <Box
-          gridColumn="span 12"
-          gridRow="span 1"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Geography Based Traffic
-          </Typography>
-          <Box height="200px">
-            <GeographyChart isDashboard={true} />
-          </Box>
-        </Box> 
-        */}
-        <Box
-          gridColumn="span 6"
+          gridColumn="span 8"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
         >
@@ -221,14 +142,15 @@ const Overview = () => {
                 variant="h5"
                 fontWeight="600"
                 color={colors.grey[100]}
-              >Average Weekly Visitation by Attraction
+              >
+                Revenue Generated
               </Typography>
               <Typography
                 variant="h3"
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
               >
-                Weekly Average: 59,342 visitors
+                $59,342.32
               </Typography>
             </Box>
             <Box>
@@ -244,7 +166,7 @@ const Overview = () => {
           </Box>
         </Box>
         <Box
-          gridColumn="span 6"
+          gridColumn="span 4"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
           overflow="auto"
@@ -258,7 +180,7 @@ const Overview = () => {
             p="15px"
           >
             <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Increase in Revenue during Peak vs Non-Peak Hours
+              Recent Transactions
             </Typography>
           </Box>
           {mockTransactions.map((transaction, i) => (
@@ -293,67 +215,70 @@ const Overview = () => {
             </Box>
           ))}
         </Box>
-        
 
         {/* ROW 3 */}
-        
         <Box
-          gridColumn="span 12"
-          gridRow="span 3"
+          gridColumn="span 4"
+          gridRow="span 2"
           backgroundColor={colors.primary[400]}
-          p="40px"
+          p="30px"
         >
-          <Header title={<Typography fontSize={25} fontWeight={"bold"} >Top Attractions by Popularity Rating</Typography>} />
-          
-          
-          <DataGrid rows={top3Rows} columns={columns} 
-          autoHeight={true}
-          hideFooter={true}
-          sx={{
-            "& .MuiDataGrid-root": {
-              border: "none",
-            },
-            "& .MuiDataGrid-cell": {
-              borderBottom: "none",
-            },
-            "& .name-column--cell": {
-              color: colors.greenAccent[300],
-            },
-            "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: colors.blueAccent[700],
-              borderBottom: "none",
-            },
-            "& .MuiDataGrid-virtualScroller": {
-              backgroundColor: colors.primary[400],
-            },
-            "& .MuiDataGrid-footerContainer": {
-              borderTop: "none",
-              backgroundColor: colors.blueAccent[700],
-            },
-            "& .MuiCheckbox-root": {
-              color: `${colors.greenAccent[200]} !important`,
-            },
-          }}
-          />
-  
-          
+          <Typography variant="h5" fontWeight="600">
+            Campaign
+          </Typography>
           <Box
             display="flex"
             flexDirection="column"
             alignItems="center"
             mt="25px"
-            
           >
-        
-           
+            <ProgressCircle size="125" />
+            <Typography
+              variant="h5"
+              color={colors.greenAccent[500]}
+              sx={{ mt: "15px" }}
+            >
+              $48,352 revenue generated
+            </Typography>
+            <Typography>Includes extra misc expenditures and costs</Typography>
           </Box>
         </Box>
-        
-
+        <Box
+          gridColumn="span 4"
+          gridRow="span 2"
+          backgroundColor={colors.primary[400]}
+        >
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            sx={{ padding: "30px 30px 0 30px" }}
+          >
+            Sales Quantity
+          </Typography>
+          <Box height="250px" mt="-20px">
+            <BarChart isDashboard={true} />
+          </Box>
+        </Box>
+        <Box
+          gridColumn="span 4"
+          gridRow="span 2"
+          backgroundColor={colors.primary[400]}
+          padding="30px"
+        >
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            sx={{ marginBottom: "15px" }}
+          >
+            Geography Based Traffic
+          </Typography>
+          <Box height="200px">
+            <GeographyChart isDashboard={true} />
+          </Box>
+        </Box>
       </Box>
     </Box>
-
   );
 };
 
-export default Overview;
+export default Dashboard;

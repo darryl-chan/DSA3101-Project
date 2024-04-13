@@ -272,7 +272,7 @@ export const mockDataPopularity = [
     name: "Wings of Time",
     category: "MFLG",
     rating: "6.0",
-    status: "Moderate",
+    status: "Low",
     customers: "50,000",
     revenue: "200,000",
   },

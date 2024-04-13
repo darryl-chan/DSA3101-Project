@@ -4,12 +4,15 @@ import pandas as pd
 class Attraction:
     # Class attributes
     REVIEW_TO_CUSTOMER_MULTIPLIER = 455
-    MIN_REVIEW_SCORE = 4
+    MIN_REVIEW_SCORE = 4.2
     MAX_REVIEW_SCORE = 4.8
-    WEIGHT_FOR_REVIEW = 0.65
-    WEIGHT_FOR_NUMBER_OF_CUSTOMERS = 0.35
+    WEIGHT_FOR_REVIEW = 0.5
+    WEIGHT_FOR_NUMBER_OF_CUSTOMERS = 0.5
     SCALING_FACTOR = 0.001
     SHIFTING_FACTOR = 2000
+    
+    PEAK_MONTH_MULTIPLER = 7/64
+    NON_PEAK_MONTH_MULTIPLIER = 5/64
     
 
     # Constructor method (initialize object)
@@ -23,13 +26,33 @@ class Attraction:
     def get_number_of_review(self):
         return len(self.df)
 
+##################################### Yearly functions #####################################
+
     def get_customer_per_year(self):
         number_of_reviews_per_year = self.get_number_of_review() / 3
         estimate_of_customers_per_years = number_of_reviews_per_year * Attraction.REVIEW_TO_CUSTOMER_MULTIPLIER
         return estimate_of_customers_per_years
-
+    
     def get_revenue_per_year(self):
         return self.get_customer_per_year() * self.cost
+    
+##################################### Monthly peak functions #####################################
+    
+    def get_peak_customer_per_month(self):
+        return self.get_customer_per_year() * Attraction.PEAK_MONTH_MULTIPLER
+        
+    def get_peak_revenue_per_month(self):
+        return self.get_peak_customer_per_month() * self.cost
+
+##################################### Monthly non peak functions #####################################
+    
+    def get_non_peak_customer_per_month(self):
+        return self.get_customer_per_year() * Attraction.NON_PEAK_MONTH_MULTIPLIER
+        
+    def get_non_peak_revenue_per_month(self):
+        return self.get_non_peak_customer_per_month() * self.cost
+
+##################################### Scoring & popularity functions #####################################
 
     def get_mean_score(self):
         mean_score = np.mean(self.df['Score'])
@@ -67,6 +90,8 @@ class Attraction:
             level = "Very Low"
         return level
 
+##################################### Popularity analysis #####################################
+
     def return_popularity_analysis(self):
         json = {
             "name" : self.name,
@@ -74,6 +99,26 @@ class Attraction:
             "rating" : self.get_popularity_score(),
             "customers" : self.get_customer_per_year(),
             "revenue" : self.get_revenue_per_year()
+        }
+        return json
+    
+    def return_peak_popularity_analysis_monthly(self):
+        json = {
+            "name" : self.name,
+            "pop" : self.get_popularity_level(),
+            "rating" : self.get_popularity_score(),
+            "customers" : self.get_peak_customer_per_month(),
+            "revenue" : self.get_peak_revenue_per_month()
+        }
+        return json
+    
+    def return_non_peak_popularity_analysis_monthly(self):
+        json = {
+            "name" : self.name,
+            "pop" : self.get_popularity_level(),
+            "rating" : self.get_popularity_score(),
+            "customers" : self.get_non_peak_customer_per_month(),
+            "revenue" : self.get_non_peak_revenue_per_month()
         }
         return json
 

@@ -3,7 +3,7 @@ import { tokens } from "../theme";
 import { Box, useTheme } from "@mui/material";
 import { mockPieData as data } from "../data/mockData";
 
-const PieChart_gbb = () => {
+const PieChartGbb = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -108,4 +108,4 @@ const PieChart_gbb = () => {
   );
 };
 
-export default PieChart_gbb;
+export default PieChartGbb;

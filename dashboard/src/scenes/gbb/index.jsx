@@ -1,18 +1,11 @@
 // USE 2 STATBOXES AND 2 BOXES
-import { Box, Grid, Button, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Grid, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import { mockTransactions } from "../../data/mockData";
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
-import EmailIcon from "@mui/icons-material/Email";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
-import LineChart_gbb from "../../components/LineChart_gbb";
-import StatBox_gbb from "../../components/StatBox_gbb";
-import BarChart_gbb from "../../components/BarChart_gbb";
-import PieChart_gbb from "../../components/PieChart_gbb";
-import ProgressCircle from "../../components/ProgressCircle";
+import LineChartGbb from "../../components/LineChartGbb";
+import StatBoxGbb from "../../components/StatBoxGbb";
+import BarChartGbb from "../../components/BarChartGbb";
+import PieChartGbb from "../../components/PieChartGbb";
 import TableBundle from "../../components/TableBundle";
 
 const GBB = () => {
@@ -36,7 +29,7 @@ const GBB = () => {
           // alignItems="center"
           justifyContent="center"
         >
-          <StatBox_gbb
+          <StatBoxGbb
             title="12,361"
             subtitle="Recommended Bundle Pricing"
           />
@@ -48,7 +41,7 @@ const GBB = () => {
           // alignItems="left"
           justifyContent="center"
         >
-          <StatBox_gbb
+          <StatBoxGbb
             title="431,225"
             subtitle="Total Revenue of Bundle"
           />
@@ -82,7 +75,7 @@ const GBB = () => {
             justifyContent="center"
             alignItems="center"
           >
-            <PieChart_gbb />
+            <PieChartGbb />
           </Box>
         </Box>
 
@@ -143,7 +136,7 @@ const GBB = () => {
               textAlign="center"
               
             >
-              <BarChart_gbb isDashboard={true} />
+              <BarChartGbb isDashboard={true} />
             </Box>
           </Box>
         </Box>
@@ -165,7 +158,7 @@ const GBB = () => {
             {/* grid item to occupy full width of container on XS screen and half the width on medium screen */}
             <Header subtitle="Best Bundle Pricing" />
             <Box height="40vh" width="100%">
-              <LineChart_gbb />
+              <LineChartGbb />
             </Box>
           </Grid>
           {/* Table */}

@@ -1,8 +1,7 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../theme";
-import ProgressCircle from "./ProgressCircle";
 
-const StatBox_gbb = ({ title, subtitle, children }) => {
+const StatBoxGbb = ({ title, subtitle, children }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -56,7 +55,7 @@ const StatBox_gbb = ({ title, subtitle, children }) => {
   );
 };
 
-export default StatBox_gbb;
+export default StatBoxGbb;
 
 
 

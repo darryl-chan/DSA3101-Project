@@ -5,6 +5,7 @@ import { tokens } from '../../theme';
 import { useState } from 'react';
 import { Box, Button, Typography, useTheme } from "@mui/material";
 import Multiselect from 'multiselect-react-dropdown';
+import axios from 'axios'; // npm install axios
 
 
 
@@ -43,11 +44,21 @@ const BundleBar = () => {
         setOpenSnackbar(false);
     };
 
+
     const handleSubmit = async (e) => { 
+      console.log('Selected values', selectedValues);
+      const selectedKeys = selectedValues.map(item => item.key);
+
+      // Create a new FormData instance
+      const formData = new FormData();
+
+    // Append each selected key-value pair individually
+      formData.append('selectedKeys', JSON.stringify(selectedKeys));
       e.preventDefault(); 
       try { 
-          const response = await axios.post('http://localhost:5000-bundle', formData); 
-          console.log('Data sent to backend:', response.data); 
+          console.log('Data sent to backend', selectedKeys);
+          const response = await axios.post('http://localhost:5000/bundle', selectedKeys ); 
+          console.log('Data received from backend:', response.data); 
           // Handle response or update UI as needed 
       } catch (error) { 
           console.error('Error sending data:', error); 

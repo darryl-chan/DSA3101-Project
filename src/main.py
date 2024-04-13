@@ -1,8 +1,11 @@
 from flask import Flask, jsonify, render_template
 from controller import get_popularity, get_bundle_2, get_bundle_3
+from flask_cors import CORS
+
 
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def index():

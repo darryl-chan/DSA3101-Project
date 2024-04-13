@@ -40,7 +40,7 @@ import Bundle19 from "./components/bundles2/Bundle19";
 import Bundle20 from "./components/bundles2/Bundle20";
 import Bundle21 from "./components/bundles2/Bundle21";
 import Bundle22 from "./components/bundles2/Bundle22";
-
+import Bundle23 from "./components/bundles3/Bundle23";
 
 
 

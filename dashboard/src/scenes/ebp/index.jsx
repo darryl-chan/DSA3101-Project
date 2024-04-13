@@ -11,9 +11,10 @@ const EBP = () => {
         <Header title="Explore Bundle Prices" subtitle="Bundle Prices" />
       </Box>
 
-      <BundleBar />
-      
-      </Box>
+      <Box>
+        <BundleBar />
+        </Box>
+    </Box>
   );
 };
 

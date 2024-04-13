@@ -35,7 +35,7 @@ def scrape(url, time_to_scrape, name, check_every_interval):
             reviews = response.find_all('div', class_='DU9Pgb')
             to_quit = False
             for r in reviews:
-                if r.find('span', class_ = 'rsqaWe').getText() == ('3 years ago'):
+                if r.find('span', class_ = 'rsqaWe').getText() == ('4 years ago'):
                     to_quit = True
                     break
             next_interval_to_check = datetime.now() + timedelta(minutes=check_every_interval)

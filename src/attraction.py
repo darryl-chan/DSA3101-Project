@@ -22,7 +22,7 @@ class Attraction:
         self.cost = cost
         self.df = df
         self.customer_per_year = self.get_customer_per_year()
-        self.mflg = True if mflg.lower() == "yes" else False
+        self.mflg = True if (mflg.lower() == "yes" or mflg.lower() == True) else False
 
     def get_number_of_review(self):
         return len(self.df)

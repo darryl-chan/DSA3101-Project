@@ -46,6 +46,13 @@ class Bundle:
         else:
             return self.scaled_popularity
     
+    # Checks if the bundle has at least one mflg attraction
+    def has_at_least_one_mflg_attraction(self):
+        for attractions in self.list_of_attractions:
+            if not attractions.mflg:
+                return False
+        return True
+    
 ##################################### Yearly functions #####################################
     
     def get_customers_per_year(self):

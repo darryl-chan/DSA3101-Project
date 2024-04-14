@@ -177,10 +177,10 @@ const GBB = () => {
         </Typography>
       </Box>
 
-      {/* Line Chart and Table */}
+      {/* Bar Chart and Table */}
       <Box mt={3} mb={2}>
         <Grid container spacing={2}>
-          {/* Line Chart */}
+          {/* Bar Chart */}
           <Grid item xs={12} md={6}>
             {/* grid item to occupy full width of container on XS screen and half the width on medium screen */}
             <Typography
@@ -194,7 +194,7 @@ const GBB = () => {
             </Typography>
 
             <Box height="40vh" width="100%">
-              <LineChartGbb />
+              <BarChartGbb />
             </Box>
           </Grid>
           {/* Table */}

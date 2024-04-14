@@ -53,7 +53,6 @@ def get_revenue_split(lst):
     else:
         return bundle.return_peak_revenue_split()
     
-    
 
 def get_popularity():
     
@@ -79,39 +78,65 @@ def get_popularity():
     
     return lst_to_store_json
 
-# def get_bundle_2():
+def get_bundle_with_highest_revenue():
     
-#     df = pd.read_csv(data_dir + f"/attractions.csv")
+    lst_of_bundles = list_of_bundles()
     
-#     names = np.array(df['Name'])
-#     csv_names = np.array(df['CSV name'])
-#     costs = np.array(df['Price'])
+    lst_of_revenues = list(map(lambda x : x.get_peak_best_revenue(), lst_of_bundles))
     
-#     lst_to_store_json = []
+    max_revenue = max(lst_of_revenues)
     
-#     for i in range(len(names)):
+    max_index = lst_of_revenues.index(max_revenue)
+    
+    bundle_with_highest_revenue = lst_of_bundles[max_index]
+    
+    return [bundle_with_highest_revenue.return_peak_bundle_overall_revenue_info()]
+    
+    
+def list_of_bundles():
+    df = pd.read_csv(data_dir + f"/attractions.csv")
+    
+    names = np.array(df['Name'])
+    csv_names = np.array(df['CSV name'])
+    costs = np.array(df['Price'])
+    mflg = np.array(df['Under MFLG?'])
+    
+    lst = []
+    
+    for i in range(len(names)):
         
-#         for j in range(i+1, len(names)):
-#             lst_of_attraction = []
-#             lst_to_iterate = [i, j]
+        for j in range(i+1, len(names)):
+            lst_of_attraction = []
+            lst_to_iterate = [i, j]
             
-#             for index in lst_to_iterate:
+            for index in lst_to_iterate:
                 
-#                 name = names[index]
+                name = names[index]
                 
-#                 csv = csv_names[index]
-#                 cost = costs[index]
+                csv = csv_names[index]
+                cost = costs[index]
+                is_mflg = mflg[index]
                 
-#                 df_of_attraction = pd.read_csv(data_dir + f"/{csv}")
-#                 curr_attraction = Attraction(name, cost, df_of_attraction)
-#                 lst_of_attraction.append(curr_attraction)
+                df_of_attraction = pd.read_csv(data_dir + f"/{csv}")
+                curr_attraction = Attraction(name, cost, df_of_attraction, is_mflg)
+                lst_of_attraction.append(curr_attraction)
 
             
-#             bundle = Bundle(lst_of_attraction)
+            bundle = Bundle(lst_of_attraction)
 
-#             lst_to_store_json.append(bundle.return_peak_bundle_overall_revenue_info())
+            lst.append(bundle)
+    return lst
+
+def get_bundle_2():
     
-#     return lst_to_store_json
+    lst_of_bundles = list_of_bundles()
+    
+    lst_to_store_json = []
+    
+    for bundle in lst_of_bundles:
+        lst_to_store_json.append(bundle.return_peak_bundle_overall_revenue_info())
+    
+    return lst_to_store_json
 
 # def get_bundle_3():
     

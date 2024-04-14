@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-// import { mockDataPopularity } from "../../data/mockData";
 import Header from "../../components/Header";
 import axios from "axios"; // Import Axios library
 
@@ -10,7 +9,6 @@ import axios from "axios"; // Import Axios library
 const Popularity = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
 
   // Define state to store fetched data
   const [popularityData, setPopularityData] = useState([]);
@@ -37,7 +35,7 @@ const Popularity = () => {
     fetchPopularityData();
   }, []);
 
-  // Function to round down a number
+  // Function to round down to whole number
   const roundDown = (num) => {
     return Math.floor(num); // Use Math.floor() to round down
   };
@@ -52,20 +50,26 @@ const Popularity = () => {
     return num.toFixed(2); // Use toFixed(2) to round to two decimal places
   };
 
-  
-
+  // Define columns of table
   const columns = [    
     {
       field: "name",
       headerName: "Name of Attraction",
       flex: 1,
-      cellClassName: "name-column--cell",
     },
-    // {
-    //   field: "category",
-    //   headerName: "Category",
-    //   flex: 0.8,
-    // },
+    {
+      field: "category",
+      headerName: "Category",
+      flex: 1,
+      valueGetter: (params) => {
+        // Check if name matches certain set of names
+        if (params.row.name === "Wings of Time" || params.row.name === "Singapore cable car"|| params.row.name === "Sky Helix Sentosa") {
+          return "MFLG";
+        } else {
+          return "Competitor";
+        }
+      },
+    },
     {
       field: "revenue",
       headerName: "Monthly Revenue Estimate ($/month)",
@@ -91,9 +95,17 @@ const Popularity = () => {
       headerName: "Popularity Rating",
       flex: 1,
       renderCell: (params) => (
-        <Typography color={colors.greenAccent[300]}>
-          {roundToOneDecimalPlace(params.row.rating)}
-        </Typography>
+        <Typography
+        color={
+          params.row.pop === "Very Low"
+            ? colors.redAccent[500] // Set color to red for "Very Low"
+            : params.row.pop === "Very high"
+            ? colors.greenAccent[300] // Set color to green for "Very high"
+            : colors.grey[100] // Default color for other values
+        }
+      >
+        {roundToOneDecimalPlace(params.row.rating)}
+      </Typography>
       ),
     },
     {
@@ -101,9 +113,17 @@ const Popularity = () => {
       headerName: "Degree of Popularity",
       flex: 1,
       renderCell: (params) => (
-        <Typography color={colors.greenAccent[300]}>
-          {params.row.pop}
-        </Typography>
+        <Typography
+        color={
+          params.row.pop === "Very Low"
+            ? colors.redAccent[500] // Set color to red for "Very Low"
+            : params.row.pop === "Very high"
+            ? colors.greenAccent[300] // Set color to green for "Very High"
+            : colors.grey[100] // Default color for other values
+        }
+      >
+        {params.row.pop}
+      </Typography>
       ),
     },
   ];
@@ -126,9 +146,6 @@ const Popularity = () => {
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
           },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.blueAccent[700],
             borderBottom: "none",
@@ -141,11 +158,10 @@ const Popularity = () => {
             backgroundColor: colors.blueAccent[700],
           },
           "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
+            color: `${colors.blueAccent[700]} !important`,
           },
         }}
       >
-        {/* <DataGrid checkboxSelection rows={mockDataPopularity} columns={columns} /> */}
         <DataGrid checkboxSelection rows={popularityData} columns={columns} />
       </Box>
     </Box>

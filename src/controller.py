@@ -127,6 +127,23 @@ def list_of_bundles():
             lst.append(bundle)
     return lst
 
+def get_bundles_with_at_least_one_mflg():
+    lst_of_bundles = list_of_bundles()
+    
+    lst_of_mflg_bundles = list(filter(lambda x: x.has_at_least_one_mflg_attraction(), lst_of_bundles))
+    
+    lst_of_revenues = list(map(lambda x : x.get_peak_best_revenue(), lst_of_mflg_bundles))
+    
+    max_revenue = max(lst_of_revenues)
+    
+    max_index = lst_of_revenues.index(max_revenue)
+    
+    bundle_with_highest_revenue = lst_of_bundles[max_index]
+    
+    return [bundle_with_highest_revenue.return_peak_bundle_overall_revenue_info()]
+    
+    
+
 def get_bundle_2():
     
     lst_of_bundles = list_of_bundles()

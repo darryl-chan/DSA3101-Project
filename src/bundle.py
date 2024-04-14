@@ -94,6 +94,9 @@ class Bundle:
     def get_peak_best_price(self):
         best_price = scipy.optimize.fmin(lambda x: -self.get_peak_revenue_per_month(x), 0)
         return best_price[0]
+    
+    def get_peak_best_revenue(self):
+        return self.get_peak_revenue_per_month(self.get_peak_best_price())
 
     def plot_peak_price_revenue_graph(self):
         self.plot_price_revenue_graph(self.get_peak_revenue_per_month)
@@ -120,6 +123,9 @@ class Bundle:
         best_price = scipy.optimize.fmin(lambda x: -self.get_non_peak_revenue_per_month(x), 0)
         return best_price[0]
     
+    def get_non_peak_best_revenue(self):
+        return self.get_non_peak_revenue_per_month(self.get_non_peak_best_price())
+    
     def plot_non_peak_price_revenue_graph(self):
         self.plot_price_revenue_graph(self.get_non_peak_revenue_per_month)
 
@@ -144,34 +150,73 @@ class Bundle:
 ##################################### Bundle helper functions #####################################
 
                                         #### Peak ####
-        
+                                        
+    def get_peak_attraction_revenue_after_bundle(self, attraction: Attraction):
+        return attraction.get_peak_revenue_per_month() * (1 - Bundle.PERCENTAGE_OF_PEOPLE_BUYING_BUNDLE)
+    
+    def get_peak_bundle_revenue_split(self, attraction: Attraction):
+        return self.get_peak_best_revenue() * (attraction.cost / self.get_max_possible_price())
+    
+    ## To find the overall revenue of attraction after bundling and single
+    def get_peak_attraction_revenue_after_bundle_and_split(self, attraction: Attraction):
+        return self.get_peak_attraction_revenue_after_bundle(attraction) + self.get_peak_bundle_revenue_split(attraction)
+       
     def return_peak_bundled_single_attraction_revenue_in_json(self, attraction : Attraction):
         json = {
             "name" : attraction.name,
-            "revenue": attraction.get_peak_revenue_per_month() * (1 - Bundle.PERCENTAGE_OF_PEOPLE_BUYING_BUNDLE)
+            "revenue": self.get_peak_attraction_revenue_after_bundle(attraction),
+            "mflg" : attraction.mflg
         }
         return json
 
     def return_peak_single_attraction_revenue_in_json(self, attraction : Attraction):
         json = {
             "name" : attraction.name,
-            "revenue": attraction.get_peak_revenue_per_month()
+            "revenue": attraction.get_peak_revenue_per_month(),
+            "mflg" : attraction.mflg
+        }
+        return json
+    
+    def return_peak_bundled_attraction_revenue_after_split(self, attraction : Attraction):
+        json = {
+            "name" : attraction.name,
+            "revenue": self.get_peak_attraction_revenue_after_bundle_and_split(attraction),
+            "mflg" : attraction.mflg
         }
         return json
     
                                         #### Non Peak ####
 
+    def get_non_peak_bundle_revenue_split(self, attraction: Attraction):
+        return self.get_non_peak_best_revenue() * (attraction.cost / self.get_max_possible_price())
+
+    def get_non_peak_attraction_revenue_after_bundle(self, attraction: Attraction):
+        return attraction.get_non_peak_revenue_per_month() * (1 - Bundle.PERCENTAGE_OF_PEOPLE_BUYING_BUNDLE)
+
+    def get_non_peak_attraction_revenue_after_bundle_and_split(self, attraction: Attraction):
+        return self.get_non_peak_attraction_revenue_after_bundle(attraction) + self.get_non_peak_bundle_revenue_split(attraction)
+
     def return_non_peak_bundled_single_attraction_revenue_in_json(self, attraction : Attraction):
         json = {
             "name" : attraction.name,
-            "revenue": attraction.get_non_peak_revenue_per_month() * (1 - Bundle.PERCENTAGE_OF_PEOPLE_BUYING_BUNDLE)
+            "revenue": self.get_non_peak_attraction_revenue_after_bundle(attraction),
+            "mflg" : attraction.mflg
         }
         return json
     
     def return_non_peak_single_attraction_revenue_in_json(self, attraction : Attraction):
         json = {
             "name" : attraction.name,
-            "revenue": attraction.get_non_peak_revenue_per_month()
+            "revenue": attraction.get_non_peak_revenue_per_month(),
+            "mflg" : attraction.mflg
+        }
+        return json
+    
+    def return_non_peak_bundled_attraction_revenue_after_split(self, attraction : Attraction):
+        json = {
+            "name" : attraction.name,
+            "revenue": self.get_non_peak_attraction_revenue_after_bundle_and_split(attraction),
+            "mflg" : attraction.mflg
         }
         return json
 
@@ -199,8 +244,20 @@ class Bundle:
         json = {
             "name" : self.get_name(),
             "price" : self.get_peak_best_price(),
-            "revenue": self.get_peak_revenue_per_month(self.get_peak_best_price())
+            "revenue": self.get_peak_best_revenue()
         }
+        return json
+    
+    def return_peak_revenue_split(self):
+        json = {}
+        
+        for attraction in self.list_of_attractions:
+            name = f"bundled_single_{attraction.name}"
+            json[name] = self.return_peak_bundled_attraction_revenue_after_split(attraction)
+        
+        for attraction in self.list_of_attractions:
+            name = f"single_{attraction.name}"
+            json[name] = self.return_peak_single_attraction_revenue_in_json(attraction)
         
         return json
     
@@ -226,10 +283,22 @@ class Bundle:
         json = {
             "name" : self.get_name(),
             "price" : self.get_non_peak_best_price(),
-            "revenue": self.get_non_peak_revenue_per_month(self.get_non_peak_best_price())
+            "revenue": self.get_non_peak_best_revenue()
         }
-        
         return json
+    
+    def return_non_peak_revenue_split(self):
+        json = {}
+        
+        for attraction in self.list_of_attractions:
+            name = f"bundled_single_{attraction.name}"
+            json[name] = self.return_non_peak_bundled_attraction_revenue_after_split(attraction)
+        
+        for attraction in self.list_of_attractions:
+            name = f"single_{attraction.name}"
+            json[name] = self.return_non_peak_single_attraction_revenue_in_json(attraction)
+        
+        return json 
 
 
 ##################################### Test case #####################################

@@ -15,8 +15,8 @@ def go_popularity():
     return jsonify(popularity_data)
 
 @app.route("/revenue_split", methods=["GET", "POST"])
-def go_popularity():
-    revenue_split = get_popularity()
+def go_revenue_split():
+    revenue_split = get_revenue_split()
     return jsonify(revenue_split)
 
 @app.route("/bundle", methods=["GET", "POST"])

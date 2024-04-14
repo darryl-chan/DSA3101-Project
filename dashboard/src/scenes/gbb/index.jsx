@@ -2,15 +2,40 @@
 import { Box, Grid, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
-import LineChartGbb from "../../components/LineChartGbb";
 import StatBoxGbb from "../../components/StatBoxGbb";
 import BarChartGbb from "../../components/BarChartGbb";
 import PieChartGbb from "../../components/PieChartGbb";
 import TableBundle from "../../components/TableBundle";
+import React, { useEffect, useState } from 'react';
+import axios from "axios"; // Import Axios library
+
 
 const GBB = () => {
+  const [GbbbundleData, setGbbBundleData] = useState({});
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const fetchGbbBundleData = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/highest_bundle_revenue");
+      console.log(response.data); // Add this line
+      if (response && response.data && response.data.length > 0) {
+        // Access the price and revenue from the first chunk
+        const firstChunk = response.data[0];
+        const { price, revenue } = firstChunk[Object.keys(firstChunk)[0]];
+        // Update bundleData state with the price and revenue
+        setGbbBundleData({ price, revenue });
+      } else {
+        console.error('Empty or invalid response received.');
+      }
+    } catch (error) {
+      console.error('Error fetching bundle data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchGbbBundleData();
+  }, []);
 
   return (
     <Box m="15px">
@@ -30,7 +55,7 @@ const GBB = () => {
           justifyContent="center"
         >
           <StatBoxGbb
-            title="12,361"
+            title={`$${GbbbundleData.price.toFixed(2)}`} // Access the price from bundleData and round to 2 decimal places
             subtitle="Recommended Bundle Pricing"
           />
         </Box>
@@ -42,7 +67,7 @@ const GBB = () => {
           justifyContent="center"
         >
           <StatBoxGbb
-            title="431,225"
+            title={`$${GbbbundleData.revenue.toFixed(2)}`} // Access the revenue from bundleData and round to 2 decimal places
             subtitle="Total Revenue of Bundle"
           />
         </Box>

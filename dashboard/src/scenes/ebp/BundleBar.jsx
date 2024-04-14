@@ -49,20 +49,31 @@ const BundleBar = () => {
       console.log('Selected values', selectedValues);
       const selectedKeys = selectedValues.map(item => item.key);
 
-      // Create a new FormData instance
-      const formData = new FormData();
-
+       // Create a new FormData instance
+       const formData = new FormData();
     // Append each selected key-value pair individually
       formData.append('selectedKeys', JSON.stringify(selectedKeys));
+
       e.preventDefault(); 
-      try { 
+      if (selectedKeys.length === 1) {
+        setSnackbarMessage("Please select more than 1 attraction to bundle.");
+        setOpenSnackbar(true);
+      }
+
+      if (selectedKeys.includes("Singapore Cable Car") || selectedKeys.includes("SkyHelix Sentosa") || selectedKeys.includes("Central Beach Bazaar") || selectedKeys.includes("Wings Of Time")) {
+        try { 
           console.log('Data sent to backend', selectedKeys);
           const response = await axios.post('http://localhost:5000/bundle', selectedKeys ); 
           console.log('Data received from backend:', response.data); 
           // Handle response or update UI as needed 
-      } catch (error) { 
+        } catch (error) { 
           console.error('Error sending data:', error); 
-      } 
+        } 
+      } else {
+        setSnackbarMessage("Bundle must include at least 1 MFLG attraction.");
+        setOpenSnackbar(true);
+      }
+      
   };
 
     // const handleSubmit = () => {

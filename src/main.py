@@ -51,4 +51,4 @@ def go_find_mflg_bundle_with_highest_revenue():
     return jsonify(get_bundles_with_at_least_one_mflg())
 
 if __name__ == '__main__':
-    app.run(debug=True, host = '0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')

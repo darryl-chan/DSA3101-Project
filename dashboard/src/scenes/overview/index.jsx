@@ -14,13 +14,57 @@ import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 import { mockDataPopularity } from "../../data/mockData";
 import { DataGrid } from "@mui/x-data-grid";
+import React, { useEffect, useState } from 'react';
+import axios from "axios"; // npm install axios
 // import { Link } from 'react-router-dom';
+
 
 
 const Overview = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  // Define state to store fetched data
+  const [popularityData, setPopularityData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Function to fetch data from Flask backend
+  const fetchPopularityData = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/popularity"); // Make GET request to Flask route
+      const formattedData = response.data.map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }));
+      setPopularityData(formattedData); // Update state with fetched data
+      setLoading(false); // Set loading to false after data is fetched
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false); // Set loading to false in case of error
+    }
+  };
+
+  // Fetch data when component mounts
+  useEffect(() => {
+    fetchPopularityData();
+  }, []);
+
+  // Function to round down to whole number
+  const roundDown = (num) => {
+    return Math.floor(num); // Use Math.floor() to round down
+  };
+
+  // Function to round to one decimal place
+  const roundToOneDecimalPlace = (num) => {
+    return Math.floor(num * 10) / 10; // Round to one decimal place
+  };
+
+  // Function to round to two decimal places
+  const roundToTwoDecimalPlaces = (num) => {
+    return num.toFixed(2); // Use toFixed(2) to round to two decimal places
+  };
+
+  // creating headings for a ranked summary popularity rating table
   const columns = [ 
     { field: "rank", headerName: "Ranking", flex: 1 },
     {
@@ -66,11 +110,12 @@ const Overview = () => {
     },
   ];
   
-
+  // creating rows for the summary rank table which returns the top 3 results by popularity rating
   const top3Rowsx = mockDataPopularity.slice().sort((a, b) => b.rating - a.rating).slice(0, 3);
   const top3Rows = top3Rowsx.map((row, rank) => ({ ...row, rank: rank + 1 }))
 
 
+  // outlining the page
   return (
     <Box m="20px">
       {/* HEADER */}
@@ -100,7 +145,8 @@ const Overview = () => {
         gridAutoRows="140px"
         gap="20px"
       >
-        {/* ROW 1 */}
+
+        {/* ROW 1 : top rated attractions of MFLG and competitor respectively*/}
         
         <Box
           gridColumn="span 6"
@@ -142,68 +188,9 @@ const Overview = () => {
             }
           />
         </Box>
-        {/*<Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title="32,441"
-            subtitle="New Clients"
-            progress="0.30"
-            increase="+5%"
-            icon={
-              <PersonAddIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title="1,325,134"
-            subtitle="Traffic Received"
-            progress="0.80"
-            increase="+43%"
-            icon={
-              <TrafficIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-          </Box> */}
 
+        {/* ROW 2 : weekly visitation and peak vs non-peak revenue */}
         
-        
-
-        {/* ROW 2 */}
-        {/*}
-        <Box
-          gridColumn="span 12"
-          gridRow="span 1"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Geography Based Traffic
-          </Typography>
-          <Box height="200px">
-            <GeographyChart isDashboard={true} />
-          </Box>
-        </Box> 
-        */}
         <Box
           gridColumn="span 6"
           gridRow="span 2"
@@ -295,7 +282,7 @@ const Overview = () => {
         </Box>
         
 
-        {/* ROW 3 */}
+        {/* ROW 3 : top 3 ranking of attractions by popularity rating */}
         
         <Box
           gridColumn="span 12"

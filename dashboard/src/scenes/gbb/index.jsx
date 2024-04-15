@@ -17,7 +17,7 @@ const GBB = () => {
 
   const fetchGbbBundleData = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/highest_bundle_revenue");
+      const response = await axios.get("http://127.0.0.1:5000/highest_bundle_revenue_mflg");
       console.log(response.data); // Add this line
       if (response && response.data && response.data.length > 0) {
         // Access the price and revenue from the first chunk
@@ -54,10 +54,12 @@ const GBB = () => {
           // alignItems="center"
           justifyContent="center"
         >
-          <StatBoxGbb
-            title={`$${GbbbundleData.price.toFixed(2)}`} // Access the price from bundleData and round to 2 decimal places
-            subtitle="Recommended Bundle Pricing"
-          />
+          {GbbbundleData.price && ( // need this so that the dashboard does not show undefined while fetching data, will only show statbox component when it is not undefined
+            <StatBoxGbb
+              title={`$${GbbbundleData.price?.toFixed(2)}`} // Access the price from bundleData and round to 2 decimal places
+              subtitle="Recommended Bundle Pricing"
+            />
+          )}
         </Box>
         <Box
           gridColumn="span 3"
@@ -66,10 +68,12 @@ const GBB = () => {
           // alignItems="left"
           justifyContent="center"
         >
-          <StatBoxGbb
-            title={`$${GbbbundleData.revenue.toFixed(2)}`} // Access the revenue from bundleData and round to 2 decimal places
-            subtitle="Total Revenue of Bundle"
-          />
+          {GbbbundleData.price && (
+            <StatBoxGbb
+              title={`$${GbbbundleData.revenue?.toFixed(2)}`} // Access the revenue from bundleData and round to 2 decimal places
+              subtitle="Total Revenue of Bundle"
+            />
+          )}
         </Box>
 
         <Box

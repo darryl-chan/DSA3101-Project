@@ -16,12 +16,13 @@ class Attraction:
     
 
     # Constructor method (initialize object)
-    def __init__(self, name, cost, df):
+    def __init__(self, name, cost, df, mflg):
         # Instance attributes
         self.name = name
         self.cost = cost
         self.df = df
         self.customer_per_year = self.get_customer_per_year()
+        self.mflg = True if (mflg.lower() == "yes" or mflg.lower() == True) else False
 
     def get_number_of_review(self):
         return len(self.df)
@@ -98,7 +99,8 @@ class Attraction:
             "pop" : self.get_popularity_level(),
             "rating" : self.get_popularity_score(),
             "customers" : self.get_customer_per_year(),
-            "revenue" : self.get_revenue_per_year()
+            "revenue" : self.get_revenue_per_year(),
+            "mflg" : True
         }
         return json
     
@@ -108,7 +110,8 @@ class Attraction:
             "pop" : self.get_popularity_level(),
             "rating" : self.get_popularity_score(),
             "customers" : self.get_peak_customer_per_month(),
-            "revenue" : self.get_peak_revenue_per_month()
+            "revenue" : self.get_peak_revenue_per_month(),
+            "mflg" : True
         }
         return json
     
@@ -118,7 +121,8 @@ class Attraction:
             "pop" : self.get_popularity_level(),
             "rating" : self.get_popularity_score(),
             "customers" : self.get_non_peak_customer_per_month(),
-            "revenue" : self.get_non_peak_revenue_per_month()
+            "revenue" : self.get_non_peak_revenue_per_month(),
+            "mflg" : True
         }
         return json
 

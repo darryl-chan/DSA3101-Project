@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-// import { mockDataPopularity } from "../../data/mockData";
 import Header from "../../components/Header";
 import axios from "axios"; // Import Axios library
 
@@ -10,25 +9,6 @@ import axios from "axios"; // Import Axios library
 const Popularity = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-
-  // // Define state to store fetched data
-  // const [popularityData, setPopularityData] = useState([]);
-
-  // // Function to fetch data from Flask backend
-  // const fetchPopularityData = async () => {
-  //   try {
-  //     const response = await axios.get("http://127.0.0.1:5000/popularity"); // Make GET request to Flask route
-  //     setPopularityData(response.data); // Update state with fetched data
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-
-  // // Fetch data when component mounts
-  // useEffect(() => {
-  //   fetchPopularityData();
-  // }, []);
 
   // Define state to store fetched data
   const [popularityData, setPopularityData] = useState([]);
@@ -55,37 +35,77 @@ const Popularity = () => {
     fetchPopularityData();
   }, []);
 
+  // Function to round down to whole number
+  const roundDown = (num) => {
+    return Math.floor(num); // Use Math.floor() to round down
+  };
 
+  // Function to round to one decimal place
+  const roundToOneDecimalPlace = (num) => {
+    return Math.floor(num * 10) / 10; // Round to one decimal place
+  };
+
+  // Function to round to two decimal places
+  const roundToTwoDecimalPlaces = (num) => {
+    return num.toFixed(2); // Use toFixed(2) to round to two decimal places
+  };
+
+  // Define columns of table
   const columns = [    
     {
       field: "name",
       headerName: "Name of Attraction",
       flex: 1,
-      cellClassName: "name-column--cell",
     },
-    // {
-    //   field: "category",
-    //   headerName: "Category",
-    //   flex: 0.8,
-    // },
+    {
+      field: "category",
+      headerName: "Category",
+      flex: 1,
+      valueGetter: (params) => {
+        // Check if name matches certain set of names
+        if (params.row.name === "Wings of Time" || params.row.name === "Singapore cable car"|| params.row.name === "Sky Helix Sentosa") {
+          return "MFLG";
+        } else {
+          return "Competitor";
+        }
+      },
+    },
     {
       field: "revenue",
       headerName: "Monthly Revenue Estimate ($/month)",
       flex: 1.2,
+      renderCell: (params) => (
+        <Typography>
+          {roundToTwoDecimalPlaces(params.row.revenue)}
+        </Typography>
+      ),
     },
     {
       field: "customers",
       headerName: "Monthly Customer Estimate",
-      flex: 1,      
+      flex: 1,
+      renderCell: (params) => (
+        <Typography>
+          {roundDown(params.row.customers)}
+        </Typography>
+      ),      
     },
     {
       field: "rating",
       headerName: "Popularity Rating",
       flex: 1,
       renderCell: (params) => (
-        <Typography color={colors.greenAccent[300]}>
-          {params.row.rating}
-        </Typography>
+        <Typography
+        color={
+          params.row.pop === "Very Low"
+            ? colors.redAccent[500] // Set color to red for "Very Low"
+            : params.row.pop === "Very high"
+            ? colors.greenAccent[300] // Set color to green for "Very high"
+            : colors.grey[100] // Default color for other values
+        }
+      >
+        {roundToOneDecimalPlace(params.row.rating)}
+      </Typography>
       ),
     },
     {
@@ -93,9 +113,17 @@ const Popularity = () => {
       headerName: "Degree of Popularity",
       flex: 1,
       renderCell: (params) => (
-        <Typography color={colors.greenAccent[300]}>
-          {params.row.status}
-        </Typography>
+        <Typography
+        color={
+          params.row.pop === "Very Low"
+            ? colors.redAccent[500] // Set color to red for "Very Low"
+            : params.row.pop === "Very high"
+            ? colors.greenAccent[300] // Set color to green for "Very High"
+            : colors.grey[100] // Default color for other values
+        }
+      >
+        {params.row.pop}
+      </Typography>
       ),
     },
   ];
@@ -118,9 +146,6 @@ const Popularity = () => {
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
           },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.blueAccent[700],
             borderBottom: "none",
@@ -133,11 +158,10 @@ const Popularity = () => {
             backgroundColor: colors.blueAccent[700],
           },
           "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
+            color: `${colors.blueAccent[700]} !important`,
           },
         }}
       >
-        {/* <DataGrid checkboxSelection rows={mockDataPopularity} columns={columns} /> */}
         <DataGrid checkboxSelection rows={popularityData} columns={columns} />
       </Box>
     </Box>

@@ -80,7 +80,7 @@ class Attraction:
         
         level = None
         if pop_score >= 8.5 :
-            level = "Very high"
+            level = "Very High"
         elif pop_score >= 7:
             level = "High"
         elif pop_score >= 5.5:

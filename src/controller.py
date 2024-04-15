@@ -61,6 +61,7 @@ def get_popularity():
     names = np.array(df['Name'])
     csv_names = np.array(df['CSV name'])
     costs = np.array(df['Price'])
+    mflg = np.array(df['Under MFLG?'])
     
     lst_to_store_json = []
     
@@ -68,11 +69,12 @@ def get_popularity():
         name = names[i]
         csv = csv_names[i]
         cost = costs[i]
+        is_mflg = mflg[i]
         
                 
         df_of_attraction = pd.read_csv(data_dir + f"/{csv}")
         
-        curr_attraction = Attraction(name, cost, df_of_attraction)
+        curr_attraction = Attraction(name, cost, df_of_attraction, is_mflg)
         
         lst_to_store_json.append(curr_attraction.return_popularity_analysis())
     

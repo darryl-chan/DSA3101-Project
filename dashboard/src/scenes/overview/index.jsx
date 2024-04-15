@@ -66,7 +66,7 @@ const Overview = () => {
 
   // creating headings for a ranked summary popularity rating table
   const columns = [ 
-    { field: "rank", headerName: "Ranking", flex: 1 },
+    { field: "rank", headerName: "Ranking", flex: 0.7 },
     {
       field: "name",
       headerName: "Name of Attraction",
@@ -74,44 +74,102 @@ const Overview = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "category",
+      field: "mflg",
       headerName: "Category",
-      flex: 0.8,
+      flex: 0.6,
+      valueGetter: (params) => {
+        // Check if name matches certain set of names
+        if (params.row.name === "Wings of Time" || params.row.name === "Singapore cable car"|| params.row.name === "Sky Helix Sentosa") {
+          return "MFLG";
+        } else {
+          return "Competitor";
+        }
+      },
+      //renderCell: (params) => (<span>{params.row.mflg ? 'MFLG' : 'Competitor'}</span>),
     },
         {
       field: "revenue",
       headerName: "Monthly Revenue Estimate ($/month)",
-      flex: 1.2,
-    },
-    {
-      field: "customers",
-      headerName: "Monthly Customer Estimate",
-      flex: 1,      
-    },
-    {
-      field: "rating",
-      headerName: "Popularity Rating",
-      flex: 1,
+      flex: 1.4,
       renderCell: (params) => (
-        <Typography color={colors.greenAccent[300]}>
-          {params.row.rating}
+        <Typography>
+          {roundToTwoDecimalPlaces(params.row.revenue)}
         </Typography>
       ),
     },
     {
-      field: "status",
+      field: "customers",
+      headerName: "Monthly Customer Estimate",
+      flex: 1.1,      
+      renderCell: (params) => (
+        <Typography>
+          {roundDown(params.row.customers)}
+        </Typography>
+      ),  
+    },
+    {
+      field: "rating",
+      headerName: "Popularity Rating",
+      flex: 0.9,
+      renderCell: (params) => (
+        <Typography color={colors.greenAccent[300]}>
+          {roundToOneDecimalPlace(params.row.rating)}
+        </Typography>
+      ),
+    },
+    {
+      field: "pop",
       headerName: "Degree of Popularity",
       flex: 1,
       renderCell: (params) => (
         <Typography color={colors.greenAccent[300]}>
-          {params.row.status}
+          {params.row.pop}
         </Typography>
       ),
     },
   ];
   
+
+  // finding the MFLG attraction with highest revenue
+
+  const HighestRevenueOfMflg = () => {
+  
+    const filteredData = popularityData.filter(entry => entry.mflg);
+
+    const entryWithHighestRevenue = filteredData.reduce((prev, current) => {
+      return (prev.revenue > current.revenue) ? prev : current;
+    });
+
+    return (
+      <div>
+        <h1>Name with the Highest Revenue (mflg=true)</h1>
+        <p>{entryWithHighestRevenue.name}</p>
+      </div>
+    );
+  };
+
+
+  // finding the competitor attraction with highest revenue
+
+  const HighestRevenueOfComp = () => {
+
+    const filteredData = popularityData.filter(entry => !entry.mflg);
+  
+    const entryWithHighestRevenue = filteredData.reduce((prev, current) => {
+      return (prev.revenue > current.revenue) ? prev : current;
+    });
+  
+    return (
+      <div>
+        <h1>Name with the Highest Revenue (mflg=false)</h1>
+        <p>{entryWithHighestRevenue.name}</p>
+      </div>
+    );
+  };
+
+
   // creating rows for the summary rank table which returns the top 3 results by popularity rating
-  const top3Rowsx = mockDataPopularity.slice().sort((a, b) => b.rating - a.rating).slice(0, 3);
+  const top3Rowsx = popularityData.slice().sort((a, b) => b.rating - a.rating).slice(0, 3);
   const top3Rows = top3Rowsx.map((row, rank) => ({ ...row, rank: rank + 1 }))
 
 
@@ -157,15 +215,13 @@ const Overview = () => {
         >
           {/* <Link to="/popularity" style={{ textDecoration: 'none' }}> */}
           <StatBox
-            title="Wings of Time"
-            subtitle="MFLG's Top Rated Attraction"
-            progress="0.75"
-            increase="+14%"
-            icon={
-              <EmailIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
+            // title={popularityData.filter(item => item.mflg === true).reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {}).name}
+            title={popularityData
+              .filter(item => item.mflg === true) // Filter MFLG attractions based on category
+              .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {}).name // Get attraction name with highest revenue
             }
+            subtitle="MFLG's Top Rated Attraction"
+            progress="1"
           />
            {/* </Link> */}
         </Box>
@@ -177,15 +233,13 @@ const Overview = () => {
           justifyContent="center"
         >
           <StatBox
-            title="S.E.A. Aquarium"
-            subtitle="Competitor's Top Rated Attraction"
-            progress="0.50"
-            increase="+21%"
-            icon={
-              <PointOfSaleIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
+            title={popularityData
+              .filter(item => item.mflg === false)
+              .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {})
+              .name
             }
+            subtitle="Competitor's Top Rated Attraction"
+            progress="1"
           />
         </Box>
 

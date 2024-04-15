@@ -99,7 +99,7 @@ const Popularity = () => {
         color={
           params.row.pop === "Very Low"
             ? colors.redAccent[500] // Set color to red for "Very Low"
-            : params.row.pop === "Very high"
+            : params.row.pop === "Very High"
             ? colors.greenAccent[300] // Set color to green for "Very high"
             : colors.grey[100] // Default color for other values
         }
@@ -117,7 +117,7 @@ const Popularity = () => {
         color={
           params.row.pop === "Very Low"
             ? colors.redAccent[500] // Set color to red for "Very Low"
-            : params.row.pop === "Very high"
+            : params.row.pop === "Very High"
             ? colors.greenAccent[300] // Set color to green for "Very High"
             : colors.grey[100] // Default color for other values
         }

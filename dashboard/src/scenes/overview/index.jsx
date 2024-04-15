@@ -215,11 +215,11 @@ const Overview = () => {
         >
           {/* <Link to="/popularity" style={{ textDecoration: 'none' }}> */}
           <StatBox
-            // title={popularityData.filter(item => item.mflg === true).reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {}).name}
             title={popularityData
-              .filter(item => item.mflg === true) // Filter MFLG attractions based on category
-              .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {}).name // Get attraction name with highest revenue
-            }
+            .filter(item => item.mflg === true)
+            .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {})
+            .name
+          }
             subtitle="MFLG's Top Rated Attraction"
             progress="1"
           />

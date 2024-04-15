@@ -61,6 +61,7 @@ def get_popularity():
     names = np.array(df['Name'])
     csv_names = np.array(df['CSV name'])
     costs = np.array(df['Price'])
+    mflg = np.array(df['Under MFLG?'])
     
     lst_to_store_json = []
     
@@ -68,11 +69,12 @@ def get_popularity():
         name = names[i]
         csv = csv_names[i]
         cost = costs[i]
+        is_mflg = mflg[i]
         
                 
         df_of_attraction = pd.read_csv(data_dir + f"/{csv}")
         
-        curr_attraction = Attraction(name, cost, df_of_attraction)
+        curr_attraction = Attraction(name, cost, df_of_attraction, is_mflg)
         
         lst_to_store_json.append(curr_attraction.return_popularity_analysis())
     
@@ -91,6 +93,21 @@ def get_bundle_with_highest_revenue():
     bundle_with_highest_revenue = lst_of_bundles[max_index]
     
     return [bundle_with_highest_revenue.return_peak_bundle_overall_revenue_info()]
+
+def get_best_bundle_revenue_split():
+    lst_of_bundles = list_of_bundles()
+    
+    lst_of_mflg_bundles = list(filter(lambda x: x.has_at_least_one_mflg_attraction(), lst_of_bundles))
+    
+    lst_of_revenues = list(map(lambda x : x.get_peak_best_revenue(), lst_of_mflg_bundles))
+    
+    max_revenue = max(lst_of_revenues)
+    
+    max_index = lst_of_revenues.index(max_revenue)
+    
+    bundle_with_highest_revenue = lst_of_bundles[max_index]
+    
+    return [bundle_with_highest_revenue.return_peak_revenue_split()]
     
     
 def list_of_bundles():

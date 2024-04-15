@@ -16,6 +16,7 @@ import { mockDataPopularity } from "../../data/mockData";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from 'react';
 import axios from "axios"; // npm install axios
+import { ResponsiveLine } from "@nivo/line";
 // import { Link } from 'react-router-dom';
 
 
@@ -27,6 +28,7 @@ const Overview = () => {
   // Define state to store fetched data
   const [popularityData, setPopularityData] = useState([]);
   const [loading, setLoading] = useState(true);
+
 
   // Function to fetch data from Flask backend
   const fetchPopularityData = async () => {
@@ -63,6 +65,11 @@ const Overview = () => {
   const roundToTwoDecimalPlaces = (num) => {
     return num.toFixed(2); // Use toFixed(2) to round to two decimal places
   };
+
+
+  
+
+  
 
   // creating headings for a ranked summary popularity rating table
   const columns = [ 
@@ -128,44 +135,6 @@ const Overview = () => {
       ),
     },
   ];
-  
-
-  // finding the MFLG attraction with highest revenue
-
-  const HighestRevenueOfMflg = () => {
-  
-    const filteredData = popularityData.filter(entry => entry.mflg);
-
-    const entryWithHighestRevenue = filteredData.reduce((prev, current) => {
-      return (prev.revenue > current.revenue) ? prev : current;
-    });
-
-    return (
-      <div>
-        <h1>Name with the Highest Revenue (mflg=true)</h1>
-        <p>{entryWithHighestRevenue.name}</p>
-      </div>
-    );
-  };
-
-
-  // finding the competitor attraction with highest revenue
-
-  const HighestRevenueOfComp = () => {
-
-    const filteredData = popularityData.filter(entry => !entry.mflg);
-  
-    const entryWithHighestRevenue = filteredData.reduce((prev, current) => {
-      return (prev.revenue > current.revenue) ? prev : current;
-    });
-  
-    return (
-      <div>
-        <h1>Name with the Highest Revenue (mflg=false)</h1>
-        <p>{entryWithHighestRevenue.name}</p>
-      </div>
-    );
-  };
 
 
   // creating rows for the summary rank table which returns the top 3 results by popularity rating
@@ -215,8 +184,9 @@ const Overview = () => {
         >
           {/* <Link to="/popularity" style={{ textDecoration: 'none' }}> */}
           <StatBox
+          
             title={popularityData
-            .filter(item => item.mflg === true)
+            .filter(item => ["Wings of Time", "Singapore cable car", "Sky Helix Sentosa"].includes(item.name))
             .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {})
             .name
           }
@@ -234,7 +204,7 @@ const Overview = () => {
         >
           <StatBox
             title={popularityData
-              .filter(item => item.mflg === false)
+              .filter(item => !["Wings of Time", "Singapore cable car", "Sky Helix Sentosa"].includes(item.name))
               .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {})
               .name
             }
@@ -281,7 +251,7 @@ const Overview = () => {
             </Box>
           </Box>
           <Box height="250px" m="-20px 0 0 0">
-            <LineChart isDashboard={true} />
+            <LineChart data={popularityData} />
           </Box>
         </Box>
         <Box

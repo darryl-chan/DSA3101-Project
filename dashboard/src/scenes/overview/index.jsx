@@ -4,25 +4,76 @@ import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import EmailIcon from "@mui/icons-material/Email";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import TrafficIcon from "@mui/icons-material/Traffic";
+// import PersonAddIcon from "@mui/icons-material/PersonAdd";
+// import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
 import LineChart from "../../components/LineChart";
-import GeographyChart from "../../components/GeographyChart";
-import BarChart from "../../components/BarChart";
+// import GeographyChart from "../../components/GeographyChart";
+// import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
-import ProgressCircle from "../../components/ProgressCircle";
+// import ProgressCircle from "../../components/ProgressCircle";
 import { mockDataPopularity } from "../../data/mockData";
 import { DataGrid } from "@mui/x-data-grid";
+import React, { useEffect, useState } from 'react';
+import axios from "axios"; // npm install axios
+import { ResponsiveLine } from "@nivo/line";
 // import { Link } from 'react-router-dom';
+
 
 
 const Overview = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  // Define state to store fetched data
+  const [popularityData, setPopularityData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+
+  // Function to fetch data from Flask backend
+  const fetchPopularityData = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/popularity"); // Make GET request to Flask route
+      const formattedData = response.data.map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }));
+      setPopularityData(formattedData); // Update state with fetched data
+      setLoading(false); // Set loading to false after data is fetched
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false); // Set loading to false in case of error
+    }
+  };
+
+  // Fetch data when component mounts
+  useEffect(() => {
+    fetchPopularityData();
+  }, []);
+
+  // Function to round down to whole number
+  const roundDown = (num) => {
+    return Math.floor(num); // Use Math.floor() to round down
+  };
+
+  // Function to round to one decimal place
+  const roundToOneDecimalPlace = (num) => {
+    return Math.floor(num * 10) / 10; // Round to one decimal place
+  };
+
+  // Function to round to two decimal places
+  const roundToTwoDecimalPlaces = (num) => {
+    return num.toFixed(2); // Use toFixed(2) to round to two decimal places
+  };
+
+
+  
+
+  
+
+  // creating headings for a ranked summary popularity rating table
   const columns = [ 
-    { field: "rank", headerName: "Ranking", flex: 1 },
+    { field: "rank", headerName: "Ranking", flex: 0.7 },
     {
       field: "name",
       headerName: "Name of Attraction",
@@ -30,47 +81,68 @@ const Overview = () => {
       cellClassName: "name-column--cell",
     },
     {
-      field: "category",
+      field: "mflg",
       headerName: "Category",
-      flex: 0.8,
+      flex: 0.6,
+      valueGetter: (params) => {
+        // Check if name matches certain set of names
+        if (params.row.name === "Wings of Time" || params.row.name === "Singapore cable car"|| params.row.name === "Sky Helix Sentosa") {
+          return "MFLG";
+        } else {
+          return "Competitor";
+        }
+      },
+      //renderCell: (params) => (<span>{params.row.mflg ? 'MFLG' : 'Competitor'}</span>),
     },
         {
       field: "revenue",
       headerName: "Monthly Revenue Estimate ($/month)",
-      flex: 1.2,
+      flex: 1.4,
+      renderCell: (params) => (
+        <Typography>
+          {roundToTwoDecimalPlaces(params.row.revenue)}
+        </Typography>
+      ),
     },
     {
       field: "customers",
       headerName: "Monthly Customer Estimate",
-      flex: 1,      
+      flex: 1.1,      
+      renderCell: (params) => (
+        <Typography>
+          {roundDown(params.row.customers)}
+        </Typography>
+      ),  
     },
     {
       field: "rating",
       headerName: "Popularity Rating",
-      flex: 1,
+      flex: 0.9,
       renderCell: (params) => (
         <Typography color={colors.greenAccent[300]}>
-          {params.row.rating}
+          {roundToOneDecimalPlace(params.row.rating)}
         </Typography>
       ),
     },
     {
-      field: "status",
+      field: "pop",
       headerName: "Degree of Popularity",
       flex: 1,
       renderCell: (params) => (
         <Typography color={colors.greenAccent[300]}>
-          {params.row.status}
+          {params.row.pop}
         </Typography>
       ),
     },
   ];
-  
 
-  const top3Rowsx = mockDataPopularity.slice().sort((a, b) => b.rating - a.rating).slice(0, 3);
+
+  // creating rows for the summary rank table which returns the top 3 results by popularity rating
+  const top3Rowsx = popularityData.slice().sort((a, b) => b.rating - a.rating).slice(0, 3);
   const top3Rows = top3Rowsx.map((row, rank) => ({ ...row, rank: rank + 1 }))
 
 
+  // outlining the page
   return (
     <Box m="20px">
       {/* HEADER */}
@@ -100,7 +172,8 @@ const Overview = () => {
         gridAutoRows="140px"
         gap="20px"
       >
-        {/* ROW 1 */}
+
+        {/* ROW 1 : top rated attractions of MFLG and competitor respectively*/}
         
         <Box
           gridColumn="span 6"
@@ -111,15 +184,14 @@ const Overview = () => {
         >
           {/* <Link to="/popularity" style={{ textDecoration: 'none' }}> */}
           <StatBox
-            title="Wings of Time"
+          
+            title={popularityData
+            .filter(item => ["Wings of Time", "Singapore cable car", "Sky Helix Sentosa"].includes(item.name))
+            .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {})
+            .name
+          }
             subtitle="MFLG's Top Rated Attraction"
-            progress="0.75"
-            increase="+14%"
-            icon={
-              <EmailIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
+            progress="1"
           />
            {/* </Link> */}
         </Box>
@@ -131,79 +203,18 @@ const Overview = () => {
           justifyContent="center"
         >
           <StatBox
-            title="S.E.A. Aquarium"
+            title={popularityData
+              .filter(item => !["Wings of Time", "Singapore cable car", "Sky Helix Sentosa"].includes(item.name))
+              .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {})
+              .name
+            }
             subtitle="Competitor's Top Rated Attraction"
-            progress="0.50"
-            increase="+21%"
-            icon={
-              <PointOfSaleIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
+            progress="1"
           />
         </Box>
-        {/*<Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title="32,441"
-            subtitle="New Clients"
-            progress="0.30"
-            increase="+5%"
-            icon={
-              <PersonAddIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title="1,325,134"
-            subtitle="Traffic Received"
-            progress="0.80"
-            increase="+43%"
-            icon={
-              <TrafficIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-          </Box> */}
 
+        {/* ROW 2 : weekly visitation and peak vs non-peak revenue */}
         
-        
-
-        {/* ROW 2 */}
-        {/*}
-        <Box
-          gridColumn="span 12"
-          gridRow="span 1"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Geography Based Traffic
-          </Typography>
-          <Box height="200px">
-            <GeographyChart isDashboard={true} />
-          </Box>
-        </Box> 
-        */}
         <Box
           gridColumn="span 6"
           gridRow="span 2"
@@ -240,7 +251,7 @@ const Overview = () => {
             </Box>
           </Box>
           <Box height="250px" m="-20px 0 0 0">
-            <LineChart isDashboard={true} />
+            <LineChart data={popularityData} />
           </Box>
         </Box>
         <Box
@@ -295,7 +306,7 @@ const Overview = () => {
         </Box>
         
 
-        {/* ROW 3 */}
+        {/* ROW 3 : top 3 ranking of attractions by popularity rating */}
         
         <Box
           gridColumn="span 12"

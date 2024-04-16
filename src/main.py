@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
-from controller import get_popularity, bundle_2_attraction, get_revenue_split, get_bundle_2, get_bundle_with_highest_revenue, get_bundles_with_at_least_one_mflg
+from controller import get_popularity, bundle_2_attraction, get_revenue_split,\
+    get_bundle_2, get_bundle_with_highest_revenue, get_bundles_with_at_least_one_mflg, get_best_bundle_revenue_split
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -18,6 +19,12 @@ def go_popularity():
 def go_revenue_split():
     data = request.json ## [Attraction A, Attraction B]
     revenue_split = get_revenue_split(data)
+    return jsonify(revenue_split)
+
+# Best bundle after revenue split contains mflg
+@app.route("/best_bundle_revenue_split", methods=["GET", "POST"])
+def go_best_bundle_revenue_split():
+    revenue_split = get_best_bundle_revenue_split()
     return jsonify(revenue_split)
 
 @app.route("/bundle", methods=["GET", "POST"])
@@ -44,4 +51,4 @@ def go_find_mflg_bundle_with_highest_revenue():
     return jsonify(get_bundles_with_at_least_one_mflg())
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

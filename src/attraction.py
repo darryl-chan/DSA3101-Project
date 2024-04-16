@@ -3,7 +3,7 @@ import pandas as pd
 
 class Attraction:
     # Class attributes
-    REVIEW_TO_CUSTOMER_MULTIPLIER = 455
+    REVIEW_TO_CUSTOMER_MULTIPLIER = 350
     MIN_REVIEW_SCORE = 4.2
     MAX_REVIEW_SCORE = 4.8
     WEIGHT_FOR_REVIEW = 0.5

@@ -6,7 +6,6 @@ import { Box, Button, Typography, useTheme } from "@mui/material";
 import Multiselect from 'multiselect-react-dropdown';
 import axios from 'axios'; // npm install axios
 import StatBoxGbb from '../../components/StatBoxGbb';
-import BarChartEBP from './BarChartEBP';
 import { ResponsiveBar } from '@nivo/bar';
 
 const BundleBar = () => {
@@ -32,11 +31,21 @@ const BundleBar = () => {
         };
     };
 
-    const onRemove = (selectedList, removedItem) => {
-      setSelectedValues(selectedList);
+    const clearlist = () => {
+      setSelectedValues([]);
       setBundlesRev(null);
       setBundlePrice(0);
       setBRevenue(0);
+      setbA1Rev(0);
+      setbA2Rev(0);
+      setA1Rev(0);
+      setA2Rev(0);
+      setbarAdata([]);
+      setbarBdata([]);
+      setname1('');
+      setname2('');
+
+      console.log("after clearing", selectedValues);
     };
 
     const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -87,12 +96,13 @@ const BundleBar = () => {
       }
     };
 
-    const [dataReceived, setDataReceived] = useState(null);
     const [bundlesRev, setBundlesRev] = useState(null);
     const [singlebAtt1, setSinglebAtt1] = useState(null);
     const [singlebAtt2, setSinglebAtt2] = useState(null);
-    const [singleAtt1, setSingleAtt1] = useState(null);
-    const [singleAtt2, setSingleAtt2] = useState(null);
+    const [singleAtt1, setSingleAtt1] = useState({mflg: false});
+    const [singleAtt2, setSingleAtt2] = useState({mflg: false});
+    const [BSplitAtt1, setBSplitAtt1] = useState(null);
+    const [BSplitAtt2, setBSplitAtt2] = useState(null);
 
     const [bundlePrice, setBundlePrice] = useState(0);
     const [bRevenue, setBRevenue] = useState(0);
@@ -100,24 +110,42 @@ const BundleBar = () => {
     const [bA2Rev, setbA2Rev] = useState(0); 
     const [A1Rev, setA1Rev] = useState(0);
     const [A2Rev, setA2Rev] = useState(0);
+    const [BSA1, setBSA1] = useState(0);
+    const [BSA2, setBSA2] = useState(0);
 
-    // Function to round to two decimal places
+    const [ barAdata, setbarAdata ] = useState([]);
+    const [ barBdata, setbarBdata ] = useState([]);
+
+    const [name1, setname1 ] = useState('');
+    const [name2, setname2 ] = useState('');
+
+    // to two decimal places
     const roundToTwoDecimalPlaces = (num) => {
       return num.toFixed(2); // Use toFixed(2) to round to two decimal places
     };
 
     // for values to be updated instantly according to user input
-    useEffect( () => {
-      if(bundlesRev) {
-        setBundlePrice(roundToTwoDecimalPlaces(bundlesRev.price));
-        setBRevenue(roundToTwoDecimalPlaces(bundlesRev.revenue));
-        setbA1Rev(roundToTwoDecimalPlaces(singlebAtt1.revenue));
-        setbA2Rev(roundToTwoDecimalPlaces(singlebAtt2.revenue));
-        setA1Rev(roundToTwoDecimalPlaces(singleAtt1.revenue));
-        setA2Rev(roundToTwoDecimalPlaces(singleAtt2.revenue));
-        
+    useEffect(() => {
+      if (bundlesRev && BSplitAtt1) {
+          setBundlePrice(prevState => roundToTwoDecimalPlaces(bundlesRev.price));
+          setBRevenue(prevState => roundToTwoDecimalPlaces(bundlesRev.revenue));
+          setbA1Rev(prevState => roundToTwoDecimalPlaces(singlebAtt1.revenue));
+          setbA2Rev(prevState => roundToTwoDecimalPlaces(singlebAtt2.revenue));
+          setA1Rev(prevState => roundToTwoDecimalPlaces(singleAtt1.revenue));
+          setA2Rev(prevState => roundToTwoDecimalPlaces(singleAtt2.revenue));
+
+          // indiv share of revenue = total revenue from bundle_split - single revenue with bundling 
+          setBSA1(prevState => roundToTwoDecimalPlaces(BSplitAtt1.revenue - singlebAtt1.revenue));
+          setBSA2(prevState => roundToTwoDecimalPlaces(BSplitAtt2.revenue - singlebAtt2.revenue));
       }
-    })
+  }, [bundlesRev], [BSplitAtt1]);
+  
+
+    // for instant update of data
+    useEffect(() => {
+      // console.log('first chart data', barAdata);
+      // console.log('second chart data', barBdata);
+    }, [barAdata, barBdata, name1, name2]);    
 
     const handleSubmit = async (e) => { 
       console.log('Selected values', selectedValues);
@@ -140,10 +168,15 @@ const BundleBar = () => {
       if (selectedKeys.includes("Singapore Cable Car") || selectedKeys.includes("SkyHelix Sentosa") || selectedKeys.includes("Central Beach Bazaar") || selectedKeys.includes("Wings Of Time")) {
         try { 
           console.log('Data sent to backend', selectedKeys);
-          const response = await axios.post('http://localhost:5000/bundle', selectedKeys ); 
+
+          // const[response,splitrev_response] = await Promise.all([
+          //   axios.get('http://localhost:5000/bundle'),
+          //   axios.get('http://localhost:5000/revenue_split')
+          // ])
+
+          const response = await axios.post('http://localhost:5000/bundle', selectedKeys); 
           console.log('Data received from backend:', response.data); 
-          setDataReceived(response.data);
-          const indivValues = Object.values(response.data);
+          const indivValues = Object.values(response.data);          
 
           setBundlesRev(indivValues[0]);        
           setSinglebAtt1(indivValues[1]);
@@ -151,12 +184,47 @@ const BundleBar = () => {
           setSingleAtt1(indivValues[3]);
           setSingleAtt2(indivValues[4]);
 
-          // for checking: 
-          // console.log('testing price', bundlePrice);
-          // console.log('testing rev', bRevenue);
-          // console.log(bundlesRev);
-          // console.log('Show all', bundlesRev.revenue);
-      
+          const splitrev_response = await axios.post('http://localhost:5000/revenue_split', selectedKeys);
+          console.log("Revenue split:", splitrev_response.data);
+          const splitValues = Object.values(splitrev_response.data);
+       
+          setBSplitAtt1(splitValues[0]);
+          setBSplitAtt2(splitValues[1]);        
+
+          const temp = [
+            { key: 'With Bundling Option', 'Individual Revenue': bA1Rev, 'Revenue from Bundle': BSA1 },
+            { key: 'Without Bundling Option', 'Individual Revenue': A1Rev, 'Revenue from Bundle': 0 },
+          ];
+          const temp2 =  [ 
+            { key: 'With Bundling Option', 'Individual Revenue': bA2Rev, 'Revenue from Bundle': BSA2 },
+            { key: 'Without Bundling Option', 'Individual Revenue': A2Rev, 'Revenue from Bundle': 0 },
+          ];
+
+          let newbarA, newname1, newbarB, newname2;
+
+          if (singleAtt1.mflg && singleAtt2.mflg) { // both are MFLG's
+            newbarA = temp;
+            newname1 = singleAtt1.name;
+            newbarB = temp2;
+            newname2 = singleAtt2.name;
+          } else if (singleAtt1.mflg && !singleAtt2.mflg) {  // only first option is MFLG's
+            newbarA = temp;
+            newname1 = singleAtt1.name;
+            newbarB = []
+            newname2 = '';
+            setname2('');
+          } else { // other one must be MFLG if first isn't
+            newbarA = temp2;
+            newname1 = singleAtt2.name;
+            newbarB = []
+            newname2 = '';
+          }; 
+
+          setbarAdata(newbarA);
+          setname1(newname1);
+          setbarBdata(newbarB);
+          setname2(newname2);
+
         } catch (error) { 
           console.error('Error sending data:', error); 
         } 
@@ -170,24 +238,26 @@ const BundleBar = () => {
       return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     };
 
-    const clearlist = () => {
-      setSelectedValues([]);
-      setBundlesRev(null);
-      setBundlePrice(0);
-      setBRevenue(0);
-      setbA1Rev(0);
-      setbA2Rev(0);
-      setA1Rev(0);
-      setA2Rev(0);
-    };
+    const pastelColors = ["#9cadce", "#d1cfe2"];
 
-    const BarData = [
-      { key: 'With Bundling Option', 'Attraction 1': bA1Rev, 'Attraction 2': bA2Rev, 'Bundle': bRevenue },
-      { key: 'Without Bundling Option', 'Attraction 1': A1Rev, 'Attraction 2': A2Rev, 'Bundle': 0 },
-    ];
-
-    const pastelColors = ['#B2FFFF', '#FFDFBA', '#FFC8DD', '#C8C8FF', '#BAFFBA'];
-
+    const bartheme = {
+      axis: {
+          ticks: {
+              line: {
+                  stroke: '#efefef' // Color for the tick lines
+              },
+              text: {
+                  fill: '#aaaaaa' // Color for the tick text
+              }
+          },
+          legend: {
+              text: {
+                  fill: '#bbbbbb' // Color for the axis legend text
+              }
+          }
+      }
+  };
+  
 
     return (
       <Box>
@@ -206,7 +276,7 @@ const BundleBar = () => {
                 <Multiselect
                     displayValue="key"
                     onSelect={onSelect}
-                    onRemove={onRemove}                
+                    onRemove={clearlist}                
                     options={selectedValues.length === 2 ? [] : options}
                     selectedValues={selectedValues}
                     isObject={true}                
@@ -240,7 +310,8 @@ const BundleBar = () => {
                   variant="contained" 
                   color="primary"
                   style={ {backgroundColor: colors.blueAccent[700], height: '68px' }} 
-                  onClick={handleSubmit}>
+                  // onClick={(e) => handleSubmit(e)}>
+                  onClick={handleSubmit}> 
                   Bundle!
                 </Button>          
                 
@@ -290,31 +361,69 @@ const BundleBar = () => {
 
         </Box>
 
-        <Box>
-          <div style={ { width: '100%', height: '400px'} }>
-            <ResponsiveBar
-              data={BarData}
-              keys={['Attraction 1', 'Attraction 2', 'Bundle']}
-              indexBy="key"
-              margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-              padding={0.3}
-              colors={pastelColors}
-              borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-              axisBottom={{
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-              }}
-              axisLeft={{
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-              }}
-              labelSkipWidth={12}
-              labelSkipHeight={12}
-              groupMode='stacked'
-            />
-          </div>
+        <Box style={{ display: 'flex', flexDirection: 'row'}}>
+            <div style={ { width: '100%', height: '400px'} }>
+              <h2>{name1}</h2>
+              <ResponsiveBar
+                data={barAdata}
+                keys={['Individual Revenue', 'Revenue from Bundle']}
+                indexBy="key"
+                margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+                padding={0.3}
+                colors={pastelColors}
+                borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
+                axisBottom={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                }}
+                axisLeft={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                }}
+                labelSkipWidth={12}
+                labelSkipHeight={12}
+                groupMode='stacked'
+                theme={bartheme}
+                tooltip={({ id, value }) => (
+                  <div style={{ background: colors.blueAccent[700], padding: '12px', color: 'white' }}>
+                    <strong>{id}</strong>: {value}
+                  </div>
+                )}
+              />
+            </div>
+            <div style={ { width: '100%', height: '400px'} }>
+              <h2>{name2}</h2>
+              <ResponsiveBar
+                data={barBdata}
+                keys={['Individual Revenue', 'Revenue from Bundle']}
+                indexBy="key"
+                margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+                padding={0.3}
+                colors={pastelColors}
+                borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
+                axisBottom={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                }}
+                axisLeft={{
+                  tickSize: 5,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                }}
+                labelSkipWidth={12}
+                labelSkipHeight={12}
+                groupMode='stacked'
+                theme={bartheme}
+                tooltip={({ id, value }) => (
+                  <div style={{ background: colors.blueAccent[700], padding: '12px', color: 'white' }}>
+                    <strong>{id}</strong>: {value}
+                  </div>
+                )}
+                />
+            </div>
         </Box>
 
       </Box>

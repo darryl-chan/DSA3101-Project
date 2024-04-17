@@ -3,7 +3,6 @@ import Header from "../../components/Header";
 import BundleBar from "./BundleBar";
 import { ResponsiveBar } from "@nivo/bar";
 import { mockLineData as data } from "../../data/mockData";
-import BarChartEBP from "./BarChartEBP";
 import { useState } from "react";
 
 const EBP = () => {
@@ -18,6 +17,7 @@ const EBP = () => {
       <Box>
         <BundleBar />
       </Box>
+      
     </Box>  
   );
 };

@@ -11,7 +11,7 @@ import StatBox from "../../components/StatBox";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from 'react';
 import axios from "axios"; // npm install axios
-import { ResponsiveLine } from "@nivo/line";
+import { ResponsivePie } from "@nivo/pie";
 // import { Link } from 'react-router-dom';
 
 
@@ -62,129 +62,46 @@ const Overview = () => {
 
   // format popularityData so it can be passed into Line Chart
   const formattedPopularityData = [
-    {
-      id: 'customers',
-      data: popularityData.map(item => ({
-        x: item.name,
-        y: roundDown(item.customers)
-      }))
-    },
-  ];
-  
+    {id: 'Sky Helix', value: 3.7}, // sky helix
+    {id: 'Cable Car', value: 6.1}, // cable
+    {id: 'Wings of Time', value: 7.3}, // wings of time
+  ]
 
-  // creating a line chart for visitation data
-  const CustomerLineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
+  const sliceColors = ['#ffa080', '#ffdf80', '#a5d46a']
+
   
-  
-    return (
-      <ResponsiveLine
-        data={formattedPopularityData}
-        theme={{
-          axis: {
-            domain: {
-              line: {
-                stroke: colors.grey[100],
-              },
-            },
-            legend: {
-              text: {
-                fill: colors.grey[100],
-              },
-            },
-            ticks: {
-              line: {
-                stroke: colors.grey[100],
-                strokeWidth: 1,
-              },
-              text: {
-                fill: colors.grey[100],
-              },
-            },
-          },
-          legends: {
-            text: {
-              fill: colors.grey[100],
-            },
-          },
-          tooltip: {
-            container: {
-              color: colors.primary[500],
-            },
-          },
-        }}
-        colors={isDashboard ? { datum: "color" } : { scheme: "nivo" }} // added
-        margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-        xScale={{ type: "point" }}
-        yScale={{
-          type: "linear",
-          min: "auto",
-          max: "auto",
-          stacked: true,
-          reverse: false,
-        }}
-        yFormat=" >-.2f"
-        curve="catmullRom"
-        axisTop={null}
-        axisRight={null}
-        axisBottom={{
-          orient: "bottom",
-          tickSize: 0,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: isDashboard ? undefined : "Name of Attraction", // added
-          legendOffset: 36,
-          legendPosition: "middle",
-        }}
-        axisLeft={{
-          orient: "left",
-          tickValues: 5, // added
-          tickSize: 3,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: isDashboard ? undefined : "", // added
-          legendOffset: -40,
-          legendPosition: "middle",
-        }}
-        enableGridX={false}
-        enableGridY={false}
-        pointSize={8}
-        pointColor={{ theme: "background" }}
-        pointBorderWidth={2}
-        pointBorderColor={{ from: "serieColor" }}
-        pointLabelYOffset={-12}
-        useMesh={true}
-        legends={[
-          {
-            anchor: "bottom-right",
-            direction: "column",
-            justify: false,
-            translateX: 100,
-            translateY: 0,
-            itemsSpacing: 0,
-            itemDirection: "left-to-right",
-            itemWidth: 80,
-            itemHeight: 20,
-            itemOpacity: 0.75,
-            symbolSize: 12,
-            symbolShape: "circle",
-            symbolBorderColor: "rgba(0, 0, 0, .5)",
-            effects: [
-              {
-                on: "hover",
-                style: {
-                  itemBackground: "rgba(0, 0, 0, .03)",
-                  itemOpacity: 1,
-                },
-              },
-            ],
-          },
-        ]}
-      />
-    );
-  };
-  
+  const CustomerPieChart = () => (
+    <ResponsivePie
+      data={formattedPopularityData}
+      margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+      innerRadius={0.5}
+      padAngle={0.7}
+      cornerRadius={3}
+      colors={sliceColors}
+      borderWidth={1}
+      borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
+      arcLinkLabelsSkipAngle={10}
+      arcLinkLabelsTextColor="#FFFFFF"
+      arcLinkLabelsThickness={2}
+      arcLinkLabelsColor={{ from: 'color' }}
+      arcLabelsSkipAngle={10}
+      arcLabelsTextColor={{ from: 'color', modifiers: [ [ 'darker', 2 ] ] }}
+      legends={[
+        {
+          anchor: 'bottom',
+          direction: 'row',
+          translateY: 56,
+          itemWidth: 100,
+          itemHeight: 18,
+          itemTextColor: '#999',
+          symbolSize: 18,
+          symbolShape: 'circle',
+          effects: []
+        }
+      ]}
+      animate = {false}
+    />
+  );
 
 
   // creating headings for a ranked summary popularity rating table
@@ -288,6 +205,7 @@ const Overview = () => {
           }
             subtitle="MFLG's Top Rated Attraction"
             progress="1"
+            sx={{ color: 'ffffff'}}
           />
            {/* </Link> */}
         </Box>
@@ -318,12 +236,8 @@ const Overview = () => {
           {/* <Link to="/popularity" style={{ textDecoration: 'none' }}> */}
           <StatBox
           
-            title={popularityData
-              .filter(item => ["Wings of Time", "Singapore cable car", "Sky Helix Sentosa"].includes(item.name))
-              .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {})
-              .name
-          }
-            subtitle="MFLG's Top Rated Attraction"
+            title= "Singapore cable car + Wings of Time"
+            subtitle="Best Bundle"
             progress="1"
           />
            {/* </Link> */}
@@ -345,23 +259,12 @@ const Overview = () => {
           >
             <Box>
               <Typography
-                variant="h5"
-                fontWeight="600"
-                color={colors.grey[100]}
-              >Average Monthly Visitation by Attraction
-              </Typography>
-              <Typography
                 variant="h3"
                 fontWeight="bold"
-                color={colors.greenAccent[500]}
-              >
-                Most Visited Attraction: {` `}
-
-                {popularityData
-                  .reduce((prev, current) => (prev.customers > current.customers) ? prev : current, {})
-                  .name
-          }
+                color={colors.grey[100]}
+              >Degree of Popularity of MFLG Attractions
               </Typography>
+              
             </Box>
             <Box>
               <IconButton>
@@ -372,12 +275,12 @@ const Overview = () => {
             </Box>
           </Box>
           <Box height="400px" m="-20px 0 0 0">
-            <CustomerLineChart />
+            <CustomerPieChart />
           </Box>
         </Box>
         
 
-        {/* ROW 3 : top 3 ranking of attractions by popularity rating */}
+        {/* top 3 ranking of attractions by popularity rating */}
         
         <Box
           gridColumn="span 6"

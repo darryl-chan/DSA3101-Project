@@ -1,17 +1,29 @@
-import { useTheme } from "@mui/material";
 import { ResponsiveBar } from "@nivo/bar";
+import { useTheme } from "@mui/material";
 import { tokens } from "../theme";
-import { mockBarData as data } from "../data/mockData";
 
-const BarChartGbb = ({ isDashboard = false }) => {
+const BarChartGbb = ({ beforeBundleRevenue, afterBundleRevenue }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  // Define data for the bar chart
+  const data = [
+    {
+      category: "Before Bundling Option",
+      revenue: beforeBundleRevenue,
+    },
+    {
+      category: "After Bundling Option",
+      revenue: afterBundleRevenue,
+    },
+  ];
 
   return (
     <ResponsiveBar
       data={data}
+      keys={["revenue"]}
+      indexBy="category"
       theme={{
-        // added
         axis: {
           domain: {
             line: {
@@ -33,98 +45,40 @@ const BarChartGbb = ({ isDashboard = false }) => {
             },
           },
         },
-        // legends: {
-        //   text: {
-        //     fill: colors.grey[100],
-        //   },
-        // },
       }}
-      keys={["hot dog", "burger", "sandwich", "kebab", "fries", "donut"]}
-      indexBy="country"
-      margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+      margin={{ top: 50, right: 80, bottom: 50, left: 80 }}
       padding={0.3}
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
       colors={{ scheme: "nivo" }}
-      defs={[
-        {
-          id: "dots",
-          type: "patternDots",
-          background: "inherit",
-          color: "#38bcb2",
-          size: 4,
-          padding: 1,
-          stagger: true,
-        },
-        {
-          id: "lines",
-          type: "patternLines",
-          background: "inherit",
-          color: "#eed312",
-          rotation: -45,
-          lineWidth: 6,
-          spacing: 10,
-        },
-      ]}
-      borderColor={{
-        from: "color",
-        modifiers: [["darker", "1.6"]],
-      }}
-      axisTop={null}
-      axisRight={null}
       axisBottom={{
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "country", // changed
-        legendPosition: "middle",
-        legendOffset: 32,
       }}
       axisLeft={{
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "food", // changed
+        legend: "Revenue ($)", // Add y-axis label
         legendPosition: "middle",
-        legendOffset: -40,
+        legendOffset: -60,
       }}
-      enableLabel={false}
+      enableLabel={false} // switch to true to see the labels directly on barchart
       labelSkipWidth={12}
       labelSkipHeight={12}
       labelTextColor={{
         from: "color",
-        modifiers: [["darker", 1.6]],
+        modifiers: [["darker", 2]],
       }}
-      // legends={[
-      //   {
-      //     dataFrom: "keys",
-      //     anchor: "bottom-right",
-      //     direction: "column",
-      //     justify: false,
-      //     translateX: 120,
-      //     translateY: 0,
-      //     itemsSpacing: 2,
-      //     itemWidth: 100,
-      //     itemHeight: 20,
-      //     itemDirection: "left-to-right",
-      //     itemOpacity: 0.85,
-      //     symbolSize: 20,
-      //     effects: [
-      //       {
-      //         on: "hover",
-      //         style: {
-      //           itemOpacity: 1,
-      //         },
-      //       },
-      //     ],
-      //   },
-      // ]}
-      role="application"
-      barAriaLabel={function (e) {
-        return e.id + ": " + e.formattedValue + " in country: " + e.indexValue;
-      }}
+
+      // for the popup when hovering around the barchart
+      tooltip={(tooltip) => (
+        <div style={{ color: colors.grey[400], background: 'white', borderRadius: '8px', padding: '4px', margin: '4px' }}>
+          {tooltip.data.category}: {tooltip.data.revenue}
+        </div>
+      )}
     />
-    
   );
 };
 

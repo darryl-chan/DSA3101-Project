@@ -1,23 +1,17 @@
 import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import { mockTransactions } from "../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
-import EmailIcon from "@mui/icons-material/Email";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 // import PersonAddIcon from "@mui/icons-material/PersonAdd";
 // import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
-import LineChart from "../../components/LineChart";
 // import GeographyChart from "../../components/GeographyChart";
 // import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 // import ProgressCircle from "../../components/ProgressCircle";
-import { mockDataPopularity } from "../../data/mockData";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from 'react';
 import axios from "axios"; // npm install axios
 import { ResponsiveLine } from "@nivo/line";
-import { Scatter } from 'react-chartjs-2';
 // import { Link } from 'react-router-dom';
 
 
@@ -205,7 +199,7 @@ const Overview = () => {
     {
       field: "mflg",
       headerName: "Category",
-      flex: 0.6,
+      flex: 0.8,
       valueGetter: (params) => {
         // Check if name matches certain set of names
         if (params.row.name === "Wings of Time" || params.row.name === "Singapore cable car"|| params.row.name === "Sky Helix Sentosa") {
@@ -215,26 +209,6 @@ const Overview = () => {
         }
       },
       //renderCell: (params) => (<span>{params.row.mflg ? 'MFLG' : 'Competitor'}</span>),
-    },
-        {
-      field: "revenue",
-      headerName: "Monthly Revenue Estimate ($/month)",
-      flex: 1.4,
-      renderCell: (params) => (
-        <Typography>
-          {roundToTwoDecimalPlaces(params.row.revenue)}
-        </Typography>
-      ),
-    },
-    {
-      field: "customers",
-      headerName: "Monthly Customer Estimate",
-      flex: 1.1,      
-      renderCell: (params) => (
-        <Typography>
-          {roundDown(params.row.customers)}
-        </Typography>
-      ),  
     },
     {
       field: "rating",
@@ -298,7 +272,7 @@ const Overview = () => {
         {/* ROW 1 : top rated attractions of MFLG and competitor respectively*/}
         
         <Box
-          gridColumn="span 6"
+          gridColumn="span 4"
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
@@ -318,7 +292,7 @@ const Overview = () => {
            {/* </Link> */}
         </Box>
         <Box
-          gridColumn="span 6"
+          gridColumn="span 4"
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
@@ -334,11 +308,31 @@ const Overview = () => {
             progress="1"
           />
         </Box>
+        <Box
+          gridColumn="span 4"
+          backgroundColor={colors.primary[400]}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          {/* <Link to="/popularity" style={{ textDecoration: 'none' }}> */}
+          <StatBox
+          
+            title={popularityData
+              .filter(item => ["Wings of Time", "Singapore cable car", "Sky Helix Sentosa"].includes(item.name))
+              .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {})
+              .name
+          }
+            subtitle="MFLG's Top Rated Attraction"
+            progress="1"
+          />
+           {/* </Link> */}
+        </Box>
 
         {/* ROW 2 : weekly visitation and peak vs non-peak revenue */}
         
         <Box
-          gridColumn="span 12"
+          gridColumn="span 6"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
         >
@@ -386,7 +380,7 @@ const Overview = () => {
         {/* ROW 3 : top 3 ranking of attractions by popularity rating */}
         
         <Box
-          gridColumn="span 12"
+          gridColumn="span 6"
           gridRow="span 3"
           backgroundColor={colors.primary[400]}
           p="40px"

@@ -10,6 +10,8 @@
 `numpy`
 `flask`
 `flask_cors`
+`scipy`
+`matplotlib`
 
 ## File description
 

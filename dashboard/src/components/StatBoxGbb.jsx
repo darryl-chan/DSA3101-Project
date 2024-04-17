@@ -10,13 +10,13 @@ const StatBoxGbb = ({ title, subtitle, children }) => {
       <Box 
         display="flex" 
         alignItems="center"
-        justifyContent="space-between"
+        justifyContent="center"
       >
         {/* Subtitle */}
         <Typography 
           variant="h5" 
           sx={{ 
-            color: colors.greenAccent[500],
+            color: colors.greenAccent[300],
             textAlign: "left",
             marginTop: "10px",
             marginBottom: "20px"
@@ -28,7 +28,9 @@ const StatBoxGbb = ({ title, subtitle, children }) => {
 
       {/* Title */}
       <Box 
-        display="flex" 
+        display="flex"
+        justifyContent="center" // Center the title horizontally
+        alignItems="center" // Center the title vertically 
       >
         <Box>
           <Typography
@@ -39,10 +41,6 @@ const StatBoxGbb = ({ title, subtitle, children }) => {
           >
             {title}
           </Typography>
-          <Box display="flex" alignItems="center" justifyContent="space-between">
-            {/* Children (e.g., BarChart, Increase, PieChart) */}
-            {children}
-          </Box>
         </Box>
       </Box> 
 

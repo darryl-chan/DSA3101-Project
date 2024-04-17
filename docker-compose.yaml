@@ -1,5 +1,10 @@
 version: '3'
 services:
+  data-container:
+    build: ./data
+    volumes:
+      - db-volume:/app
+
   backend:
     build: ./src
     expose:
@@ -7,7 +12,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - my-volume:/app/data
+      - db-volume:/home/app/data
     healthcheck:
       test: "curl -f http://localhost:5000"
       interval: 5s
@@ -25,4 +30,4 @@ services:
 
 
 volumes:
-  my-volume:
+  db-volume:

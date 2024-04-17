@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from scipy.optimize import minimize_scalar, minimize
 import scipy
 import matplotlib.pyplot as plt
 
@@ -11,6 +12,7 @@ class Bundle:
     PERCENTAGE_OF_PEOPLE_BUYING_BUNDLE = 0.3
     PERCENTAGE_NON_PEAK_POPULARITY_MULTIPLIER = 1
     PERCENTAGE_PEAK_POPULARITY_MULTIPLIER = 2
+    PROFIT_MARGIN = 0.8
     
     def __init__(self, list_of_attractions):
         # List of Attractions
@@ -32,7 +34,7 @@ class Bundle:
 
     # Bundle price lower limit based on profit margin
     def get_min_possible_price(self):
-        return self.get_max_possible_price() * 0.8
+        return self.get_max_possible_price() * Bundle.PROFIT_MARGIN
     
     # Get average popularity of attractions and turn it into a fraction
     def get_scaled_popularity(self):
@@ -69,16 +71,15 @@ class Bundle:
         
         percentage_change_in_price = (initial_price - price) / initial_price
         popularity_percentage_after_dampen = popularity_percentage * Bundle.PERCENTAGE_NON_PEAK_POPULARITY_MULTIPLIER
-        #print(f"popularity percentage {popularity_percentage_after_dampen}, initial_customers  = {initial_customers}")
         return (price) * (initial_customers * (percentage_change_in_price * popularity_percentage_after_dampen + 1))
     
-    def get_best_price(self):
-        
-        best_price = scipy.optimize.fmin(lambda x: -self.revenue_for_price(x), 0)
-        return best_price[0]
+    # def get_best_price(self):
+    #     # minimize_scalar(objective_function, bounds=(lower_bound, upper_bound), method='bounded')
+    #     best_price =  minimize_scalar(lambda x: -self.revenue_for_price(x), bounds = (self.get_min_possible_price(),self.get_max_possible_price()), method='bounded')
+    #     return best_price
 
-    def plot_peak_price_revenue_graph(self):
-        self.plot_price_revenue_graph(self.revenue_for_price)
+    # def plot_peak_price_revenue_graph(self):
+    #     self.plot_price_revenue_graph(self.revenue_for_price)
     
 ##################################### Monthly peak functions #####################################
     
@@ -99,8 +100,9 @@ class Bundle:
         return (price) * (initial_customers * (percentage_change_in_price * popularity_percentage_after_multiplier + 1))
     
     def get_peak_best_price(self):
-        best_price = scipy.optimize.fmin(lambda x: -self.get_peak_revenue_per_month(x), 0)
-        return best_price[0]
+        func = lambda x: -self.get_peak_revenue_per_month(x)
+        best_price = minimize_scalar(func, bounds = (self.get_min_possible_price(),self.get_max_possible_price()))
+        return best_price.x
     
     def get_peak_best_revenue(self):
         return self.get_peak_revenue_per_month(self.get_peak_best_price())
@@ -127,8 +129,9 @@ class Bundle:
         return (price) * (initial_customers * (percentage_change_in_price * popularity_percentage_after_multiplier + 1))
 
     def get_non_peak_best_price(self):
-        best_price = scipy.optimize.fmin(lambda x: -self.get_non_peak_revenue_per_month(x), 0)
-        return best_price[0]
+        func = lambda x: -self.get_non_peak_revenue_per_month(x)
+        best_price = minimize_scalar(func, bounds = (self.get_min_possible_price(),self.get_max_possible_price()))
+        return best_price.x
     
     def get_non_peak_best_revenue(self):
         return self.get_non_peak_revenue_per_month(self.get_non_peak_best_price())

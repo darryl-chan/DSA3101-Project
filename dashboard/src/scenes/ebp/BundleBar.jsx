@@ -17,15 +17,16 @@ const BundleBar = () => {
     const options = [
         { cat: 'MFLG', key: 'Singapore Cable Car'},
         { cat: 'MFLG', key: 'SkyHelix Sentosa'},
-        // { cat: 'MFLG', key: 'Central Beach Bazaar'},
         { cat: 'MFLG', key: 'Wings Of Time'},
         { cat: 'Competitor', key: 'Sea Aquarium'},
         { cat: 'Competitor', key: 'Adventure Cove'},
         { cat: 'Competitor', key: 'Singapore Flyer'},
-        { cat: 'Competitor', key: 'iFly'}       
+        { cat: 'Competitor', key: 'iFly'},     
+        { cat: 'Competitor', key: 'ArtScience Museum'}  
     ];
 
     const onSelect = (selectedList, selectedItem) => {
+      console.log("selected items", selectedList);
         if (selectedValues.length <= 3) {
             setSelectedValues(selectedList);
         };
@@ -33,21 +34,28 @@ const BundleBar = () => {
 
     const clearlist = () => {
       setSelectedValues([]);
-      setBundlesRev(null);
       setBundlePrice(0);
-      setBRevenue(0);
+      setA1({mflg: true, name: ''});
+      setA2({mflg: true, name: ''});
       setbA1Rev(0);
       setbA2Rev(0);
-      setA1Rev(0);
-      setA2Rev(0);
+      setBSA1(0);
+      setBSA2(0);
+      setA1Change(0);
+      setA2Change(0);
       setbarAdata([]);
       setbarBdata([]);
-      setname1('');
-      setname2('');
 
       console.log("after clearing", selectedValues);
     };
 
+    const onRemove = (removedItem) => {
+      const updatedList = selectedValues.filter(item => item.id !== removedItem.id);
+      setSelectedValues(updatedList);
+      console.log(selectedValues);
+  };
+
+   
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const handleCloseSnackbar = (event, reason) => {
@@ -96,23 +104,6 @@ const BundleBar = () => {
       }
     };
 
-    const [bundlesRev, setBundlesRev] = useState(null);
-    const [singlebAtt1, setSinglebAtt1] = useState(null);
-    const [singlebAtt2, setSinglebAtt2] = useState(null);
-    const [singleAtt1, setSingleAtt1] = useState({mflg: false});
-    const [singleAtt2, setSingleAtt2] = useState({mflg: false});
-    const [BSplitAtt1, setBSplitAtt1] = useState(null);
-    const [BSplitAtt2, setBSplitAtt2] = useState(null);
-
-    const [bundlePrice, setBundlePrice] = useState(0);
-    const [bRevenue, setBRevenue] = useState(0);
-    const [bA1Rev, setbA1Rev] = useState(0);
-    const [bA2Rev, setbA2Rev] = useState(0); 
-    const [A1Rev, setA1Rev] = useState(0);
-    const [A2Rev, setA2Rev] = useState(0);
-    const [BSA1, setBSA1] = useState(0);
-    const [BSA2, setBSA2] = useState(0);
-
     const [ barAdata, setbarAdata ] = useState([]);
     const [ barBdata, setbarBdata ] = useState([]);
 
@@ -124,33 +115,27 @@ const BundleBar = () => {
       return num.toFixed(2); // Use toFixed(2) to round to two decimal places
     };
 
-    // for values to be updated instantly according to user input
-    useEffect(() => {
-      if (bundlesRev && BSplitAtt1) {
-          setBundlePrice(prevState => roundToTwoDecimalPlaces(bundlesRev.price));
-          setBRevenue(prevState => roundToTwoDecimalPlaces(bundlesRev.revenue));
-          setbA1Rev(prevState => roundToTwoDecimalPlaces(singlebAtt1.revenue));
-          setbA2Rev(prevState => roundToTwoDecimalPlaces(singlebAtt2.revenue));
-          setA1Rev(prevState => roundToTwoDecimalPlaces(singleAtt1.revenue));
-          setA2Rev(prevState => roundToTwoDecimalPlaces(singleAtt2.revenue));
+    const [BundlePrice, setBundlePrice] = useState(0);
 
-          // indiv share of revenue = total revenue from bundle_split - single revenue with bundling 
-          setBSA1(prevState => roundToTwoDecimalPlaces(BSplitAtt1.revenue - singlebAtt1.revenue));
-          setBSA2(prevState => roundToTwoDecimalPlaces(BSplitAtt2.revenue - singlebAtt2.revenue));
-      }
-  }, [bundlesRev], [BSplitAtt1]);
-  
+    const [A1, setA1] = useState({mflg: true, name: ''});
+    const [A2, setA2] = useState({mflg: true, name: ''});
 
-    // for instant update of data
-    useEffect(() => {
-      // console.log('first chart data', barAdata);
-      // console.log('second chart data', barBdata);
-    }, [barAdata, barBdata, name1, name2]);    
+    const [bA1Rev, setbA1Rev] = useState(0);
+    const [bA2Rev, setbA2Rev] = useState(0);
+    const [A1Rev, setA1Rev] = useState(0);
+    const [A2Rev, setA2Rev] = useState(0);
 
+    const [BSA1, setBSA1] = useState(0);
+    const [BSA2, setBSA2] = useState(0);
+
+    const [A1Change, setA1Change] = useState(0);
+    const [A2Change, setA2Change] = useState(0);
+
+
+    
     const handleSubmit = async (e) => { 
       console.log('Selected values', selectedValues);
       const selectedKeys = selectedValues.map(item => item.key);
-
       e.preventDefault(); 
       if (selectedKeys.length === 0) {
         return;
@@ -165,35 +150,33 @@ const BundleBar = () => {
         return;
       }
 
-      if (selectedKeys.includes("Singapore Cable Car") || selectedKeys.includes("SkyHelix Sentosa") || selectedKeys.includes("Central Beach Bazaar") || selectedKeys.includes("Wings Of Time")) {
+    // starts here
+      if (selectedKeys.includes("Singapore Cable Car") || selectedKeys.includes("SkyHelix Sentosa") || selectedKeys.includes("Wings Of Time")) {
         try { 
           console.log('Data sent to backend', selectedKeys);
+          const response = await axios.post('http://localhost:5000/bundle', selectedKeys);    
+          console.log('Data received from backend', response.data);
+          const indivValues = Object.values(response.data);      
 
-          // const[response,splitrev_response] = await Promise.all([
-          //   axios.get('http://localhost:5000/bundle'),
-          //   axios.get('http://localhost:5000/revenue_split')
-          // ])
+          setBundlePrice(roundToTwoDecimalPlaces(indivValues[0].price));    
 
-          const response = await axios.post('http://localhost:5000/bundle', selectedKeys); 
-          console.log('Data received from backend:', response.data); 
-          const indivValues = Object.values(response.data);          
+          setA1(indivValues[1]);
+          setA2(indivValues[2]);
 
-          setBundlesRev(indivValues[0]);        
-          setSinglebAtt1(indivValues[1]);
-          setSinglebAtt2(indivValues[2]);
-          setSingleAtt1(indivValues[3]);
-          setSingleAtt2(indivValues[4]);
+          setbA1Rev(parseFloat(indivValues[1].revenue));
+          setbA2Rev(parseFloat(indivValues[2].revenue));
+          setA1Rev(parseFloat(indivValues[3].revenue));
+          setA2Rev(parseFloat(indivValues[4].revenue));
 
           const splitrev_response = await axios.post('http://localhost:5000/revenue_split', selectedKeys);
-          console.log("Revenue split:", splitrev_response.data);
           const splitValues = Object.values(splitrev_response.data);
-       
-          setBSplitAtt1(splitValues[0]);
-          setBSplitAtt2(splitValues[1]);        
+      
+          setBSA1(parseFloat(splitValues[0].revenue));
+          setBSA2(parseFloat(splitValues[1].revenue));     
 
           const temp = [
-            { key: 'With Bundling Option', 'Individual Revenue': bA1Rev, 'Revenue from Bundle': BSA1 },
-            { key: 'Without Bundling Option', 'Individual Revenue': A1Rev, 'Revenue from Bundle': 0 },
+            { key: 'With Bundling Option', 'Individual Revenue': roundToTwoDecimalPlaces(bA1Rev), 'Revenue from Bundle': roundToTwoDecimalPlaces(BSA1) },
+            { key: 'Without Bundling Option', 'Individual Revenue': roundToTwoDecimalPlaces(A1Rev), 'Revenue from Bundle': 0 },
           ];
           const temp2 =  [ 
             { key: 'With Bundling Option', 'Individual Revenue': bA2Rev, 'Revenue from Bundle': BSA2 },
@@ -201,30 +184,42 @@ const BundleBar = () => {
           ];
 
           let newbarA, newname1, newbarB, newname2;
-
-          if (singleAtt1.mflg && singleAtt2.mflg) { // both are MFLG's
+          if (A1.mflg && A2.mflg) { // both are MFLG's
             newbarA = temp;
-            newname1 = singleAtt1.name;
+            newname1 = A1.name;
             newbarB = temp2;
-            newname2 = singleAtt2.name;
-          } else if (singleAtt1.mflg && !singleAtt2.mflg) {  // only first option is MFLG's
+            newname2 = A2.name
+    
+            setA1Change(roundToTwoDecimalPlaces((bA1Rev + BSA1 - A1Rev) / A1Rev * 100));
+            setA2Change(roundToTwoDecimalPlaces((bA2Rev + BSA2 - A2Rev) / A2Rev * 100));
+
+
+          } else if (A1.mflg && !A2.mflg) {  // only first option is MFLG's
             newbarA = temp;
-            newname1 = singleAtt1.name;
-            newbarB = []
+            newname1 = A1.name;
+            newbarB = [];
             newname2 = '';
             setname2('');
+
+            setA1Change(roundToTwoDecimalPlaces((bA1Rev + BSA1 - A1Rev) / A1Rev * 100));
+            setA2Change(0);
+
           } else { // other one must be MFLG if first isn't
             newbarA = temp2;
-            newname1 = singleAtt2.name;
+            newname1 = A2.name;
             newbarB = []
             newname2 = '';
+
+            setA1Change(roundToTwoDecimalPlaces((bA2Rev + BSA2 - A2Rev) / A2Rev * 100));
+            setA2Change(0);
+
           }; 
 
           setbarAdata(newbarA);
           setname1(newname1);
           setbarBdata(newbarB);
           setname2(newname2);
-
+          
         } catch (error) { 
           console.error('Error sending data:', error); 
         } 
@@ -234,9 +229,10 @@ const BundleBar = () => {
       }
     };
 
-    const numberWithCommas = (number) => {
-      return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    };
+
+    const displayPerc = (number) => {
+      return '+' + number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '%';
+    }
 
     const pastelColors = ["#9cadce", "#d1cfe2"];
 
@@ -248,11 +244,6 @@ const BundleBar = () => {
               },
               text: {
                   fill: '#aaaaaa' // Color for the tick text
-              }
-          },
-          legend: {
-              text: {
-                  fill: '#bbbbbb' // Color for the axis legend text
               }
           }
       }
@@ -276,7 +267,7 @@ const BundleBar = () => {
                 <Multiselect
                     displayValue="key"
                     onSelect={onSelect}
-                    onRemove={clearlist}                
+                    onRemove={onRemove} // may want to change                 
                     options={selectedValues.length === 2 ? [] : options}
                     selectedValues={selectedValues}
                     isObject={true}                
@@ -310,7 +301,6 @@ const BundleBar = () => {
                   variant="contained" 
                   color="primary"
                   style={ {backgroundColor: colors.blueAccent[700], height: '68px' }} 
-                  // onClick={(e) => handleSubmit(e)}>
                   onClick={handleSubmit}> 
                   Bundle!
                 </Button>          
@@ -335,12 +325,11 @@ const BundleBar = () => {
             gridColumn="span 3"
             backgroundColor={colors.primary[400]}
             display="flex"
-            // alignItems="center"
             justifyContent="center"
             width="300px"
           >
             <StatBoxGbb
-              title={bundlePrice}
+              title={BundlePrice}
               subtitle="Recommended Bundle Pricing"
             />
           </Box>
@@ -349,13 +338,25 @@ const BundleBar = () => {
             gridColumn="span 3"
             backgroundColor={colors.primary[400]}
             display="flex"
-            // alignItems="left"
             justifyContent="center"
             width="300px"
           >
             <StatBoxGbb
-              title= {numberWithCommas(bRevenue)}
-              subtitle="Total Revenue of Bundle"
+              title= {displayPerc(A1Change)}
+              subtitle="MFLG Attraction 1: Percentage change with bundling"
+            />
+          </Box>
+
+          <Box
+            gridColumn="span 3"
+            backgroundColor={colors.primary[400]}
+            display="flex"
+            justifyContent="center"
+            width="300px"
+          >
+            <StatBoxGbb
+              title= {displayPerc(A2Change)}
+              subtitle="MFLG Attraction 2: Percentage change with bundling"
             />
           </Box>
 

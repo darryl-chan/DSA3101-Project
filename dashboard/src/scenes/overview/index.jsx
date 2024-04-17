@@ -189,17 +189,17 @@ const Overview = () => {
 
   // creating headings for a ranked summary popularity rating table
   const columns = [ 
-    { field: "rank", headerName: "Ranking", flex: 0.7 },
+    { field: "rank", headerName: "Rank", flex: 0.1 },
     {
       field: "name",
       headerName: "Name of Attraction",
-      flex: 1,
+      flex: 0.9,
       cellClassName: "name-column--cell",
     },
     {
       field: "mflg",
       headerName: "Category",
-      flex: 0.8,
+      flex: 0.7,
       valueGetter: (params) => {
         // Check if name matches certain set of names
         if (params.row.name === "Wings of Time" || params.row.name === "Singapore cable car"|| params.row.name === "Sky Helix Sentosa") {

@@ -17,8 +17,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from 'react';
 import axios from "axios"; // npm install axios
 import { ResponsiveLine } from "@nivo/line";
+import { Scatter } from 'react-chartjs-2';
 // import { Link } from 'react-router-dom';
-
 
 
 const Overview = () => {
@@ -66,10 +66,132 @@ const Overview = () => {
     return num.toFixed(2); // Use toFixed(2) to round to two decimal places
   };
 
-
+  // format popularityData so it can be passed into Line Chart
+  const formattedPopularityData = [
+    {
+      id: 'customers',
+      data: popularityData.map(item => ({
+        x: item.name,
+        y: roundDown(item.customers)
+      }))
+    },
+  ];
   
 
+  // creating a line chart for visitation data
+  const CustomerLineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
   
+  
+    return (
+      <ResponsiveLine
+        data={formattedPopularityData}
+        theme={{
+          axis: {
+            domain: {
+              line: {
+                stroke: colors.grey[100],
+              },
+            },
+            legend: {
+              text: {
+                fill: colors.grey[100],
+              },
+            },
+            ticks: {
+              line: {
+                stroke: colors.grey[100],
+                strokeWidth: 1,
+              },
+              text: {
+                fill: colors.grey[100],
+              },
+            },
+          },
+          legends: {
+            text: {
+              fill: colors.grey[100],
+            },
+          },
+          tooltip: {
+            container: {
+              color: colors.primary[500],
+            },
+          },
+        }}
+        colors={isDashboard ? { datum: "color" } : { scheme: "nivo" }} // added
+        margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+        xScale={{ type: "point" }}
+        yScale={{
+          type: "linear",
+          min: "auto",
+          max: "auto",
+          stacked: true,
+          reverse: false,
+        }}
+        yFormat=" >-.2f"
+        curve="catmullRom"
+        axisTop={null}
+        axisRight={null}
+        axisBottom={{
+          orient: "bottom",
+          tickSize: 0,
+          tickPadding: 5,
+          tickRotation: 0,
+          legend: isDashboard ? undefined : "Name of Attraction", // added
+          legendOffset: 36,
+          legendPosition: "middle",
+        }}
+        axisLeft={{
+          orient: "left",
+          tickValues: 5, // added
+          tickSize: 3,
+          tickPadding: 5,
+          tickRotation: 0,
+          legend: isDashboard ? undefined : "", // added
+          legendOffset: -40,
+          legendPosition: "middle",
+        }}
+        enableGridX={false}
+        enableGridY={false}
+        pointSize={8}
+        pointColor={{ theme: "background" }}
+        pointBorderWidth={2}
+        pointBorderColor={{ from: "serieColor" }}
+        pointLabelYOffset={-12}
+        useMesh={true}
+        legends={[
+          {
+            anchor: "bottom-right",
+            direction: "column",
+            justify: false,
+            translateX: 100,
+            translateY: 0,
+            itemsSpacing: 0,
+            itemDirection: "left-to-right",
+            itemWidth: 80,
+            itemHeight: 20,
+            itemOpacity: 0.75,
+            symbolSize: 12,
+            symbolShape: "circle",
+            symbolBorderColor: "rgba(0, 0, 0, .5)",
+            effects: [
+              {
+                on: "hover",
+                style: {
+                  itemBackground: "rgba(0, 0, 0, .03)",
+                  itemOpacity: 1,
+                },
+              },
+            ],
+          },
+        ]}
+      />
+    );
+  };
+  
+
 
   // creating headings for a ranked summary popularity rating table
   const columns = [ 
@@ -186,9 +308,9 @@ const Overview = () => {
           <StatBox
           
             title={popularityData
-            .filter(item => ["Wings of Time", "Singapore cable car", "Sky Helix Sentosa"].includes(item.name))
-            .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {})
-            .name
+              .filter(item => ["Wings of Time", "Singapore cable car", "Sky Helix Sentosa"].includes(item.name))
+              .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {})
+              .name
           }
             subtitle="MFLG's Top Rated Attraction"
             progress="1"
@@ -216,8 +338,8 @@ const Overview = () => {
         {/* ROW 2 : weekly visitation and peak vs non-peak revenue */}
         
         <Box
-          gridColumn="span 6"
-          gridRow="span 2"
+          gridColumn="span 12"
+          gridRow="span 3"
           backgroundColor={colors.primary[400]}
         >
           <Box
@@ -232,14 +354,19 @@ const Overview = () => {
                 variant="h5"
                 fontWeight="600"
                 color={colors.grey[100]}
-              >Average Weekly Visitation by Attraction
+              >Average Monthly Visitation by Attraction
               </Typography>
               <Typography
                 variant="h3"
                 fontWeight="bold"
                 color={colors.greenAccent[500]}
               >
-                Weekly Average: 59,342 visitors
+                Most Visited Attraction: {` `}
+
+                {popularityData
+                  .reduce((prev, current) => (prev.customers > current.customers) ? prev : current, {})
+                  .name
+          }
               </Typography>
             </Box>
             <Box>
@@ -250,59 +377,9 @@ const Overview = () => {
               </IconButton>
             </Box>
           </Box>
-          <Box height="250px" m="-20px 0 0 0">
-            <LineChart data={popularityData} />
+          <Box height="400px" m="-20px 0 0 0">
+            <CustomerLineChart />
           </Box>
-        </Box>
-        <Box
-          gridColumn="span 6"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          overflow="auto"
-        >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            borderBottom={`4px solid ${colors.primary[500]}`}
-            colors={colors.grey[100]}
-            p="15px"
-          >
-            <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Increase in Revenue during Peak vs Non-Peak Hours
-            </Typography>
-          </Box>
-          {mockTransactions.map((transaction, i) => (
-            <Box
-              key={`${transaction.txId}-${i}`}
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              borderBottom={`4px solid ${colors.primary[500]}`}
-              p="15px"
-            >
-              <Box>
-                <Typography
-                  color={colors.greenAccent[500]}
-                  variant="h5"
-                  fontWeight="600"
-                >
-                  {transaction.txId}
-                </Typography>
-                <Typography color={colors.grey[100]}>
-                  {transaction.user}
-                </Typography>
-              </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
-              <Box
-                backgroundColor={colors.greenAccent[500]}
-                p="5px 10px"
-                borderRadius="4px"
-              >
-                ${transaction.cost}
-              </Box>
-            </Box>
-          ))}
         </Box>
         
 

@@ -62,9 +62,9 @@ const Overview = () => {
 
   // format popularityData so it can be passed into Line Chart
   const formattedPopularityData = [
-    {id: 'Sky Helix', value: 3.7}, // sky helix
-    {id: 'Cable Car', value: 6.1}, // cable
-    {id: 'Wings of Time', value: 7.3}, // wings of time
+    {id: 'Very Low', value: 1}, // sky helix
+    {id: 'Medium', value: 1}, // cable
+    {id: 'High', value: 1}, // wings of time
   ]
 
   const sliceColors = ['#ffa080', '#ffdf80', '#a5d46a']
@@ -132,7 +132,14 @@ const Overview = () => {
       headerName: "Popularity Rating",
       flex: 0.9,
       renderCell: (params) => (
-        <Typography color={colors.greenAccent[300]}>
+        <Typography 
+        color={
+          params.row.pop === "Very Low"
+            ? colors.redAccent[500] // Set color to red for "Very Low"
+            : params.row.pop === "Very High"
+            ? colors.greenAccent[300] // Set color to green for "Very high"
+            : colors.grey[100] // Default color for other values
+        }>
           {roundToOneDecimalPlace(params.row.rating)}
         </Typography>
       ),
@@ -142,7 +149,14 @@ const Overview = () => {
       headerName: "Degree of Popularity",
       flex: 1,
       renderCell: (params) => (
-        <Typography color={colors.greenAccent[300]}>
+        <Typography 
+        color={
+          params.row.pop === "Very Low"
+            ? colors.redAccent[500] // Set color to red for "Very Low"
+            : params.row.pop === "Very High"
+            ? colors.greenAccent[300] // Set color to green for "Very high"
+            : colors.grey[100] // Default color for other values
+        }>
           {params.row.pop}
         </Typography>
       ),
@@ -237,7 +251,7 @@ const Overview = () => {
           <StatBox
           
             title= "Singapore cable car + Wings of Time"
-            subtitle="Best Bundle"
+            subtitle="Best Recommended Bundle"
             progress="1"
           />
            {/* </Link> */}
@@ -301,9 +315,8 @@ const Overview = () => {
             "& .MuiDataGrid-cell": {
               borderBottom: "none",
             },
-            "& .name-column--cell": {
-              color: colors.greenAccent[300],
-            },
+            "& .name-column--cell": {},
+
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: colors.blueAccent[700],
               borderBottom: "none",

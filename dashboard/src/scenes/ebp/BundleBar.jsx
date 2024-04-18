@@ -115,6 +115,10 @@ const BundleBar = () => {
       return num.toFixed(2); // Use toFixed(2) to round to two decimal places
     };
 
+    const roundtoWhole = (num) => {
+      return Math.round(num);
+    };
+
     const [BundlePrice, setBundlePrice] = useState(0);
 
     const [A1, setA1] = useState({mflg: true, name: ''});
@@ -131,8 +135,6 @@ const BundleBar = () => {
     const [A1Change, setA1Change] = useState(0);
     const [A2Change, setA2Change] = useState(0);
 
-
-    
     const handleSubmit = async (e) => { 
       console.log('Selected values', selectedValues);
       const selectedKeys = selectedValues.map(item => item.key);
@@ -154,7 +156,12 @@ const BundleBar = () => {
       if (selectedKeys.includes("Singapore Cable Car") || selectedKeys.includes("SkyHelix Sentosa") || selectedKeys.includes("Wings Of Time")) {
         try { 
           console.log('Data sent to backend', selectedKeys);
-          const response = await axios.post('http://localhost:5000/bundle', selectedKeys);    
+
+          const [response, splitrev_response] = await Promise.all([
+            axios.post('http://localhost:5000/bundle', selectedKeys),
+            axios.post('http://localhost:5000/revenue_split', selectedKeys)
+          ]);    
+          // const response = await axios.post('http://localhost:5000/bundle', selectedKeys);    
           console.log('Data received from backend', response.data);
           const indivValues = Object.values(response.data);      
 
@@ -168,19 +175,21 @@ const BundleBar = () => {
           setA1Rev(parseFloat(indivValues[3].revenue));
           setA2Rev(parseFloat(indivValues[4].revenue));
 
-          const splitrev_response = await axios.post('http://localhost:5000/revenue_split', selectedKeys);
+          console.log("look here", BSA1);
+
+          // const splitrev_response = await axios.post('http://localhost:5000/revenue_split', selectedKeys);
           const splitValues = Object.values(splitrev_response.data);
       
           setBSA1(parseFloat(splitValues[0].revenue));
           setBSA2(parseFloat(splitValues[1].revenue));     
 
           const temp = [
-            { key: 'With Bundling Option', 'Individual Revenue': roundToTwoDecimalPlaces(bA1Rev), 'Revenue from Bundle': roundToTwoDecimalPlaces(BSA1) },
-            { key: 'Without Bundling Option', 'Individual Revenue': roundToTwoDecimalPlaces(A1Rev), 'Revenue from Bundle': 0 },
+            { key: 'With Bundling Option', 'Individual Revenue': roundtoWhole(bA1Rev), 'Revenue from Bundle': roundtoWhole(BSA1) },
+            { key: 'Without Bundling Option', 'Individual Revenue': roundtoWhole(A1Rev), 'Revenue from Bundle': 0 },
           ];
           const temp2 =  [ 
-            { key: 'With Bundling Option', 'Individual Revenue': bA2Rev, 'Revenue from Bundle': BSA2 },
-            { key: 'Without Bundling Option', 'Individual Revenue': A2Rev, 'Revenue from Bundle': 0 },
+            { key: 'With Bundling Option', 'Individual Revenue': roundtoWhole(bA2Rev), 'Revenue from Bundle': roundtoWhole(BSA2) },
+            { key: 'Without Bundling Option', 'Individual Revenue': roundtoWhole(A2Rev), 'Revenue from Bundle': 0 },
           ];
 
           let newbarA, newname1, newbarB, newname2;
@@ -229,7 +238,6 @@ const BundleBar = () => {
       }
     };
 
-
     const displayPerc = (number) => {
       return '+' + number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '%';
     }
@@ -243,11 +251,17 @@ const BundleBar = () => {
                   stroke: '#efefef' // Color for the tick lines
               },
               text: {
-                  fill: '#aaaaaa' // Color for the tick text
+                  fill: colors.grey[400]  // Color for the tick text
+              }
+          },
+          legend: {
+              text: {
+                  fill: colors.grey[400] // Color for the Y-axis label
               }
           }
       }
   };
+  
   
 
     return (
@@ -259,8 +273,10 @@ const BundleBar = () => {
               </Typography>
               <div style={{ display: 'flex', alignItems: 'flex-start' }}>
                 <Button 
+                  variant="contained"
+                  color="primary"
                   onClick={clearlist}
-                  style={ {backgroundColor: "lightblue"} }
+                  style={ {backgroundColor: colors.blueAccent[700]} }
                   >
                     Clear
                   </Button>
@@ -280,7 +296,6 @@ const BundleBar = () => {
 
                 <div style={ {display:'flex', flexDirection:'column'}}>
                   <Button
-                  variant="contained"
                   color="primary"
                   style={{ backgroundColor: peakSelected ? "lightgrey" : "grey" }}
                   onClick={handlePeak}>
@@ -288,7 +303,6 @@ const BundleBar = () => {
                   </Button> 
 
                   <Button 
-                  variant="contained"
                   color="primary"
                   style={{ backgroundColor: peakSelected ? "grey" : "lightgrey"  }}
                   onClick={handleOffPeak}>
@@ -329,7 +343,7 @@ const BundleBar = () => {
             width="300px"
           >
             <StatBoxGbb
-              title={BundlePrice}
+              title={`$${(BundlePrice).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}
               subtitle="Recommended Bundle Pricing"
             />
           </Box>
@@ -363,71 +377,77 @@ const BundleBar = () => {
         </Box>
 
         <Box style={{ display: 'flex', flexDirection: 'row'}}>
-            <div style={ { width: '100%', height: '400px'} }>
-              <h2>{name1}</h2>
-              <ResponsiveBar
-                data={barAdata}
-                keys={['Individual Revenue', 'Revenue from Bundle']}
-                indexBy="key"
-                margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-                padding={0.3}
-                colors={pastelColors}
-                borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-                axisBottom={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                }}
-                axisLeft={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                }}
-                labelSkipWidth={12}
-                labelSkipHeight={12}
-                groupMode='stacked'
-                theme={bartheme}
-                tooltip={({ id, value }) => (
-                  <div style={{ background: colors.blueAccent[700], padding: '12px', color: 'white' }}>
-                    <strong>{id}</strong>: {value}
-                  </div>
-                )}
-              />
-            </div>
-            <div style={ { width: '100%', height: '400px'} }>
-              <h2>{name2}</h2>
-              <ResponsiveBar
-                data={barBdata}
-                keys={['Individual Revenue', 'Revenue from Bundle']}
-                indexBy="key"
-                margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
-                padding={0.3}
-                colors={pastelColors}
-                borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-                axisBottom={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                }}
-                axisLeft={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                }}
-                labelSkipWidth={12}
-                labelSkipHeight={12}
-                groupMode='stacked'
-                theme={bartheme}
-                tooltip={({ id, value }) => (
-                  <div style={{ background: colors.blueAccent[700], padding: '12px', color: 'white' }}>
-                    <strong>{id}</strong>: {value}
-                  </div>
-                )}
-                />
-            </div>
-        </Box>
+          <div style={{ width: '100%', height: '400px' }}>
+            <h2>{name1}</h2>
+            <ResponsiveBar
+              data={barAdata}
+              keys={['Individual Revenue', 'Revenue from Bundle']}
+              indexBy="key"
+              margin={{ top: 50, right: 50, bottom: 50, left: 80 }} 
+              padding={0.3}
+              colors={pastelColors}
+              borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
+              axisBottom={{
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+              }}
+              axisLeft={{
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: "Revenue ($)", // Add y-axis label
+                legendPosition: "middle",
+                legendOffset: -60, // Adjust offset of the Y-axis label
+              }}
+              labelSkipWidth={12}
+              labelSkipHeight={12}
+              groupMode='stacked'
+              theme={bartheme}
+              tooltip={({ id, value }) => (
+                <div style={{ background: colors.blueAccent[700], padding: '12px', color: 'white' }}>
+                  <strong>{id}</strong>: {value}
+                </div>
+              )}
+            />
+          </div>
+          <div style={{ width: '100%', height: '400px', marginTop: '20px' }}>
+            <h2>{name2}</h2>
+            <ResponsiveBar
+              data={barBdata}
+              keys={['Individual Revenue', 'Revenue from Bundle']}
+              indexBy="key"
+              margin={{ top: 50, right: 50, bottom: 50, left: 80 }} 
+              padding={0.3}
+              colors={pastelColors}
+              borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
+              axisBottom={{
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+              }}
+              axisLeft={{
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: "Revenue ($)", // Add y-axis label
+                legendPosition: "middle",
+                legendOffset: -60, // Adjust offset of the Y-axis label
+              }}
+              labelSkipWidth={12}
+              labelSkipHeight={12}        
+              groupMode='stacked'
+              theme={bartheme}
+              tooltip={({ id, value }) => (
+                <div style={{ background: colors.blueAccent[700], padding: '12px', color: 'white' }}>
+                  <strong>{id}</strong>: {value}
+                </div>
+              )}
+            />
+          </div>
 
-      </Box>
+        </Box>
+       </Box>
     )
   };
 

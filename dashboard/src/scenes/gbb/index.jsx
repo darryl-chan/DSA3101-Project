@@ -319,8 +319,8 @@ const GBB = () => {
 
             <Box height="40vh" width="100%">
             <BarChartGbb
-              beforeBundleRevenue={A1Rev.toFixed(2)}
-              afterBundleRevenue={bA1Rev.toFixed(2)}
+              beforeBundleRevenue={A1Rev.toFixed(2)/100000}
+              afterBundleRevenue={bA1Rev.toFixed(2)/100000}
             />
             </Box>
           </Grid>
@@ -340,8 +340,8 @@ const GBB = () => {
 
             <Box height="40vh" width="100%">
             <BarChartGbb
-              beforeBundleRevenue={A2Rev.toFixed(2)}
-              afterBundleRevenue={bA2Rev.toFixed(2)}
+              beforeBundleRevenue={A2Rev.toFixed(2)/100000}
+              afterBundleRevenue={bA2Rev.toFixed(2)/100000}
             />
             </Box>
           </Grid>

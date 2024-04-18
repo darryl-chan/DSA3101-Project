@@ -11,7 +11,6 @@ import { ResponsiveBar } from '@nivo/bar';
 const BundleBar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    // const navigate = useNavigate();
 
     const [selectedValues, setSelectedValues] = useState([]);
     const options = [
@@ -32,27 +31,18 @@ const BundleBar = () => {
         };
     };
 
-    const clearlist = () => {
-      setSelectedValues([]);
-      setBundlePrice(0);
-      setA1({mflg: true, name: ''});
-      setA2({mflg: true, name: ''});
-      setbA1Rev(0);
-      setbA2Rev(0);
-      setBSA1(0);
-      setBSA2(0);
-      setA1Change(0);
-      setA2Change(0);
-      setbarAdata([]);
-      setbarBdata([]);
+    const [listCleared, setlistCleared] = useState(false);
 
+    const clearlist = () => {
+      setlistCleared(true);
+      console.log("is it cleared", listCleared);
       console.log("after clearing", selectedValues);
     };
 
     const onRemove = (removedItem) => {
       const updatedList = selectedValues.filter(item => item.id !== removedItem.id);
       setSelectedValues(updatedList);
-      console.log(selectedValues);
+      // console.log(selectedValues);
   };
 
    
@@ -107,8 +97,8 @@ const BundleBar = () => {
     const [ barAdata, setbarAdata ] = useState([]);
     const [ barBdata, setbarBdata ] = useState([]);
 
-    const [name1, setname1 ] = useState('');
-    const [name2, setname2 ] = useState('');
+    const [name1, setname1 ] = useState('Attraction 1');
+    const [name2, setname2 ] = useState('Attraction 2');
 
     // to two decimal places
     const roundToTwoDecimalPlaces = (num) => {
@@ -135,112 +125,135 @@ const BundleBar = () => {
     const [A1Change, setA1Change] = useState(0);
     const [A2Change, setA2Change] = useState(0);
 
-    const handleSubmit = async (e) => { 
-      console.log('Selected values', selectedValues);
-      const selectedKeys = selectedValues.map(item => item.key);
-      e.preventDefault(); 
-      if (selectedKeys.length === 0) {
-        return;
-      } else if (selectedKeys.length === 1) {
-        setSnackbarMessage("Please select more than 1 attraction to bundle.");
-        setOpenSnackbar(true);
-        return;
-      }
-      if (!selectedValues.some(item => item.key === 'peak' || item.key === 'off-peak')) {
-        setSnackbarMessage("Please select season for bundling.");
-        setOpenSnackbar(true);
-        return;
-      }
+    const selectedKeys = selectedValues.map(item => item.key);
 
-    // starts here
-      if (selectedKeys.includes("Singapore Cable Car") || selectedKeys.includes("SkyHelix Sentosa") || selectedKeys.includes("Wings Of Time")) {
-        try { 
-          console.log('Data sent to backend', selectedKeys);
-
-          const [response, splitrev_response] = await Promise.all([
-            axios.post('http://localhost:5000/bundle', selectedKeys),
-            axios.post('http://localhost:5000/revenue_split', selectedKeys)
-          ]);    
-          // const response = await axios.post('http://localhost:5000/bundle', selectedKeys);    
-          console.log('Data received from backend', response.data);
-          const indivValues = Object.values(response.data);      
-
-          setBundlePrice(roundToTwoDecimalPlaces(indivValues[0].price));    
-
-          setA1(indivValues[1]);
-          setA2(indivValues[2]);
-
-          setbA1Rev(parseFloat(indivValues[1].revenue));
-          setbA2Rev(parseFloat(indivValues[2].revenue));
-          setA1Rev(parseFloat(indivValues[3].revenue));
-          setA2Rev(parseFloat(indivValues[4].revenue));
-
-          console.log("look here", BSA1);
-
-          // const splitrev_response = await axios.post('http://localhost:5000/revenue_split', selectedKeys);
-          const splitValues = Object.values(splitrev_response.data);
+    useEffect(() => {
       
-          setBSA1(parseFloat(splitValues[0].revenue));
-          setBSA2(parseFloat(splitValues[1].revenue));     
+      async function fetchData() {
+        if (selectedKeys.length === 1) {
+          setSnackbarMessage("Please select more than 1 attraction to bundle.");
+          setOpenSnackbar(true);
+          return;
+        }
+        if (!selectedValues.some(item => item.key === 'peak' || item.key === 'off-peak')) {
+          setSnackbarMessage("Please select season for bundling.");
+          setOpenSnackbar(true);
+          return;
+        }
+        try {
 
-          const temp = [
-            { key: 'With Bundling Option', 'Individual Revenue': roundtoWhole(bA1Rev), 'Revenue from Bundle': roundtoWhole(BSA1) },
-            { key: 'Without Bundling Option', 'Individual Revenue': roundtoWhole(A1Rev), 'Revenue from Bundle': 0 },
-          ];
-          const temp2 =  [ 
-            { key: 'With Bundling Option', 'Individual Revenue': roundtoWhole(bA2Rev), 'Revenue from Bundle': roundtoWhole(BSA2) },
-            { key: 'Without Bundling Option', 'Individual Revenue': roundtoWhole(A2Rev), 'Revenue from Bundle': 0 },
-          ];
+          if (selectedKeys.includes("Singapore Cable Car") || selectedKeys.includes("SkyHelix Sentosa") || selectedKeys.includes("Wings Of Time")) {
+            const [response, splitrev_response] = await Promise.all([
+              axios.post('http://localhost:5000/bundle', selectedKeys),
+              axios.post('http://localhost:5000/revenue_split', selectedKeys)
+            ]);
+  
+            const indivValues = Object.values(response.data);
+            const splitValues = Object.values(splitrev_response.data);
+  
+           
+  
+            setA1(indivValues[1]);
+            setA2(indivValues[2]);
+  
+            setBundlePrice(roundToTwoDecimalPlaces(indivValues[0].price));    
+  
+            setbA1Rev(parseFloat(indivValues[1].revenue));
+            setbA2Rev(parseFloat(indivValues[2].revenue));
+            setA1Rev(parseFloat(indivValues[3].revenue));
+            setA2Rev(parseFloat(indivValues[4].revenue));
+  
+            setBSA1(parseFloat(splitValues[0].revenue));
+            setBSA2(parseFloat(splitValues[1].revenue));     
 
-          let newbarA, newname1, newbarB, newname2;
-          if (A1.mflg && A2.mflg) { // both are MFLG's
-            newbarA = temp;
-            newname1 = A1.name;
-            newbarB = temp2;
-            newname2 = A2.name
+              const temp = [
+                
+                { key: 'Before Bundling Option', 'Individual Revenue': roundtoWhole(A1Rev), 'Revenue from Bundle': 0 },
+                { key: 'After Bundling Option', 'Individual Revenue': roundtoWhole(bA1Rev), 'Revenue from Bundle': roundtoWhole(BSA1) },
+              ];
+              const temp2 =  [ 
+                
+                { key: 'Before Bundling Option', 'Individual Revenue': roundtoWhole(A2Rev), 'Revenue from Bundle': 0 },
+                { key: 'After Bundling Option', 'Individual Revenue': roundtoWhole(bA2Rev), 'Revenue from Bundle': roundtoWhole(BSA2) },
+              ];
     
-            setA1Change(roundToTwoDecimalPlaces((bA1Rev + BSA1 - A1Rev) / A1Rev * 100));
-            setA2Change(roundToTwoDecimalPlaces((bA2Rev + BSA2 - A2Rev) / A2Rev * 100));
+              
+    
+              let newbarA, newname1, newbarB, newname2;
+              if (A1.mflg && A2.mflg) { // both are MFLG's
+                newbarA = temp;
+                newname1 = A1.name;
+                newbarB = temp2;
+                newname2 = A2.name
+        
+                setA1Change(roundToTwoDecimalPlaces((bA1Rev + BSA1 - A1Rev) / A1Rev * 100));
+                setA2Change(roundToTwoDecimalPlaces((bA2Rev + BSA2 - A2Rev) / A2Rev * 100));
+    
+    
+              } else if (A1.mflg && !A2.mflg) {  // only first option is MFLG's
+                newbarA = temp;
+                newname1 = A1.name;
+                newbarB = [];
+                newname2 = '';
+                setname2('');
+    
+                setA1Change(roundToTwoDecimalPlaces((bA1Rev + BSA1 - A1Rev) / A1Rev * 100));
+                setA2Change(0);
+    
+              } else { // other one must be MFLG if first isn't
+                newbarA = temp2;
+                newname1 = A2.name;
+                newbarB = []
+                newname2 = '';
+    
+                setA1Change(roundToTwoDecimalPlaces((bA2Rev + BSA2 - A2Rev) / A2Rev * 100));
+                setA2Change(0);
+    
+              }; 
+    
+              setbarAdata(newbarA);
+              setname1(newname1);
+              setbarBdata(newbarB);
+              setname2(newname2);   
+            } else {
+              setSnackbarMessage("Bundle must be with at least 1 MFLG attraction.");
+              setOpenSnackbar(true);
+              return;
+            }
 
-
-          } else if (A1.mflg && !A2.mflg) {  // only first option is MFLG's
-            newbarA = temp;
-            newname1 = A1.name;
-            newbarB = [];
-            newname2 = '';
-            setname2('');
-
-            setA1Change(roundToTwoDecimalPlaces((bA1Rev + BSA1 - A1Rev) / A1Rev * 100));
-            setA2Change(0);
-
-          } else { // other one must be MFLG if first isn't
-            newbarA = temp2;
-            newname1 = A2.name;
-            newbarB = []
-            newname2 = '';
-
-            setA1Change(roundToTwoDecimalPlaces((bA2Rev + BSA2 - A2Rev) / A2Rev * 100));
-            setA2Change(0);
-
-          }; 
-
-          setbarAdata(newbarA);
-          setname1(newname1);
-          setbarBdata(newbarB);
-          setname2(newname2);
-          
-        } catch (error) { 
-          console.error('Error sending data:', error); 
-        } 
-      } else {
-        setSnackbarMessage("Bundle must include at least 1 MFLG attraction.");
-        setOpenSnackbar(true);
+        } catch (error) {
+          console.error('Failed to fetch data:', error);
+        }
       }
-    };
+
+      if (listCleared) {
+        setSelectedValues([]);
+        setBundlePrice(0);
+        setA1({ mflg: true, name: '' });
+        setA2({ mflg: true, name: '' });
+        setbA1Rev(0);
+        setbA2Rev(0);
+        setBSA1(0);
+        setBSA2(0);
+        setA1Change(0);
+        setA2Change(0);
+        setbarAdata([]);
+        setbarBdata([]);
+
+        setlistCleared(false);
+      } else if (selectedKeys.length > 0) {
+        fetchData();
+        return;
+      };
+
+      console.log("testing 2", listCleared)      
+      
+    }, [clearlist]);
+
 
     const displayPerc = (number) => {
       return '+' + number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '%';
-    }
+    };
 
     const pastelColors = ["#9cadce", "#d1cfe2"];
 
@@ -294,7 +307,6 @@ const BundleBar = () => {
                     }}
                 />
 
-                <div style={ {display:'flex', flexDirection:'column'}}>
                   <Button
                   color="primary"
                   style={{ backgroundColor: peakSelected ? "lightgrey" : "grey" }}
@@ -308,16 +320,6 @@ const BundleBar = () => {
                   onClick={handleOffPeak}>
                     Off-Peak
                   </Button>          
-
-                </div>          
-
-                <Button 
-                  variant="contained" 
-                  color="primary"
-                  style={ {backgroundColor: colors.blueAccent[700], height: '68px' }} 
-                  onClick={handleSubmit}> 
-                  Bundle!
-                </Button>          
                 
                 <Snackbar
                 open={openSnackbar}
@@ -331,54 +333,101 @@ const BundleBar = () => {
           </Box>
 
           <Box
-          display="grid"
-          gridTemplateColumns="repeat(12, 1fr)"
-          gridAutoRows="140px"
-          gap="20px">
+            display="flex"
+            mb={3} // Add margin bottom for spacing
+          >
+            <Typography variant="h3" component="div" fontWeight="bold">
+              Current Bundle includes: {name1} & {name2} 
+            </Typography> 
+          </Box>      
+
+          {/* Row of Statboxes and boxes */}
+          <Box
+            display="grid"
+            gridTemplateColumns="repeat(12, 1fr)"
+            gridAutoRows="140px"
+            gap="20px"
+            mx={3}
+          >
+              
+            {/* ROW 1 */}
             <Box
-            gridColumn="span 3"
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            justifyContent="center"
-            width="300px"
-          >
-            <StatBoxGbb
-              title={`$${(BundlePrice).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}
-              subtitle="Recommended Bundle Pricing"
-            />
+              gridColumn="span 4"
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              justifyContent="center"
+            >
+              {BundlePrice && ( // need this so that the dashboard does not show undefined while fetching data, will only show statbox component when it is not undefined
+                <StatBoxGbb                
+                  title = {`$${(BundlePrice).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}
+                  subtitle="Recommended Bundle Pricing"
+                />
+              )}
+            </Box>
+
+            <Box
+              gridColumn="span 4"
+              backgroundColor={colors.primary[400]}
+              display="flex"
+              flexDirection="column" // Arrange children vertically
+            >
+              {/* Original content */}
+              <Box
+                display="flex"
+                justifyContent="center"
+              >
+                <StatBoxGbb
+                  subtitle="% Change of MFLG Revenue"
+                />
+              </Box>
+
+              {/* Split the empty space into two sections */}
+              <Box
+                display="grid"
+                gridTemplateColumns="auto auto" // Divide the grid into two col
+                textAlign="center"
+                pt={1} // Add padding top for spacing
+                mt={-2} // Decrease margin top to reduce the gap
+                mx={1.5} // Increase horizontal margin for spacing
+              >
+                {/* Left section */}
+                <Box>
+                  <Typography variant="h6" mb={1}>
+                    {name1}
+                  </Typography>
+                  {/* Calculate and display percentage increase for bA1 */}
+                  <Typography fontWeight="bold" sx={{ fontSize: "1.5rem" }}>
+                    {displayPerc(A1Change)}
+                  </Typography>
+                </Box>
+
+                {/* Right section */}
+                <Box>
+                  <Typography variant="h6" mb={1}>
+                    {name2}
+                  </Typography>
+                  {/* Calculate and display percentage increase for bA2 */}
+                  <Typography fontWeight="bold" sx={{ fontSize: "1.5rem" }}>
+                    {displayPerc(A2Change)}
+                  </Typography>
+                </Box>
+            </Box>
+          </Box>
           </Box>
 
-          <Box
-            gridColumn="span 3"
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            justifyContent="center"
-            width="300px"
-          >
-            <StatBoxGbb
-              title= {displayPerc(A1Change)}
-              subtitle="MFLG Attraction 1: Percentage change with bundling"
-            />
-          </Box>
 
-          <Box
-            gridColumn="span 3"
-            backgroundColor={colors.primary[400]}
-            display="flex"
-            justifyContent="center"
-            width="300px"
-          >
-            <StatBoxGbb
-              title= {displayPerc(A2Change)}
-              subtitle="MFLG Attraction 2: Percentage change with bundling"
-            />
-          </Box>
-
-        </Box>
 
         <Box style={{ display: 'flex', flexDirection: 'row'}}>
           <div style={{ width: '100%', height: '400px' }}>
-            <h2>{name1}</h2>
+          <Typography
+              variant="h5" 
+              fontWeight="bold"
+              sx={{
+                color: colors.greenAccent[400]
+              }} 
+            >
+              {name1}
+            </Typography>           
             <ResponsiveBar
               data={barAdata}
               keys={['Individual Revenue', 'Revenue from Bundle']}
@@ -405,14 +454,22 @@ const BundleBar = () => {
               groupMode='stacked'
               theme={bartheme}
               tooltip={({ id, value }) => (
-                <div style={{ background: colors.blueAccent[700], padding: '12px', color: 'white' }}>
+                <div style={{ color: colors.grey[400], background: 'white', borderRadius: '8px', padding: '4px', margin: '4px' }}>
                   <strong>{id}</strong>: {value}
                 </div>
               )}
             />
           </div>
           <div style={{ width: '100%', height: '400px', marginTop: '20px' }}>
-            <h2>{name2}</h2>
+          <Typography
+              variant="h5" 
+              fontWeight="bold"
+              sx={{
+                color: colors.greenAccent[400]
+              }} 
+            >
+              {name2}
+            </Typography>
             <ResponsiveBar
               data={barBdata}
               keys={['Individual Revenue', 'Revenue from Bundle']}
@@ -439,15 +496,14 @@ const BundleBar = () => {
               groupMode='stacked'
               theme={bartheme}
               tooltip={({ id, value }) => (
-                <div style={{ background: colors.blueAccent[700], padding: '12px', color: 'white' }}>
+                <div style={{ color: colors.grey[400], background: 'white', borderRadius: '8px', padding: '4px', margin: '4px' }}>
                   <strong>{id}</strong>: {value}
                 </div>
               )}
             />
           </div>
-
-        </Box>
-       </Box>
+          </Box>
+          </Box>
     )
   };
 

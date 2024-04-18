@@ -81,7 +81,7 @@ const Overview = () => {
       borderWidth={1}
       borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
       arcLinkLabelsSkipAngle={10}
-      arcLinkLabelsTextColor="#FFFFFF"
+      arcLinkLabelsTextColor={colors.grey[100]}
       arcLinkLabelsThickness={2}
       arcLinkLabelsColor={{ from: 'color' }}
       arcLabelsSkipAngle={10}
@@ -99,7 +99,7 @@ const Overview = () => {
           effects: []
         }
       ]}
-      animate = {false}
+      //animate = {false}
     />
   );
 

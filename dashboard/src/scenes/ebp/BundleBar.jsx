@@ -35,8 +35,7 @@ const BundleBar = () => {
 
     const clearlist = () => {
       setlistCleared(true);
-      console.log("is it cleared", listCleared);
-      console.log("after clearing", selectedValues);
+      console.log("is list cleared", listCleared);
     };
 
     const onRemove = (removedItem) => {
@@ -56,20 +55,21 @@ const BundleBar = () => {
     };
 
     const [peakSelected, setPeakSelected] = useState(false);
+    const [offpeakSelected, setOffPeakSelected] = useState(false);
 
     const handlePeak = () => {
-      if (selectedValues.length <2 ) {
+      if (selectedValues.length < 2 ) {
         setSnackbarMessage("Please select attractions to bundle first, before selecting season.");
         setOpenSnackbar(true);
         return;
-      } else if (!peakSelected) {
-        // If "Peak" is not selected, set it as selected
+      } else if (!peakSelected && offpeakSelected) { // off-peak selected
         const updatedSelectedValues = selectedValues.filter(item => item.key !== "off-peak");
         setSelectedValues([...updatedSelectedValues, { cat: "Season", key: "peak" }]);
         setPeakSelected(true);
-       } else {
-        // If "Peak" is already selected, deselect it
-        setSelectedValues(selectedValues);
+        setOffPeakSelected(false);
+      } else if (!peakSelected && !offpeakSelected) { // no selection yet
+        setSelectedValues([...selectedValues, { cat: "Season", key: "peak" }]);
+        setPeakSelected(true);
       }
     };
   
@@ -78,20 +78,16 @@ const BundleBar = () => {
         setSnackbarMessage("Please select attractions to bundle first, before selecting season.");
         setOpenSnackbar(true);
         return;
-      } else if (peakSelected) {
+      } else if (peakSelected && !offpeakSelected) {
         // If "Peak" is selected, deselect it
         const updatedSelectedValues = selectedValues.filter(item => item.key !== "peak");
         setSelectedValues([...updatedSelectedValues, { cat: "Season", key: "off-peak" }]);
         setPeakSelected(false);
-      } else if (!peakSelected && selectedValues.some(item => item.key === "off-peak")) {
-        // If "Peak" is not selected and "Off-Peak" is not already selected, set "Off-Peak" as selected
-        setSelectedValues(selectedValues);
-        setPeakSelected(false);
-      } else {
-        // If "Peak" is not selected, set it as selected=
+        setOffPeakSelected(true);
+      } else if (!peakSelected && !offpeakSelected) { // offpeak selected
         setSelectedValues([...selectedValues, { cat: "Season", key: "off-peak" }]);
-        setPeakSelected(false);
-      }
+        setOffPeakSelected(true);
+      }  
     };
 
     const [ barAdata, setbarAdata ] = useState([]);
@@ -135,11 +131,11 @@ const BundleBar = () => {
           setOpenSnackbar(true);
           return;
         }
-        if (!selectedValues.some(item => item.key === 'peak' || item.key === 'off-peak')) {
+        else if (selectedKeys.length > 1 && (!selectedValues.some(item => item.key === 'peak' || item.key === 'off-peak'))) {
           setSnackbarMessage("Please select season for bundling.");
           setOpenSnackbar(true);
           return;
-        }
+        } 
         try {
 
           if (selectedKeys.includes("Singapore Cable Car") || selectedKeys.includes("SkyHelix Sentosa") || selectedKeys.includes("Wings Of Time")) {
@@ -194,7 +190,7 @@ const BundleBar = () => {
                 newbarA = temp;
                 newname1 = A1.name;
                 newbarB = [];
-                newname2 = '';
+                newname2 = A2.name;
                 setname2('');
     
                 setA1Change(roundToTwoDecimalPlaces((bA1Rev + BSA1 - A1Rev) / A1Rev * 100));
@@ -204,7 +200,7 @@ const BundleBar = () => {
                 newbarA = temp2;
                 newname1 = A2.name;
                 newbarB = []
-                newname2 = '';
+                newname2 = A1.name;
     
                 setA1Change(roundToTwoDecimalPlaces((bA2Rev + BSA2 - A2Rev) / A2Rev * 100));
                 setA2Change(0);
@@ -228,7 +224,7 @@ const BundleBar = () => {
 
       if (listCleared) {
         setSelectedValues([]);
-        setBundlePrice(0);
+        setBundlePrice('');
         setA1({ mflg: true, name: '' });
         setA2({ mflg: true, name: '' });
         setbA1Rev(0);
@@ -239,6 +235,10 @@ const BundleBar = () => {
         setA2Change(0);
         setbarAdata([]);
         setbarBdata([]);
+        setname1('');
+        setname2('');
+        setPeakSelected(false);
+        setOffPeakSelected(false);
 
         setlistCleared(false);
       } else if (selectedKeys.length > 0) {
@@ -246,9 +246,11 @@ const BundleBar = () => {
         return;
       };
 
-      console.log("testing 2", listCleared)      
+      fetchData();
+
+      // console.log("testing 2", listCleared)      
       
-    }, [clearlist]);
+    }, [listCleared, selectedKeys]);
 
 
     const displayPerc = (number) => {
@@ -296,7 +298,7 @@ const BundleBar = () => {
                 <Multiselect
                     displayValue="key"
                     onSelect={onSelect}
-                    onRemove={onRemove} // may want to change                 
+                    onRemove={clearlist} // may want to change                 
                     options={selectedValues.length === 2 ? [] : options}
                     selectedValues={selectedValues}
                     isObject={true}                
@@ -337,7 +339,7 @@ const BundleBar = () => {
             mb={3} // Add margin bottom for spacing
           >
             <Typography variant="h3" component="div" fontWeight="bold">
-              Current Bundle includes: {name1} & {name2} 
+              Current Bundle includes: {name2 ? `${name1} & ${name2}` : name1}
             </Typography> 
           </Box>      
 
@@ -357,12 +359,13 @@ const BundleBar = () => {
               display="flex"
               justifyContent="center"
             >
-              {BundlePrice && ( // need this so that the dashboard does not show undefined while fetching data, will only show statbox component when it is not undefined
-                <StatBoxGbb                
-                  title = {`$${(BundlePrice).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}
+              <StatBoxGbb
                   subtitle="Recommended Bundle Pricing"
                 />
-              )}
+                <StatBoxGbb                
+                  title = {`$${(BundlePrice).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}
+                />
+              
             </Box>
 
             <Box

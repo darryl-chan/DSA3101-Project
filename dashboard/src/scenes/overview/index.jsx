@@ -1,18 +1,13 @@
 import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
-// import PersonAddIcon from "@mui/icons-material/PersonAdd";
-// import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
-// import GeographyChart from "../../components/GeographyChart";
-// import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
-// import ProgressCircle from "../../components/ProgressCircle";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from 'react';
 import axios from "axios"; // npm install axios
 import { ResponsivePie } from "@nivo/pie";
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 const Overview = () => {
@@ -45,19 +40,9 @@ const Overview = () => {
     fetchPopularityData();
   }, []);
 
-  // Function to round down to whole number
-  const roundDown = (num) => {
-    return Math.floor(num); // Use Math.floor() to round down
-  };
-
   // Function to round to one decimal place
   const roundToOneDecimalPlace = (num) => {
     return Math.floor(num * 10) / 10; // Round to one decimal place
-  };
-
-  // Function to round to two decimal places
-  const roundToTwoDecimalPlaces = (num) => {
-    return num.toFixed(2); // Use toFixed(2) to round to two decimal places
   };
 
   // format popularityData so it can be passed into Line Chart
@@ -168,7 +153,10 @@ const Overview = () => {
   const top3Rowsx = popularityData.slice().sort((a, b) => b.rating - a.rating).slice(0, 3);
   const top3Rows = top3Rowsx.map((row, rank) => ({ ...row, rank: rank + 1 }))
 
-
+  // Render loading state if data is still loading
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   // outlining the page
   return (
     <Box m="20px">
@@ -209,7 +197,6 @@ const Overview = () => {
           alignItems="center"
           justifyContent="center"
         >
-          {/* <Link to="/popularity" style={{ textDecoration: 'none' }}> */}
           <StatBox
           
             title={popularityData
@@ -221,7 +208,6 @@ const Overview = () => {
             progress="1"
             sx={{ color: 'ffffff'}}
           />
-           {/* </Link> */}
         </Box>
         <Box
           gridColumn="span 4"
@@ -247,14 +233,12 @@ const Overview = () => {
           alignItems="center"
           justifyContent="center"
         >
-          {/* <Link to="/popularity" style={{ textDecoration: 'none' }}> */}
           <StatBox
           
             title= "Singapore cable car + Wings of Time"
             subtitle="Best Recommended Bundle"
             progress="1"
           />
-           {/* </Link> */}
         </Box>
 
         {/* ROW 2 : weekly visitation and peak vs non-peak revenue */}
@@ -272,12 +256,14 @@ const Overview = () => {
             alignItems="center"
           >
             <Box>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                color={colors.grey[100]}
-              >Degree of Popularity of MFLG Attractions
-              </Typography>
+              <Link to="/popularity" style={{ textDecoration: 'none', color: colors.grey[100]}}>
+                <Typography
+                  variant="h3"
+                  fontWeight="bold"
+                  color={colors.grey[100]}
+                >Degree of Popularity of MFLG Attractions
+                </Typography>
+              </Link>
               
             </Box>
             <Box>
@@ -302,7 +288,13 @@ const Overview = () => {
           backgroundColor={colors.primary[400]}
           p="40px"
         >
-          <Header title={<Typography fontSize={25} fontWeight={"bold"} >Top Attractions by Popularity Rating</Typography>} />
+          <Header 
+            title={
+              <Link to="/popularity" style={{ textDecoration: 'none', color: colors.grey[100]}}>
+                  <Typography fontSize={25} fontWeight={"bold"} >
+                      Top Attractions by Popularity Rating
+                  </Typography>
+              </Link>} />
           
           
           <DataGrid rows={top3Rows} columns={columns} 

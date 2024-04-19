@@ -11,7 +11,7 @@ const EBP = () => {
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="Explore Bundle Prices" subtitle="Bundle Prices" />
+        <Header title="Explore Bundle Prices"  />
       </Box>
 
       <Box>

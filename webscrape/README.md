@@ -29,6 +29,10 @@ These codes try to scrape Google reviews of attractions using a webdriver
 * A medium-popularity attraction took 60 mins to scrape 3 years back
 * `check_every_interval` checks the web driver at this interval to see if data from all of 3 years have been scraped
 
+## Example of google review website
+![alt text](image.png)
+[Google maps link](https://www.google.com/maps/place/Singapore+Zoo/@1.4043485,103.7904481,17z/data=!4m8!3m7!1s0x31da13d9102adcaf:0xb414fac8a43b1b91!8m2!3d1.4043485!4d103.793023!9m1!1b1!16zL20vMDIxMW16?entry=ttu)
+
 ## Dealing with incomplete data
 
 Some reviews take a very long time scrape and may crash so we would not able to scrape all 3 years

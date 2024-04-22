@@ -13,31 +13,30 @@ These codes try to scrape Google reviews of attractions using a webdriver
 `bs4`
 `datetime`
 `time`
+`scipy`
 
-## How to use `scrape_google_reviews.ipynb`
+## How to scrape google reviews
 
-1. Go to `scrape_google_reviews.ipynb`
+1. Go to `scrape_wrapper.py`
 2. Go to google maps and search for the attraction then click on reviews
-3. Copy the link and place it in the `url` variable
-4. Assign `minutes_to_scrape` to a high number so that reviews from 3 years back are recorded
+3. Run the program
+4. Copy the link and place it for the `url`
+5. Name the file
+6. Assign `minutes_to_scrape` to a high number so that reviews from 3 years back are recorded
 
 **Notes**: 
 * Do not close or stop the application halfway
 * A medium-popularity attraction took 60 mins to scrape 3 years back
 * `check_every_interval` checks the web driver at this interval to see if data from all of 3 years have been scraped
 
-## Dealing with incomplete data using `extend_reviews_ipynb`
+## Dealing with incomplete data
 
 Some reviews take a very long time scrape and may crash so we would not able to scrape all 3 years
 
 In that case we have to extend the incomplete data from the one we already scraped
 
-## How to use `extend_reviews_ipynb`
+`scrape_wrapper` automatically extends the review to `2 years ago`
 
-1. Go to `extend_reviews_ipynb`
-2. Find the file name of the csv to extend
-3. Input the file name `csv_to_change` without the .csv suffix
-4. Run all kernals
 
 ## Statistical methods used to extend
 

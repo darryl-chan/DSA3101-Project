@@ -73,14 +73,6 @@ class Bundle:
         popularity_percentage_after_dampen = popularity_percentage * Bundle.PERCENTAGE_NON_PEAK_POPULARITY_MULTIPLIER
         return (price) * (initial_customers * (percentage_change_in_price * popularity_percentage_after_dampen + 1))
     
-    # def get_best_price(self):
-    #     # minimize_scalar(objective_function, bounds=(lower_bound, upper_bound), method='bounded')
-    #     best_price =  minimize_scalar(lambda x: -self.revenue_for_price(x), bounds = (self.get_min_possible_price(),self.get_max_possible_price()), method='bounded')
-    #     return best_price
-
-    # def plot_peak_price_revenue_graph(self):
-    #     self.plot_price_revenue_graph(self.revenue_for_price)
-    
 ##################################### Monthly peak functions #####################################
     
     def get_peak_customer_per_month(self):
@@ -309,46 +301,3 @@ class Bundle:
             json[name] = self.return_non_peak_single_attraction_revenue_in_json(attraction)
         
         return json 
-
-
-##################################### Test case #####################################
-
-# aq = pd.read_csv('./data/sea_aquarium.csv')
-
-# name = "sea aquarium"
-# cost = 33
-
-# sea_aquarium_attraction = Attraction(name, cost, aq)
-
-# cc = pd.read_csv('./data/cablecar.csv')
-# name = "cable car"
-# cost = 33
-
-# cc_attraction = Attraction(name, cost, cc)
-
-# lst_of_attraction_1 = [sea_aquarium_attraction, cc_attraction]
-
-# b1 = Bundle(list_of_attractions=lst_of_attraction_1)
-# print(b1.get_peak_best_price())
-# b1.plot_peak_price_revenue_graph()
-
-######################
-
-# aq = pd.read_csv('./data/sea_aquarium.csv')
-
-# name = "sea aquarium"
-# cost = 33
-
-# sea_aquarium_attraction = Attraction(name, cost, aq)
-
-# cc = pd.read_csv('./data/cablecar.csv')
-# name = "cable car"
-# cost = 33
-
-# cc_attraction = Attraction(name, cost, cc)
-
-# lst_of_attraction_1 = [sea_aquarium_attraction, cc_attraction]
-
-# b1 = Bundle(list_of_attractions=lst_of_attraction_1)
-
-# print(b1.return_peak_bundle_overall_revenue_info())

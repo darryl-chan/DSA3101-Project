@@ -8,9 +8,13 @@ class Attraction:
     MAX_REVIEW_SCORE = 4.8
     WEIGHT_FOR_REVIEW = 0.5
     WEIGHT_FOR_NUMBER_OF_CUSTOMERS = 0.5
+    
+    # This affects how much popularity increases per number of customer
     SCALING_FACTOR = 0.001
+    # This affects how much customers are needed to get to the middle point of weighted popularity
     SHIFTING_FACTOR = 2000
     
+    # These values are calculated using Skyhelix data
     PEAK_MONTH_MULTIPLER = 7/64
     NON_PEAK_MONTH_MULTIPLIER = 5/64
     
@@ -125,18 +129,3 @@ class Attraction:
             "mflg" : True
         }
         return json
-
-
-# aq = pd.read_csv('./data/sea_aquarium.csv')
-# name = "sea aquarium"
-# cost = 33
-
-# sea_aquarium_attraction = Attraction(name, cost, aq)
-# print(sea_aquarium_attraction.return_popularity_analysis())
-
-# cc = pd.read_csv('./data/cablecar.csv')
-# name = "cable car"
-# cost = 35
-
-# cablecar = Attraction(name, cost, cc)
-# print(cablecar.return_popularity_analysis())

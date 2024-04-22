@@ -75,7 +75,7 @@ def get_popularity():
         
         curr_attraction = Attraction(name, cost, df_of_attraction, is_mflg)
         
-        lst_to_store_json.append(curr_attraction.return_popularity_analysis())
+        lst_to_store_json.append(curr_attraction.return_peak_popularity_analysis_monthly())
     
     return lst_to_store_json
 

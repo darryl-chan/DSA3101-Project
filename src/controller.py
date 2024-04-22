@@ -143,4 +143,9 @@ def get_bundles_with_at_least_one_mflg():
     bundle_with_highest_revenue = lst_of_bundles[max_index]
     
     return [bundle_with_highest_revenue.return_peak_bundle_overall_revenue_info()]
-  
+
+def get_names():
+    df = pd.read_csv(data_dir + f"/attractions.csv")
+    
+    names = list(df['Name'])
+    return names

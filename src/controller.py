@@ -79,20 +79,6 @@ def get_popularity():
     
     return lst_to_store_json
 
-def get_bundle_with_highest_revenue():
-    
-    lst_of_bundles = list_of_bundles()
-    
-    lst_of_revenues = list(map(lambda x : x.get_peak_best_revenue(), lst_of_bundles))
-    
-    max_revenue = max(lst_of_revenues)
-    
-    max_index = lst_of_revenues.index(max_revenue)
-    
-    bundle_with_highest_revenue = lst_of_bundles[max_index]
-    
-    return [bundle_with_highest_revenue.return_peak_bundle_overall_revenue_info()]
-
 def get_best_bundle_revenue_split():
     lst_of_bundles = list_of_bundles()
     
@@ -157,17 +143,4 @@ def get_bundles_with_at_least_one_mflg():
     bundle_with_highest_revenue = lst_of_bundles[max_index]
     
     return [bundle_with_highest_revenue.return_peak_bundle_overall_revenue_info()]
-    
-    
-
-def get_bundle_2():
-    
-    lst_of_bundles = list_of_bundles()
-    
-    lst_to_store_json = []
-    
-    for bundle in lst_of_bundles:
-        lst_to_store_json.append(bundle.return_peak_bundle_overall_revenue_info())
-    
-    return lst_to_store_json
-
+  

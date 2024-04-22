@@ -116,10 +116,22 @@ def extend_review(csv_to_change):
     full_df.index = np.array([i for i in range(len(full_df))])
     full_df.to_csv(f'./data/{csv_to_change}.csv')
     
+def put_to_attraction_list(name, under_mflg, price):
+    df_attraction = pd.read_csv("./data/attractions.csv")
+    df_to_add = pd.DataFrame({'Name': [name], 'CSV name': [f"{name}.csv"], "Under MFLG?": [under_mflg], "Price" : [price]})
+    
+    new_df = pd.concat([df_attraction, df_to_add])
+    new_df.to_csv('./data/attractions.csv', index=False)
+    
+    
 def get_user_input():
     url = input("What is the google review url:")
     time_to_scrape = float(input("How many minutes do you want to scrape:"))
     name = input("What is the name of the attraction:")
     check_every_interval = float(input("How often do you want to check please input positive number:"))
+    
+    is_mlfg = input("Is this attraction under MFLG (Yes/No):")
+    ticket_cost = input("What is the ticket cost:")
     scrape(url, time_to_scrape, name, check_every_interval)
     extend_review(name)
+    put_to_attraction_list(name, is_mlfg, ticket_cost)

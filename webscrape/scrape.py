@@ -69,10 +69,10 @@ def scrape(url, time_to_scrape, name, check_every_interval):
     else:
         saved_data_frame = df.copy()
         
-    saved_data_frame.to_csv(f'./data/{name}.csv')
+    saved_data_frame.to_csv(f'../data/{name}.csv')
     
 def extend_review(csv_to_change):
-    df = pd.read_csv(f'./data/{csv_to_change}.csv', index_col=0)
+    df = pd.read_csv(f'../data/{csv_to_change}.csv', index_col=0)
     np.random.seed(234)
     
     last_months_ago = df.iloc[-1]['Time'] if ("month" in df.iloc[-1]['Time']) else "11 months ago"
@@ -114,7 +114,7 @@ def extend_review(csv_to_change):
 
     full_df = pd.concat([new_df, pd.DataFrame(dic)])
     full_df.index = np.array([i for i in range(len(full_df))])
-    full_df.to_csv(f'./data/{csv_to_change}.csv')
+    full_df.to_csv(f'../data/{csv_to_change}.csv')
     
 def get_user_input():
     url = input("What is the google review url:")

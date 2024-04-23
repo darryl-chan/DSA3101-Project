@@ -134,6 +134,13 @@ def extend_review(csv_to_change):
     full_df = pd.concat([new_df, pd.DataFrame(dic)])
     full_df.index = np.array([i for i in range(len(full_df))])
     full_df.to_csv(f'home/data/{csv_to_change}.csv')
+
+def put_to_attraction_list(name, under_mflg, price):
+    df_attraction = pd.read_csv("home/data/attractions.csv")
+    df_to_add = pd.DataFrame({'Name': [name], 'CSV name': [f"{name}.csv"], "Under MFLG?": [under_mflg], "Price" : [price]})
+    
+    new_df = pd.concat([df_attraction, df_to_add])
+    new_df.to_csv('home/data/attractions.csv', index=False)
     
 def get_user_input():
     url = input("What is the google review url:")

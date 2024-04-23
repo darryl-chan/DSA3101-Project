@@ -38,9 +38,8 @@ services:
     build:
       context: ./webscrape
       dockerfile: Dockerfile.webscrape
-    command: ""
     volumes:
-      - db-volume:/home/opt/data
+      - db-volume:/home/app/data
 
 
 volumes:

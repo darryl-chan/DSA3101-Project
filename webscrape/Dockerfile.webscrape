@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y wget unzip && \
 
 COPY . /home/app
 
-ENTRYPOINT [ "python", "scrape_wrapper.py" ]
+CMD ["tail", "-f", "/dev/null"]
 
 
 

@@ -1,4 +1,9 @@
 from selenium import webdriver
+
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service as ChromeService
+
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -8,7 +13,21 @@ import scipy.stats as stats
 
 def scrape(url, time_to_scrape, name, check_every_interval):
 
-    driver = webdriver.Chrome()
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--disable-gpu")  # This is important for some versions of Chrome
+    chrome_options.add_argument("--remote-debugging-port=9222")  # This is recommended
+
+    # Set path to Chrome binary
+    chrome_options.binary_location = "/home/opt/chrome/chrome-linux64/chrome"
+
+    # Set path to ChromeDriver
+    chrome_service = ChromeService(executable_path="/home/opt/chromedriver/chromedriver-linux64/chromedriver")
+
+    # Set up driver
+    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
     
     driver.get(url)
     
@@ -69,10 +88,10 @@ def scrape(url, time_to_scrape, name, check_every_interval):
     else:
         saved_data_frame = df.copy()
         
-    saved_data_frame.to_csv(f'../data/{name}.csv')
+    saved_data_frame.to_csv(f'home/data/{name}.csv')
     
 def extend_review(csv_to_change):
-    df = pd.read_csv(f'../data/{csv_to_change}.csv', index_col=0)
+    df = pd.read_csv(f'home/data/{csv_to_change}.csv', index_col=0)
     np.random.seed(234)
     
     last_months_ago = df.iloc[-1]['Time'] if ("month" in df.iloc[-1]['Time']) else "11 months ago"
@@ -114,7 +133,7 @@ def extend_review(csv_to_change):
 
     full_df = pd.concat([new_df, pd.DataFrame(dic)])
     full_df.index = np.array([i for i in range(len(full_df))])
-    full_df.to_csv(f'../data/{csv_to_change}.csv')
+    full_df.to_csv(f'home/data/{csv_to_change}.csv')
     
 def get_user_input():
     url = input("What is the google review url:")

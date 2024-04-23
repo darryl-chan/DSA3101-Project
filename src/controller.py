@@ -148,4 +148,9 @@ def get_names():
     df = pd.read_csv(data_dir + f"/attractions.csv")
     
     names = list(df['Name'])
-    return names
+    is_mflg = list(df['Under MFLG?'])
+    lst = []
+    
+    for i in range(len(names)):
+        lst.append([names[i], is_mflg[i]])
+    return lst

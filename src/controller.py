@@ -152,5 +152,9 @@ def get_names():
     lst = []
     
     for i in range(len(names)):
-        lst.append([names[i], is_mflg[i]])
+        dic = {
+            "name": names[i],
+            "mflg": is_mflg[i]
+        }
+        lst.append(dic)
     return lst

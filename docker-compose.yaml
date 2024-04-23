@@ -40,7 +40,7 @@ services:
       dockerfile: Dockerfile.webscrape
     command: ""
     volumes:
-      - db-volume:/home/data
+      - db-volume:/home/opt/data
 
 
 volumes:

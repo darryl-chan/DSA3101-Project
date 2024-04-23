@@ -1,5 +1,6 @@
 pandas
 numpy
-beautifulsoup4
+beautifulsoup4==4.12.2
 scipy
-selenium
+selenium==4.9.1
+webdriver_manager==4.0.0

@@ -1,8 +1,8 @@
 from selenium import webdriver
 
-from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
 import pandas as pd
 import numpy as np
@@ -24,17 +24,9 @@ def scrape(url, time_to_scrape, name, check_every_interval):
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--disable-gpu")  # This is important for some versions of Chrome
-    chrome_options.add_argument("--remote-debugging-port=9222")  # This is recommended
-
-    # Set path to Chrome binary
-    chrome_options.binary_location = cwd + "/chrome/chrome-linux64/chrome"
-
-    # Set path to ChromeDriver
-    chrome_service = ChromeService(executable_path= cwd + "/chromedriver/chromedriver-linux64/chromedriver")
 
     # Set up driver
-    driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     
     driver.get(url)
     

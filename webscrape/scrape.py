@@ -140,5 +140,9 @@ def get_user_input():
     time_to_scrape = float(input("How many minutes do you want to scrape:"))
     name = input("What is the name of the attraction:")
     check_every_interval = float(input("How often do you want to check please input positive number:"))
+    
+    is_mlfg = input("Is this attraction under MFLG (Yes/No):")
+    ticket_cost = input("What is the ticket cost:")
     scrape(url, time_to_scrape, name, check_every_interval)
     extend_review(name)
+    put_to_attraction_list(name, is_mlfg, ticket_cost)

@@ -79,20 +79,6 @@ def get_popularity():
     
     return lst_to_store_json
 
-def get_bundle_with_highest_revenue():
-    
-    lst_of_bundles = list_of_bundles()
-    
-    lst_of_revenues = list(map(lambda x : x.get_peak_best_revenue(), lst_of_bundles))
-    
-    max_revenue = max(lst_of_revenues)
-    
-    max_index = lst_of_revenues.index(max_revenue)
-    
-    bundle_with_highest_revenue = lst_of_bundles[max_index]
-    
-    return [bundle_with_highest_revenue.return_peak_bundle_overall_revenue_info()]
-
 def get_best_bundle_revenue_split():
     lst_of_bundles = list_of_bundles()
     
@@ -157,17 +143,18 @@ def get_bundles_with_at_least_one_mflg():
     bundle_with_highest_revenue = lst_of_bundles[max_index]
     
     return [bundle_with_highest_revenue.return_peak_bundle_overall_revenue_info()]
-    
-    
 
-def get_bundle_2():
+def get_names():
+    df = pd.read_csv(data_dir + f"/attractions.csv")
     
-    lst_of_bundles = list_of_bundles()
+    names = list(df['Name'])
+    is_mflg = list(df['Under MFLG?'])
+    lst = []
     
-    lst_to_store_json = []
-    
-    for bundle in lst_of_bundles:
-        lst_to_store_json.append(bundle.return_peak_bundle_overall_revenue_info())
-    
-    return lst_to_store_json
-
+    for i in range(len(names)):
+        dic = {
+            "name": names[i],
+            "mflg": is_mflg[i]
+        }
+        lst.append(dic)
+    return lst

@@ -34,6 +34,13 @@ services:
       backend:
         condition: service_healthy
 
+  webscrape:
+    build:
+      context: ./webscrape
+      dockerfile: Dockerfile.webscrape
+    volumes:
+      - db-volume:/home/app/data
+
 
 volumes:
   db-volume:

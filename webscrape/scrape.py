@@ -1,4 +1,9 @@
 from selenium import webdriver
+
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -6,9 +11,22 @@ from bs4 import BeautifulSoup
 import time
 import scipy.stats as stats
 
+import os
+
+
+cwd = os.getcwd()
+data_dir = os.path.join(cwd, 'data')
+
 def scrape(url, time_to_scrape, name, check_every_interval):
 
-    driver = webdriver.Chrome()
+
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+
+    # Set up driver
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     
     driver.get(url)
     
@@ -69,10 +87,11 @@ def scrape(url, time_to_scrape, name, check_every_interval):
     else:
         saved_data_frame = df.copy()
         
-    saved_data_frame.to_csv(f'./data/{name}.csv')
+    saved_data_frame.to_csv(data_dir + f'/{name}.csv')
     
 def extend_review(csv_to_change):
-    df = pd.read_csv(f'./data/{csv_to_change}.csv', index_col=0)
+
+    df = pd.read_csv(data_dir + f'/{csv_to_change}.csv', index_col=0)
     np.random.seed(234)
     
     last_months_ago = df.iloc[-1]['Time'] if ("month" in df.iloc[-1]['Time']) else "11 months ago"
@@ -114,15 +133,14 @@ def extend_review(csv_to_change):
 
     full_df = pd.concat([new_df, pd.DataFrame(dic)])
     full_df.index = np.array([i for i in range(len(full_df))])
-    full_df.to_csv(f'./data/{csv_to_change}.csv')
-    
+    full_df.to_csv(data_dir +f'/{csv_to_change}.csv')
+
 def put_to_attraction_list(name, under_mflg, price):
-    df_attraction = pd.read_csv("./data/attractions.csv")
+    df_attraction = pd.read_csv(data_dir + "/attractions.csv")
     df_to_add = pd.DataFrame({'Name': [name], 'CSV name': [f"{name}.csv"], "Under MFLG?": [under_mflg], "Price" : [price]})
     
     new_df = pd.concat([df_attraction, df_to_add])
-    new_df.to_csv('./data/attractions.csv', index=False)
-    
+    new_df.to_csv(data_dir + '/attractions.csv', index=False)
     
 def get_user_input():
     url = input("What is the google review url:")

@@ -1,7 +1,5 @@
-import pandas as pd
 import numpy as np
-from scipy.optimize import minimize_scalar, minimize
-import scipy
+from scipy.optimize import minimize_scalar
 import matplotlib.pyplot as plt
 
 from attraction import Attraction
@@ -25,6 +23,9 @@ class Bundle:
             name += attraction.name + "+"
         return name[:-1]
     
+    """Basic functions for bundles that the rest of the code depends on
+    """
+    
     # Bundle price upper limit
     def get_max_possible_price(self):
         max_price = 0
@@ -36,7 +37,7 @@ class Bundle:
     def get_min_possible_price(self):
         return self.get_max_possible_price() * Bundle.PROFIT_MARGIN
     
-    # Get average popularity of attractions and turn it into a fraction
+    # Get average popularity of attractions and turn it into a fraction of range [0, 1]
     def get_scaled_popularity(self):
         if self.scaled_popularity == None:
             pop = 0
@@ -57,6 +58,9 @@ class Bundle:
     
 ##################################### Yearly functions #####################################
     
+    """Get values such as customers per year, revenue per year
+    """   
+    
     def get_customers_per_year(self):
         cust = 0
         
@@ -74,6 +78,9 @@ class Bundle:
         return (price) * (initial_customers * (percentage_change_in_price * popularity_percentage_after_dampen + 1))
     
 ##################################### Monthly peak functions #####################################
+
+    """Get peak values such as customers per month, revenue per month and best price
+    """
     
     def get_peak_customer_per_month(self):
         cust = 0
@@ -104,6 +111,9 @@ class Bundle:
     
 ##################################### Monthly non peak functions #####################################
     
+    """Get non peak values such as customers per month, revenue per month and best price
+    """
+    
     def get_non_peak_customer_per_month(self):
         cust = 0
         
@@ -132,8 +142,10 @@ class Bundle:
         self.plot_price_revenue_graph(self.get_non_peak_revenue_per_month)
 
 ##################################### Graph #####################################
-    
+
     def plot_price_revenue_graph(self, function):
+        """ Creates a graph for the visualization of revenue against price
+        """
         x = np.linspace(0, self.get_max_possible_price(), 500)
         
         y = function(x)
@@ -152,7 +164,8 @@ class Bundle:
 ##################################### Bundle helper functions #####################################
 
                                         #### Peak ####
-                                        
+    """ These functions are helper or inner functions to send peak bundle information to the front end
+    """
     def get_peak_attraction_revenue_after_bundle(self, attraction: Attraction):
         return attraction.get_peak_revenue_per_month() * (1 - Bundle.PERCENTAGE_OF_PEOPLE_BUYING_BUNDLE)
     
@@ -188,7 +201,8 @@ class Bundle:
         return json
     
                                         #### Non Peak ####
-
+    """These functions are helper or inner functions to send non-peak bundle information to the front end
+    """
     def get_non_peak_bundle_revenue_split(self, attraction: Attraction):
         return self.get_non_peak_best_revenue() * (attraction.cost / self.get_max_possible_price())
 
@@ -227,6 +241,8 @@ class Bundle:
 
                                         #### Peak ####
 
+    """These information will be sent to the front end
+    """
     def return_peak_bundle_overall_revenue_info(self):
         json = {}
         
@@ -241,7 +257,9 @@ class Bundle:
             name = f"single_{attraction.name}"
             json[name] = self.return_peak_single_attraction_revenue_in_json(attraction)
         return json
-
+    
+    """Finds best price of bundle along with the revenue
+    """
     def return_peak_bundle_with_revenue(self):
         json = {
             "name" : self.get_name(),
@@ -250,6 +268,8 @@ class Bundle:
         }
         return json
     
+    """Finds the revenue split of the two attractions after bundling. (Currently based on ticket price)
+    """
     def return_peak_revenue_split(self):
         json = {}
         
@@ -264,6 +284,8 @@ class Bundle:
         return json
     
                                         #### Non Peak ####
+    """Repeated from peak bundles
+    """
     
     def return_non_peak_bundle_overall_revenue_info(self):
         json = {}

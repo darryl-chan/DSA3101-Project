@@ -18,7 +18,7 @@ services:
     volumes:
       - db-volume:/home/app/data
     healthcheck:
-      test: "curl -f http://localhost:5000"
+      test: "curl -f http://localhost:5000/popularity"
       interval: 5s
       timeout: 600s
       retries: 5
@@ -33,6 +33,13 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+
+  webscrape:
+    build:
+      context: ./webscrape
+      dockerfile: Dockerfile.webscrape
+    volumes:
+      - db-volume:/home/app/data
 
 
 volumes:

@@ -1,18 +1,26 @@
+# Use python 3.11 version as base image
 FROM python:3.11
 
+# Install and update dependencies
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         libpq-dev \
     && rm -rf /var/lib/apt/lists/* && apt-get install -y curl
 
+# Set working dorectory in container
 WORKDIR /home/app
 
+# Copy text file containing required packages into container
 COPY requirements.txt /home/app
 
+# Install required packages into container
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy remaining files into container
 COPY . /home/app
 
+# Expose port 5000 to outside world
 EXPOSE 5000
 
+# Run the python script 'main.py'
 CMD ["python", "main.py"]

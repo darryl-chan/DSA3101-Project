@@ -1,6 +1,5 @@
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import Header from "../../components/Header";
 import StatBox from "../../components/StatBox";
 import { DataGrid } from "@mui/x-data-grid";
@@ -8,7 +7,6 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios"; // npm install axios
 import { ResponsivePie } from "@nivo/pie";
 import { Link } from 'react-router-dom';
-
 
 const Overview = () => {
   const theme = useTheme();
@@ -45,7 +43,7 @@ const Overview = () => {
     return Math.floor(num * 10) / 10; // Round to one decimal place
   };
 
-  // format popularityData so it can be passed into Line Chart
+  // format popularityData so it can be passed into Bar Chart
   const formattedPopularityData = [
     {id: 'Very Low', value: 1}, // sky helix
     {id: 'Medium', value: 1}, // cable
@@ -54,7 +52,6 @@ const Overview = () => {
 
   const sliceColors = ['#ffa080', '#ffdf80', '#a5d46a']
 
-  
   const CustomerPieChart = () => (
     <ResponsivePie
       data={formattedPopularityData}
@@ -84,7 +81,6 @@ const Overview = () => {
           effects: []
         }
       ]}
-      //animate = {false}
     />
   );
 
@@ -110,7 +106,6 @@ const Overview = () => {
           return "Competitor";
         }
       },
-      //renderCell: (params) => (<span>{params.row.mflg ? 'MFLG' : 'Competitor'}</span>),
     },
     {
       field: "rating",
@@ -163,21 +158,6 @@ const Overview = () => {
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="MFLG DASHBOARD" subtitle="Welcome to your dashboard" />
-
-        <Box>
-          <Button
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-            }}
-          >
-            <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            Download Reports
-          </Button>
-        </Box>
       </Box>
 
       {/* GRID & CHARTS */}
@@ -189,7 +169,6 @@ const Overview = () => {
       >
 
         {/* ROW 1 : top rated attractions of MFLG and competitor respectively*/}
-        
         <Box
           gridColumn="span 4"
           backgroundColor={colors.primary[400]}
@@ -198,7 +177,6 @@ const Overview = () => {
           justifyContent="center"
         >
           <StatBox
-          
             title={popularityData
               .filter(item => ["Wings of Time", "Singapore cable car", "Sky Helix Sentosa"].includes(item.name))
               .reduce((prev, current) => (prev.revenue > current.revenue) ? prev : current, {})
@@ -234,7 +212,6 @@ const Overview = () => {
           justifyContent="center"
         >
           <StatBox
-          
             title= "Singapore cable car + Wings of Time"
             subtitle="Best Recommended Bundle"
             progress="1"
@@ -242,7 +219,6 @@ const Overview = () => {
         </Box>
 
         {/* ROW 2 : weekly visitation and peak vs non-peak revenue */}
-        
         <Box
           gridColumn="span 6"
           gridRow="span 3"
@@ -264,14 +240,8 @@ const Overview = () => {
                 >Degree of Popularity of MFLG Attractions
                 </Typography>
               </Link>
-              
             </Box>
             <Box>
-              <IconButton>
-                <DownloadOutlinedIcon
-                  sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
-                />
-              </IconButton>
             </Box>
           </Box>
           <Box height="400px" m="-20px 0 0 0">
@@ -279,9 +249,7 @@ const Overview = () => {
           </Box>
         </Box>
         
-
         {/* top 3 ranking of attractions by popularity rating */}
-        
         <Box
           gridColumn="span 6"
           gridRow="span 3"
@@ -325,21 +293,14 @@ const Overview = () => {
             },
           }}
           />
-  
-          
           <Box
             display="flex"
             flexDirection="column"
             alignItems="center"
             mt="25px"
-            
           >
-        
-           
           </Box>
         </Box>
-        
-
       </Box>
     </Box>
 

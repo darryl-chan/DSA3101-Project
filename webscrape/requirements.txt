@@ -1,5 +1,6 @@
-selenium
-pandas
-numpy
-beautifulsoup4
-scipy
+pandas==2.2.0
+numpy==1.26.4
+beautifulsoup4==4.12.2
+scipy==1.12.0
+selenium==4.9.1
+webdriver_manager==4.0.0

@@ -1,46 +1,47 @@
 version: '3'
 services:
-  data-container:
+
+  data-container:                 # Build of the data-container service
     build: 
-      context : ./data
+      context : ./data            # Location of Dockerfile.data
       dockerfile: Dockerfile.data
     volumes:
-      - db-volume:/app
+      - db-volume:/app            # Sets up a volume `db-volume`
 
-  backend:
+  backend:                        # Build of the backend service
     build: 
-      context: ./src
+      context: ./src              # Location of Dockerfile.backend
       dockerfile: Dockerfile.backend
     expose:
       - "5000"
     ports:
-      - "5000:5000"
+      - "5000:5000"               # Backend server use port 5000
     volumes:
-      - db-volume:/home/app/data
-    healthcheck:
+      - db-volume:/home/app/data  # Attaches db-volume to backend container to allow data to be shared across containers
+    healthcheck:                  # Test and check if the backend server is working
       test: "curl -f http://localhost:5000/popularity"
       interval: 5s
       timeout: 600s
       retries: 5
 
 
-  frontend:
+  frontend:                       # Build of the frontend service
     build: 
-      context: ./dashboard
+      context: ./dashboard        # Location of Dockerfile.frontend
       dockerfile: Dockerfile.frontend
     ports:
-      - "8081:80"
-    depends_on:
+      - "8081:80"                 # Frontend server utilizes ports 8081:80
+    depends_on:                   # Ensures that the backend server is running to run the frontend 
       backend:
         condition: service_healthy
 
-  webscrape:
+  webscrape:                      # Build of the web scrape service
     build:
-      context: ./webscrape
+      context: ./webscrape        # Location of Dockerfile.webscrape
       dockerfile: Dockerfile.webscrape
     volumes:
-      - db-volume:/home/app/data
+      - db-volume:/home/app/data  # Attaches db-volume to web scrape container so that the data scraped is connected to backend container
 
 
-volumes:
+volumes:                          # volume that is used across the relevant containers
   db-volume:

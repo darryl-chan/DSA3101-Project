@@ -13,37 +13,33 @@ const BundleBar = () => {
     const colors = tokens(theme.palette.mode);
 
     const [selectedValues, setSelectedValues] = useState([]);
-    const options = [
-        { cat: 'MFLG', key: 'Singapore Cable Car'},
-        { cat: 'MFLG', key: 'SkyHelix Sentosa'},
-        { cat: 'MFLG', key: 'Wings Of Time'},
-        { cat: 'Competitor', key: 'Sea Aquarium'},
-        { cat: 'Competitor', key: 'Adventure Cove'},
-        { cat: 'Competitor', key: 'Singapore Flyer'},
-        { cat: 'Competitor', key: 'iFly'},     
-        { cat: 'Competitor', key: 'ArtScience Museum'}  
-    ];
-
-    const onSelect = (selectedList, selectedItem) => {
-      console.log("selected items", selectedList);
-        if (selectedValues.length <= 3) {
-            setSelectedValues(selectedList);
-        };
+    
+    const [options, setOptions] = useState([]);
+    useEffect(() => {
+      const fetchOptions = async () => {
+        try {
+          const response = await axios.get('http://127.0.0.1:5000/attraction_names');
+          const formattedOptions = response.data.map(item => ({ key: item.name, id: item.mflg }));
+          setOptions(formattedOptions);
+        } catch (error) {
+          console.error('Failed to fetch options:', error);
+        }
+      };
+  
+      fetchOptions();
+    }, []);
+  
+    const handleChange = (selectedOptions) => {
+      setSelectedValues(selectedOptions);
+      // console.log("here are", options);
     };
 
     const [listCleared, setlistCleared] = useState(false);
 
     const clearlist = () => {
       setlistCleared(true);
-      console.log("is list cleared", listCleared);
+      // console.log("is list cleared", listCleared);
     };
-
-    const onRemove = (removedItem) => {
-      const updatedList = selectedValues.filter(item => item.id !== removedItem.id);
-      setSelectedValues(updatedList);
-      // console.log(selectedValues);
-  };
-
    
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -96,15 +92,6 @@ const BundleBar = () => {
     const [name1, setname1 ] = useState('Attraction 1');
     const [name2, setname2 ] = useState('Attraction 2');
 
-    // to two decimal places
-    const roundToTwoDecimalPlaces = (num) => {
-      return num.toFixed(2); // Use toFixed(2) to round to two decimal places
-    };
-
-    const roundtoWhole = (num) => {
-      return Math.round(num);
-    };
-
     const [BundlePrice, setBundlePrice] = useState(0);
 
     const [A1, setA1] = useState({mflg: true, name: ''});
@@ -122,7 +109,9 @@ const BundleBar = () => {
     const [A2Change, setA2Change] = useState(0);
 
     const selectedKeys = selectedValues.map(item => item.key);
-
+    const checkMFLG = selectedValues.map(item => item.id);
+    
+    // useEffect for instant update of values
     useEffect(() => {
       
       async function fetchData() {
@@ -137,11 +126,11 @@ const BundleBar = () => {
           return;
         } 
         try {
-
-          if (selectedKeys.includes("Singapore Cable Car") || selectedKeys.includes("SkyHelix Sentosa") || selectedKeys.includes("Wings Of Time")) {
+    
+          if (checkMFLG.includes("Yes")) {  
             const [response, splitrev_response] = await Promise.all([
-              axios.post('http://localhost:5000/bundle', selectedKeys),
-              axios.post('http://localhost:5000/revenue_split', selectedKeys)
+              axios.post('http://127.0.0.1:5000/bundle', selectedKeys),
+              axios.post('http://127.0.0.1:5000/revenue_split', selectedKeys)
             ]);
   
             const indivValues = Object.values(response.data);
@@ -247,18 +236,27 @@ const BundleBar = () => {
       };
 
       fetchData();
-
-      // console.log("testing 2", listCleared)      
       
     }, [listCleared, selectedKeys]);
 
-
+    // display values
+    const roundToTwoDecimalPlaces = (num) => {
+      return num.toFixed(2); // Use toFixed(2) to round to two decimal places
+    };
+    const roundtoWhole = (num) => {
+      return Math.round(num);    
+    };
+    const formatValues = (num) => {
+        return new Intl.NumberFormat('en-US', {
+            maximumFractionDigits: 2, 
+        }).format(num);
+    }
     const displayPerc = (number) => {
       return '+' + number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '%';
     };
 
+    // colours for bar graph
     const pastelColors = ["#9cadce", "#d1cfe2"];
-
     const bartheme = {
       axis: {
           ticks: {
@@ -297,9 +295,9 @@ const BundleBar = () => {
                   </Button>
                 <Multiselect
                     displayValue="key"
-                    onSelect={onSelect}
-                    onRemove={clearlist} // may want to change                 
-                    options={selectedValues.length === 2 ? [] : options}
+                    onSelect={handleChange}
+                    onRemove={clearlist}   
+                    options={selectedValues.length === 2 ? [] : options}     
                     selectedValues={selectedValues}
                     isObject={true}                
                     style={ {
@@ -448,9 +446,10 @@ const BundleBar = () => {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: "Revenue ($)", // Add y-axis label
+                legend: "Revenue (units of $100,000)", // Add y-axis label
                 legendPosition: "middle",
                 legendOffset: -60, // Adjust offset of the Y-axis label
+                format: value => `${(value / 100000)}`
               }}
               labelSkipWidth={12}
               labelSkipHeight={12}
@@ -490,9 +489,10 @@ const BundleBar = () => {
                 tickSize: 5,
                 tickPadding: 5,
                 tickRotation: 0,
-                legend: "Revenue ($)", // Add y-axis label
+                legend: "Revenue (units of $100,000)", // Add y-axis label
                 legendPosition: "middle",
                 legendOffset: -60, // Adjust offset of the Y-axis label
+                format: value => `${(value / 100000)}`
               }}
               labelSkipWidth={12}
               labelSkipHeight={12}        

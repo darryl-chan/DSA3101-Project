@@ -1,9 +1,6 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Header from "../../components/Header";
 import BundleBar from "./BundleBar";
-import { ResponsiveBar } from "@nivo/bar";
-import { mockLineData as data } from "../../data/mockData";
-import { useState } from "react";
 
 const EBP = () => {
   
@@ -17,6 +14,11 @@ const EBP = () => {
       <Box>
         <BundleBar />
       </Box>
+
+      {/* Note */}
+      <Typography variant="body1" mt={2}>
+        Note: <strong>After Bundling Option</strong> has 'Individual Revenue' which represents the revenue from ticket sales of the attraction when purchased separately, even with the bundling option offered.
+        </Typography>
       
     </Box>  
   );

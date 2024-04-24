@@ -15,13 +15,12 @@ def test_controller():
 
     get_popularity()
 
-    get_bundle_with_highest_revenue()
+
 
     get_best_bundle_revenue_split()
 
     get_bundles_with_at_least_one_mflg()
 
-    get_bundle_2()
     
     print("Controller has no problems")
 

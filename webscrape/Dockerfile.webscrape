@@ -1,26 +1,26 @@
-#Use the python 3.10 version as the base image of our container for webscraping
+# Use the python 3.10 version as the base image of our container for webscraping
 FROM python:3.10
 
-#set the work directory for the container to be /home/app
+# set the work directory for the container to be /home/app
 WORKDIR /home/app
 
-#copy the requirements.txt file into the container containing the required packages for our scripts
+# copy the requirements.txt file into the container containing the required packages for our scripts
 COPY requirements.txt /home/app
 
-#Install required python packages into container
+# Install required python packages into container
 RUN pip install --no-cache-dir -r requirements.txt
 
-#Installs and updates dependencies, and also installs Google Chrome into container
+# Installs and updates dependencies, and also installs Google Chrome into container
 RUN apt-get update && apt-get install -y wget unzip && \
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb && \
     apt install -y ./google-chrome-stable_current_amd64.deb && \
     rm google-chrome-stable_current_amd64.deb && \
     apt-get clean
 
-#Copy remaining of the files into the working dorectory
+# Copy remaining of the files into the working dorectory
 COPY . /home/app
 
-#Runs the container and leaves it running indefinitely
+# Runs the container and leaves it running indefinitely
 CMD ["tail", "-f", "/dev/null"]
 
 

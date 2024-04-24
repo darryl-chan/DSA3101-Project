@@ -171,8 +171,8 @@ const BundleBar = () => {
                 newbarB = temp2;
                 newname2 = A2.name
         
-                setA1Change(roundToTwoDecimalPlaces((bA1Rev + BSA1 - A1Rev) / A1Rev * 100));
-                setA2Change(roundToTwoDecimalPlaces((bA2Rev + BSA2 - A2Rev) / A2Rev * 100));
+                setA1Change(roundtoWhole((bA1Rev + BSA1 - A1Rev) / A1Rev * 100));
+                setA2Change(roundtoWhole((bA2Rev + BSA2 - A2Rev) / A2Rev * 100));
     
     
               } else if (A1.mflg && !A2.mflg) {  // only first option is MFLG's
@@ -182,7 +182,7 @@ const BundleBar = () => {
                 newname2 = A2.name;
                 setname2('');
     
-                setA1Change(roundToTwoDecimalPlaces((bA1Rev + BSA1 - A1Rev) / A1Rev * 100));
+                setA1Change(roundtoWhole((bA1Rev + BSA1 - A1Rev) / A1Rev * 100));
                 setA2Change(0);
     
               } else { // other one must be MFLG if first isn't
@@ -191,7 +191,7 @@ const BundleBar = () => {
                 newbarB = []
                 newname2 = A1.name;
     
-                setA1Change(roundToTwoDecimalPlaces((bA2Rev + BSA2 - A2Rev) / A2Rev * 100));
+                setA1Change(roundtoWhole((bA2Rev + BSA2 - A2Rev) / A2Rev * 100));
                 setA2Change(0);
     
               }; 
@@ -453,6 +453,7 @@ const BundleBar = () => {
               }}
               labelSkipWidth={12}
               labelSkipHeight={12}
+              label={(label) => `$${(label.value).toLocaleString('en-US', {minimumFractionDigits: 0})}`}
               groupMode='stacked'
               theme={bartheme}
               tooltip={({ id, value }) => (
@@ -495,7 +496,8 @@ const BundleBar = () => {
                 format: value => `${(value / 100000)}`
               }}
               labelSkipWidth={12}
-              labelSkipHeight={12}        
+              labelSkipHeight={12}      
+              label={(label) => `$${(label.value).toLocaleString('en-US', {minimumFractionDigits: 0})}`}  
               groupMode='stacked'
               theme={bartheme}
               tooltip={({ id, value }) => (

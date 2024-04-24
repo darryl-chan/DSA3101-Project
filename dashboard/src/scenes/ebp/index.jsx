@@ -1,9 +1,6 @@
 import { Box } from "@mui/material";
 import Header from "../../components/Header";
 import BundleBar from "./BundleBar";
-import { ResponsiveBar } from "@nivo/bar";
-import { mockLineData as data } from "../../data/mockData";
-import { useState } from "react";
 
 const EBP = () => {
   

@@ -29,7 +29,7 @@ const Popularity = () => {
       setLoading(false); // Set loading to false in case of error
     }
   };
-
+  
   // Fetch data when component mounts
   useEffect(() => {
     fetchPopularityData();
@@ -45,10 +45,10 @@ const Popularity = () => {
     return Math.floor(num * 10) / 10; // Round to one decimal place
   };
 
-  // Function to round to two decimal places
-  const roundToTwoDecimalPlaces = (num) => {
-    return num.toFixed(2); // Use toFixed(2) to round to two decimal places
-  };
+  // // Function to round to two decimal places
+  // const roundToTwoDecimalPlaces = (num) => {
+  //   return num.toFixed(2); // Use toFixed(2) to round to two decimal places
+  // };
 
   // Define columns of table
   const columns = [    
@@ -76,7 +76,7 @@ const Popularity = () => {
       flex: 1.2,
       renderCell: (params) => (
         <Typography>
-          {roundToTwoDecimalPlaces(params.row.revenue)}
+          {roundDown(params.row.revenue)}
         </Typography>
       ),
     },

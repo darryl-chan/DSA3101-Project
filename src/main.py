@@ -6,16 +6,19 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+# Get list of attraction names
 @app.route("/attraction_names", methods=["GET", "POST"])
 def get_attractions():
     attraction_names = get_names()
     return jsonify(attraction_names)
 
+# For bundling analysis
 @app.route("/popularity", methods=["GET", "POST"])
 def go_popularity():
     popularity_data = get_popularity()
     return jsonify(popularity_data)
 
+# Revenue split for 2 different attractions
 @app.route("/revenue_split", methods=["GET", "POST"])
 def go_revenue_split():
     data = request.json ## [Attraction A, Attraction B]
@@ -32,9 +35,7 @@ def go_best_bundle_revenue_split():
 @app.route("/bundle", methods=["GET", "POST"])
 def go_bundle():
     data = request.json ## [Attraction A, Attraction B]
-    
     bundle = bundle_2_attraction(data)
-
     return jsonify(bundle)
 
 # Find the best bundle highest revenue for mflg 

@@ -3,11 +3,11 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from bs4 import BeautifulSoup
 
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from bs4 import BeautifulSoup
 import time
 import scipy.stats as stats
 
@@ -54,7 +54,7 @@ def scrape(url, time_to_scrape, name, check_every_interval):
             reviews = response.find_all('div', class_='DU9Pgb')
             to_quit = False
             for r in reviews:
-                if r.find('span', class_ = 'rsqaWe').getText() == ('4 years ago'):
+                if r.find('span', class_ = 'rsqaWe').getText() == ('3 years ago'):
                     to_quit = True
                     break
             next_interval_to_check = datetime.now() + timedelta(minutes=check_every_interval)

@@ -68,16 +68,13 @@ const BarChartGbb = ({ beforeBundleRevenue, afterBundleRevenue }) => {
       enableLabel={true} // switch to true to see the labels directly on barchart
       labelSkipWidth={12}
       labelSkipHeight={12}
-      label={(label) => `$${(label.value * 100000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} // Format label to 2 decimal places
-      // labelTextColor={{
-      //   from: "color",
-      //   modifiers: [["darker", 2]],
-      // }}
+      label={(label) => `$${(label.value * 100000).toLocaleString('en-US', {maximumFractionDigits: 0})}`} // Format label to be a whole number
+      
 
-      // for the popup when hovering around the barchart
+      // For the Pop-up when hovering around the barchart
       tooltip={(tooltip) => (
         <div style={{ color: colors.grey[400], background: 'white', borderRadius: '8px', padding: '4px', margin: '4px' }}>
-          {tooltip.data.category}: ${(tooltip.data.revenue * 100000).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+          {tooltip.data.category}: ${(tooltip.data.revenue * 100000).toLocaleString('en-US', {maximumFractionDigits: 0})} 
         </div>
       )}
     />

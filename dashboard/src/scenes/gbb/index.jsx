@@ -12,7 +12,7 @@ const GBB = () => {
   // For Bundle Price and Total Revenue
   const [GbbbundleData, setGbbBundleData] = useState({});
 
-  // For Revenue Split
+  // For Revenue Split 
   // Name
   const [bA1Name, setbA1Name] = useState(null); //bundled_single_Singapore cable car
   const [bA2Name, setbA2Name] = useState(null); //bundled_single_Wings of Time
@@ -34,23 +34,23 @@ const GBB = () => {
   };
   
 
-  const fetchGbbBundleData = async () => {
-    try {
-      const response = await axios.get("http://127.0.0.1:5000/highest_bundle_revenue_mflg");
-      const firstChunk = response.data[0];
-      const { price, revenue } = firstChunk[Object.keys(firstChunk)[0]];
-      setGbbBundleData({ price, revenue });
-    } catch (error) {
-      console.error('Error fetching bundle data:', error);
-    }
-  };
-  
-
+  // For Bundle Price and Total Revenue
   useEffect(() => {
+    const fetchGbbBundleData = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:5000/highest_bundle_revenue_mflg");
+        const firstChunk = response.data[0];
+        const { price, revenue } = firstChunk[Object.keys(firstChunk)[0]];
+        setGbbBundleData({ price, revenue });
+      } catch (error) {
+        console.error('Error fetching bundle data:', error);
+      }
+    };
     fetchGbbBundleData();
-  }, []);
+  }, []); // Empty dependency array means this effect runs only once after the initial render
 
 
+  // For Revenue Split 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -108,7 +108,6 @@ const GBB = () => {
           gridColumn="span 4"
           backgroundColor={colors.primary[400]}
           display="flex"
-          // alignItems="center"
           justifyContent="center"
         >
           {GbbbundleData.price && ( // need this so that the dashboard does not show undefined while fetching data, will only show statbox component when it is not undefined
@@ -122,12 +121,11 @@ const GBB = () => {
           gridColumn="span 4"
           backgroundColor={colors.primary[400]}
           display="flex"
-          // alignItems="left"
           justifyContent="center"
         >
           {GbbbundleData.price && (
             <StatBoxGbb
-            title={`$${(GbbbundleData.revenue).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}
+            title={`$${(GbbbundleData.revenue).toLocaleString('en-US', {maximumFractionDigits: 0})}`}
             subtitle="Total Revenue of Bundle"
             />
           )}
@@ -139,7 +137,7 @@ const GBB = () => {
           display="flex"
           flexDirection="column" // Arrange children vertically
         >
-          {/* Original content */}
+          {/* Subtitle for % change */}
           <Box
             display="flex"
             justifyContent="center"
@@ -149,7 +147,7 @@ const GBB = () => {
             />
           </Box>
 
-          {/* Split the empty space into two sections */}
+          {/* Split the space below "Subtitle for % change" into two sections */}
           <Box
             display="grid"
             gridTemplateColumns="auto auto" // Divide the grid into two col
@@ -165,7 +163,7 @@ const GBB = () => {
               </Typography>
               {/* Calculate and display percentage increase for bA1 */}
               <Typography fontWeight="bold" sx={{ fontSize: "1.5rem" }}>
-                + {calculatePercentageChange(A1Rev, bA1Rev).toFixed(2)}%
+                + {calculatePercentageChange(A1Rev, bA1Rev).toFixed(0)}%
               </Typography>
             </Box>
 
@@ -176,7 +174,7 @@ const GBB = () => {
               </Typography>
               {/* Calculate and display percentage increase for bA2 */}
               <Typography fontWeight="bold" sx={{ fontSize: "1.5rem" }}>
-                + {calculatePercentageChange(A2Rev, bA2Rev).toFixed(2)}%
+                + {calculatePercentageChange(A2Rev, bA2Rev).toFixed(0)}%
               </Typography>
             </Box>
           </Box>

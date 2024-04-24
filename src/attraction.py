@@ -59,6 +59,9 @@ class Attraction:
 
 ##################################### Scoring & popularity functions #####################################
 
+    """These functions are used to find scores
+    """
+
     def get_mean_score(self):
         mean_score = np.mean(self.df['Score'])
         return mean_score
@@ -66,6 +69,9 @@ class Attraction:
     def get_scaled_score(self):
         return (self.get_mean_score() - Attraction.MIN_REVIEW_SCORE) / (Attraction.MAX_REVIEW_SCORE - Attraction.MIN_REVIEW_SCORE)
     
+    """The scoring here is equally weighted for their mean google rating and their number of reviews. The number of reviews are then put through a sigmoid function
+    so that they are spread to a range of [0, 1]
+    """
     def get_popularity_score(self):
         review_scaled_score = self.get_scaled_score() * Attraction.WEIGHT_FOR_REVIEW
         number_of_customer_score = (1 / (1 + np.exp(-Attraction.SCALING_FACTOR * (self.get_number_of_review() - Attraction.SHIFTING_FACTOR)))) \
@@ -73,6 +79,8 @@ class Attraction:
             
         return (review_scaled_score + number_of_customer_score) * 10
 
+    """The popularity level category here is based on the score
+    """
     def get_popularity_level(self):
         # Very High > 8.5
         # High > 7
@@ -96,6 +104,9 @@ class Attraction:
         return level
 
 ##################################### Popularity analysis #####################################
+
+    """Popularity analysis information sent to the front end
+    """
 
     def return_popularity_analysis(self):
         json = {

@@ -2,7 +2,14 @@
 
 ## Installation
 
-{To be filled}
+1. Docker
+Ensure Docker :whale: is installed and running on local device
+2. Run the following command:
+```
+docker build -f Dockerfile.backend -t backend .
+docker run -d -p 5000:5000 backend
+```
+Our backend is hosted on port `5000`
 
 ## Libraries used
 

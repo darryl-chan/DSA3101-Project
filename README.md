@@ -1,6 +1,6 @@
 # DSA3101-Project William & George
 
-## Installation
+## User Guide
 1. Clone the repository into local device, if Git is installed run:
    ```
    git clone https://github.com/darryl-chan/DSA3101-Project.git
@@ -14,3 +14,8 @@
    docker-compose up -d
    ```
 5. Access the web application at `localhost:8081`
+
+6. To stop the application:
+   ```
+   docker compose down
+   ```

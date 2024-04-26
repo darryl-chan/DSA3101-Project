@@ -18,16 +18,21 @@ These codes try to scrape Google reviews of attractions using a webdriver
 ## How to scrape google reviews
 
 1. Go to `scrape_wrapper.py`
-2. Go to google maps and search for the attraction then click on reviews
-3. Run the program
-4. Copy the link and place it for the `url`
-5. Name the file
+2. Go to [Google Maps](https://www.google.com/maps) and search for the attraction name
+3. Click on the `Reviews` tab and copy the url link, you can refer to the image example below
+4. Run the program
+5. Paste the url link for the `url`
 6. Assign `minutes_to_scrape` to a high number so that reviews from 3 years back are recorded
+7. Name the file (preferably the attraction's name for convenience)
+8. Assign a number for `check_every_interval`
+9. Indicate whether the attraction is under MFLG (Yes/No) and provide the ticket cost for the attraction
 
 **Notes**: 
 * Do not close or stop the application halfway
 * A medium-popularity attraction took 60 mins to scrape 3 years back
 * `check_every_interval` checks the web driver at this interval to see if data from all of 3 years have been scraped
+* The data completed by the webdriver will conclude the `Time` of when the review was posted and the `Score` which is the rating given by the review
+* Once the scrapping is completed, a `All Done!` will be shown
 
 ## Example of google review website
 ![alt text](image.png)

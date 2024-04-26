@@ -1,4 +1,4 @@
-# Scrape 3 years of Google reviews using `Selenium`
+# Scrape 3 years of Google reviews using `Selenium` and `BeautifulSoup`
 
 ## Purpose
 

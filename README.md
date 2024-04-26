@@ -11,7 +11,7 @@
   
 4. Run the following command with Docker :whale: to start our application:
    ```
-   docker-compose up -d
+   docker-compose up -d --build
    ```
 5. Access the web application at `localhost:8081`
 

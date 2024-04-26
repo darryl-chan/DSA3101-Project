@@ -29,7 +29,7 @@
    ```
    docker exec -it {name_of_webscrape_container_shown} python scrape_wrapper.py
    ```
-3. You will be prompted to provide necessary inputs
+3. You will be prompted to provide necessary inputs (More information about the inputs below)
    ```
    "What is the google review url:"
    "How many minutes do you want to scrape:"
@@ -49,3 +49,8 @@
    Note:
    * for the `How often do you want to check please input positive number:`, it refers to the frequency you want to check whether the scraping is still running and if the scrape has reached 3 years ago, for eg, if you input 2, it means the code will produce a output `check` every 2 minutes to ensure you that the scraping is still running.
 
+### Steps on copying google review url with example
+1. Go to [Google Maps](https://www.google.com/maps) and search for the attraction name
+2. Search for the attraction [name](https://www.google.com/maps/place/Singapore+Zoo/@1.4043485,103.7904481,17z/data=!3m1!4b1!4m6!3m5!1s0x31da13d9102adcaf:0xb414fac8a43b1b91!8m2!3d1.4043485!4d103.793023!16zL20vMDIxMW16?entry=ttu)
+3. Click on the `Reviews` tab and copy the url [link](https://www.google.com/maps/place/Singapore+Zoo/@1.4043485,103.7904481,17z/data=!4m8!3m7!1s0x31da13d9102adcaf:0xb414fac8a43b1b91!8m2!3d1.4043485!4d103.793023!9m1!1b1!16zL20vMDIxMW16?entry=ttu)
+4. Paste the url in `"What is the google review url:"`

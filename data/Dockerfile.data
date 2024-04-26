@@ -7,8 +7,5 @@ RUN mkdir /app
 # Copy data files over into container
 COPY *.csv /app
 
-# Sets the directory with the data files as a volume
-VOLUME /app
-
 # Runs the container indefinitely
 CMD ["tail", "-f", "/dev/null"]

@@ -153,3 +153,4 @@ def get_user_input():
     scrape(url, time_to_scrape, name, check_every_interval)
     extend_review(name)
     put_to_attraction_list(name, is_mlfg, ticket_cost)
+    print("All Done!")

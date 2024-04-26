@@ -38,7 +38,7 @@
    "Is this attraction under MFLG (Yes/No):"
    "What is the ticket cost:"
    ```
-   Once the scrapping is complete you will see a `All done!`
+   Once the scrapping is complete you will see a `All Done!`
    
 5. Before stopping all the containers, run the following command:
    ```

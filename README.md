@@ -46,6 +46,6 @@
    ```
    This is to copy all the data files back into the local directory so that all the data files are updated to be used in another device.
 
-
-(Note: for the How often do you want to check please input positive number:, it refers to the frequency you want to check whether the scraping is still running and if the scrape has reached 3 years ago, for eg, if you input 2, it means the code will produce a output check every 2 minutes to ensure you that the scraping is still running.)
+   Note:
+   * for the `How often do you want to check please input positive number:`, it refers to the frequency you want to check whether the scraping is still running and if the scrape has reached 3 years ago, for eg, if you input 2, it means the code will produce a output `check` every 2 minutes to ensure you that the scraping is still running.
 

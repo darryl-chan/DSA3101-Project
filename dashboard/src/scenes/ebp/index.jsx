@@ -19,6 +19,9 @@ const EBP = () => {
       <Typography variant="body1" mt={2}>
         Note: <strong>After Bundling Option</strong> has 'Individual Revenue' which represents the revenue from ticket sales of the attraction when purchased separately, even with the bundling option offered.
         </Typography>
+        <Typography variant="body1" mt={2}>
+        Note: For bundling with a competitor's attraction, only information for MFLG's attraction will be displayed. 
+        </Typography>
       
     </Box>  
   );

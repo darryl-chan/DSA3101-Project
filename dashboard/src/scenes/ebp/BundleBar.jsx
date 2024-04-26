@@ -200,6 +200,8 @@ const BundleBar = () => {
               setname1(newname1);
               setbarBdata(newbarB);
               setname2(newname2);   
+              setOpenSnackbar(false);
+
             } else {
               setSnackbarMessage("Bundle must be with at least 1 MFLG attraction.");
               setOpenSnackbar(true);
@@ -246,11 +248,7 @@ const BundleBar = () => {
     const roundtoWhole = (num) => {
       return Math.round(num);    
     };
-    const formatValues = (num) => {
-        return new Intl.NumberFormat('en-US', {
-            maximumFractionDigits: 2, 
-        }).format(num);
-    }
+    
     const displayPerc = (number) => {
       return '+' + number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '%';
     };
